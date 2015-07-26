@@ -303,8 +303,9 @@ module Launchpad
         }
         data[:type] = CODE_NOTE_TO_DATA_TYPE[[code, note]] || :grid
         if data[:type] == :grid
-          data[:x] = note % 16
-          data[:y] = note / 16
+          note = note - 11
+          data[:x] = note % 10
+          data[:y] = note / 10
         end
         data
       end
