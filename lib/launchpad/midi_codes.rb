@@ -25,15 +25,16 @@ module Launchpad
     end
 
     # Module defininig MIDI data 1 (note) codes for scene buttons.
+    # TODO: Rename to match Mk2...
     module SceneButton
-      SCENE1        = 0x08
-      SCENE2        = 0x18
-      SCENE3        = 0x28
-      SCENE4        = 0x38
-      SCENE5        = 0x48
-      SCENE6        = 0x58
-      SCENE7        = 0x68
-      SCENE8        = 0x78
+      SCENE1        = 0x59
+      SCENE2        = 0x4f
+      SCENE3        = 0x45
+      SCENE4        = 0x3b
+      SCENE5        = 0x31
+      SCENE6        = 0x27
+      SCENE7        = 0x1d
+      SCENE8        = 0x13
     end
 
     # Module defining MIDI data 2 (velocity) codes.
