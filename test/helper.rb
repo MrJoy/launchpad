@@ -14,7 +14,7 @@ require 'launchpad'
 
 # mock Portmidi for tests
 module Portmidi
-  
+
   class Input
     attr_accessor :device_id
     def initialize(device_id)
@@ -23,7 +23,7 @@ module Portmidi
     def read(*args); nil; end
     def close; nil; end
   end
-  
+
   class Output
     attr_accessor :device_id
     def initialize(device_id)
@@ -32,11 +32,11 @@ module Portmidi
     def write(*args); nil; end
     def close; nil; end
   end
-  
+
   def self.input_devices; mock_devices; end
   def self.output_devices; mock_devices; end
   def self.start; end
-  
+
 end
 
 def mock_devices(opts = {})

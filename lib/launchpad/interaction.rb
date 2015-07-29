@@ -2,13 +2,13 @@ require 'launchpad/device'
 require 'launchpad/logging'
 
 module Launchpad
-  
+
   # This class provides advanced interaction features.
-  # 
+  #
   # Example:
-  # 
+  #
   #   require 'launchpad'
-  #   
+  #
   #   interaction = Launchpad::Interaction.new
   #   interaction.response_to(:grid, :down) do |interaction, action|
   #     interaction.device.change(:grid, action.merge(:red => :high))
@@ -16,22 +16,22 @@ module Launchpad
   #   interaction.response_to(:mixer, :down) do |interaction, action|
   #     interaction.stop
   #   end
-  #   
+  #
   #   interaction.start
   class Interaction
 
     include Logging
-    
+
     # Returns the Launchpad::Device the Launchpad::Interaction acts on.
     attr_reader :device
-    
+
     # Returns whether the Launchpad::Interaction is active or not.
     attr_reader :active
-    
+
     # Initializes the interaction.
-    # 
+    #
     # Optional options hash:
-    # 
+    #
     # [<tt>:device</tt>]            Launchpad::Device to act on,
     #                               optional, <tt>:input_device_id/:output_device_id</tt> will be used if omitted
     # [<tt>:input_device_id</tt>]   ID of the MIDI input device to use,
@@ -43,9 +43,9 @@ module Launchpad
     # [<tt>:latency</tt>]           delay (in s, fractions allowed) between MIDI pulls,
     #                               optional, defaults to 0.001 (1ms)
     # [<tt>:logger</tt>]            [Logger] to be used by this interaction instance, can be changed afterwards
-    # 
+    #
     # Errors raised:
-    # 
+    #
     # [Launchpad::NoSuchDeviceError] when device with ID or name specified does not exist
     # [Launchpad::DeviceBusyError] when device with ID or name specified is busy
     def initialize(opts = nil)
@@ -67,7 +67,7 @@ module Launchpad
     end
 
     # Sets the logger to be used by the current instance and the device.
-    # 
+    #
     # [+logger+]  the [Logger] instance
     def logger=(logger)
       @logger = logger
@@ -75,33 +75,33 @@ module Launchpad
     end
 
     # Closes the interaction's device - nothing can be done with the interaction/device afterwards.
-    # 
+    #
     # Errors raised:
-    # 
+    #
     # [Launchpad::NoInputAllowedError] when input is not enabled on the interaction's device
-    # [Launchpad::CommunicationError] when anything unexpected happens while communicating with the    
+    # [Launchpad::CommunicationError] when anything unexpected happens while communicating with the
     def close
       logger.debug "closing Launchpad::Interaction##{object_id}"
       stop
       @device.close
     end
-    
+
     # Determines whether this interaction's device has been closed.
     def closed?
       @device.closed?
     end
-    
+
     # Starts interacting with the launchpad. Resets the device when
     # the interaction was properly stopped via stop or close.
-    # 
+    #
     # Optional options hash:
-    # 
+    #
     # [<tt>:detached</tt>]  <tt>true/false</tt>,
     #                       whether to detach the interaction, method is blocking when +false+,
     #                       optional, defaults to +false+
-    # 
+    #
     # Errors raised:
-    # 
+    #
     # [Launchpad::NoInputAllowedError] when input is not enabled on the interaction's device
     # [Launchpad::NoOutputAllowedError] when output is not enabled on the interaction's device
     # [Launchpad::CommunicationError] when anything unexpected happens while communicating with the launchpad
@@ -137,13 +137,13 @@ module Launchpad
       end
       @reader_thread.join unless opts[:detached]
     end
-    
+
     # Stops interacting with the launchpad.
-    # 
+    #
     # Errors raised:
-    # 
+    #
     # [Launchpad::NoInputAllowedError] when input is not enabled on the interaction's device
-    # [Launchpad::CommunicationError] when anything unexpected happens while communicating with the    
+    # [Launchpad::CommunicationError] when anything unexpected happens while communicating with the
     def stop
       logger.debug "stopping Launchpad::Interaction##{object_id}"
       @active = false
@@ -164,18 +164,18 @@ module Launchpad
       end
       nil
     end
-    
+
     # Registers a response to one or more actions.
-    # 
+    #
     # Parameters (see Launchpad for values):
-    # 
+    #
     # [+types+] one or an array of button types to respond to,
     #           additional value <tt>:all</tt> for all buttons
     # [+state+] button state to respond to,
     #           additional value <tt>:both</tt>
-    # 
+    #
     # Optional options hash:
-    # 
+    #
     # [<tt>:exclusive</tt>] <tt>true/false</tt>,
     #                       whether to deregister all other responses to the specified actions,
     #                       optional, defaults to +false+
@@ -183,11 +183,11 @@ module Launchpad
     #                       without y coordinate, it's interpreted as a whole column
     # [<tt>:y</tt>]         y coordinate(s), can contain arrays and ranges, when specified
     #                       without x coordinate, it's interpreted as a whole row
-    # 
+    #
     # Takes a block which will be called when an action matching the parameters occurs.
-    # 
+    #
     # Block parameters:
-    # 
+    #
     # [+interaction+] the interaction object that received the action
     # [+action+]      the action received from Launchpad::Device.read_pending_actions
     def response_to(types = :all, state = :both, opts = nil, &block)
@@ -204,20 +204,20 @@ module Launchpad
       end
       nil
     end
-    
+
     # Deregisters all responses to one or more actions.
-    # 
+    #
     # Parameters (see Launchpad for values):
-    # 
+    #
     # [+types+] one or an array of button types to respond to,
     #           additional value <tt>:all</tt> for actions on all buttons
     #           (but not meaning "all responses"),
     #           optional, defaults to +nil+, meaning "all responses"
     # [+state+] button state to respond to,
     #           additional value <tt>:both</tt>
-    # 
+    #
     # Optional options hash:
-    # 
+    #
     # [<tt>:x</tt>] x coordinate(s), can contain arrays and ranges, when specified
     #               without y coordinate, it's interpreted as a whole column
     # [<tt>:y</tt>] y coordinate(s), can contain arrays and ranges, when specified
@@ -234,25 +234,25 @@ module Launchpad
       end
       nil
     end
-    
+
     # Responds to an action by executing all matching responses, effectively simulating
     # a button press/release.
-    # 
+    #
     # Parameters (see Launchpad for values):
-    # 
+    #
     # [+type+]  type of the button to trigger
     # [+state+] state of the button
-    # 
+    #
     # Optional options hash (see Launchpad for values):
-    # 
+    #
     # [<tt>:x</tt>]     x coordinate
     # [<tt>:y</tt>]     y coordinate
     def respond_to(type, state, opts = nil)
       respond_to_action((opts || {}).merge(:type => type, :state => state))
     end
-    
+
     private
-    
+
     # Returns the hash storing all responses. Keys are button types, values are
     # hashes themselves, keys are <tt>:down/:up</tt>, values are arrays of responses.
     def responses
@@ -260,9 +260,9 @@ module Launchpad
     end
 
     # Returns an array of grid positions for a range.
-    # 
+    #
     # Parameters:
-    # 
+    #
     # [+range+] the range definitions, can be
     #           * a Fixnum
     #           * a Range
@@ -277,17 +277,17 @@ module Launchpad
     # Returns a list of combined types for the type and opts specified. Combined
     # types are just the type, except for grid, where the opts are interpreted
     # and all combinations of x and y coordinates are added as a position suffix.
-    # 
+    #
     # Example:
-    # 
+    #
     # combined_types(:grid, :x => 1..2, y => 2) => [:grid12, :grid22]
-    # 
+    #
     # Parameters (see Launchpad for values):
-    # 
+    #
     # [+type+]  type of the button
-    # 
+    #
     # Optional options hash:
-    # 
+    #
     # [<tt>:x</tt>] x coordinate(s), can contain arrays and ranges, when specified
     #               without y coordinate, it's interpreted as a whole column
     # [<tt>:y</tt>] y coordinate(s), can contain arrays and ranges, when specified
@@ -304,11 +304,11 @@ module Launchpad
         [type.to_sym]
       end
     end
-    
+
     # Reponds to an action by executing all matching responses.
-    # 
+    #
     # Parameters:
-    # 
+    #
     # [+action+]  hash containing an action from Launchpad::Device.read_pending_actions
     def respond_to_action(action)
       type = action[:type].to_sym
@@ -327,7 +327,7 @@ module Launchpad
       logger.error "error when responding to action #{action.inspect}: #{e.inspect}"
       raise e
     end
-    
+
   end
-  
+
 end

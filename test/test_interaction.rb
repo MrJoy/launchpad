@@ -32,7 +32,7 @@ describe Launchpad::Interaction do
   end
 
   describe '#initialize' do
-    
+
     it 'creates device if not given' do
       device = Launchpad::Device.new
       Launchpad::Device.expects(:new).
@@ -41,7 +41,7 @@ describe Launchpad::Interaction do
       interaction = Launchpad::Interaction.new
       assert_same device, interaction.device
     end
-    
+
     it 'creates device with given device_name' do
       device = Launchpad::Device.new
       Launchpad::Device.expects(:new).
@@ -50,7 +50,7 @@ describe Launchpad::Interaction do
       interaction = Launchpad::Interaction.new(:device_name => 'device')
       assert_same device, interaction.device
     end
-    
+
     it 'creates device with given input_device_id' do
       device = Launchpad::Device.new
       Launchpad::Device.expects(:new).
@@ -59,7 +59,7 @@ describe Launchpad::Interaction do
       interaction = Launchpad::Interaction.new(:input_device_id => 'in')
       assert_same device, interaction.device
     end
-    
+
     it 'creates device with given output_device_id' do
       device = Launchpad::Device.new
       Launchpad::Device.expects(:new).
@@ -68,7 +68,7 @@ describe Launchpad::Interaction do
       interaction = Launchpad::Interaction.new(:output_device_id => 'out')
       assert_same device, interaction.device
     end
-    
+
     it 'creates device with given input_device_id/output_device_id' do
       device = Launchpad::Device.new
       Launchpad::Device.expects(:new).
@@ -77,7 +77,7 @@ describe Launchpad::Interaction do
       interaction = Launchpad::Interaction.new(:input_device_id => 'in', :output_device_id => 'out')
       assert_same device, interaction.device
     end
-    
+
     it 'initializes device if given' do
       device = Launchpad::Device.new
       interaction = Launchpad::Interaction.new(:device => device)
@@ -90,11 +90,11 @@ describe Launchpad::Interaction do
       assert_same logger, interaction.logger
       assert_same logger, interaction.device.logger
     end
-    
+
     it 'doesn\'t activate the interaction' do
       assert !Launchpad::Interaction.new.active
     end
-    
+
   end
 
   describe '#logger=' do
@@ -108,7 +108,7 @@ describe Launchpad::Interaction do
     end
 
   end
-  
+
   describe '#close' do
 
     it 'stops the interaction' do
@@ -116,32 +116,32 @@ describe Launchpad::Interaction do
       interaction.expects(:stop)
       interaction.close
     end
-    
+
     it 'closes the device' do
       interaction = Launchpad::Interaction.new
       interaction.device.expects(:close)
       interaction.close
     end
-    
+
   end
-  
+
   describe '#closed?' do
-    
+
     it 'returns false on a newly created interaction, but true after closing' do
       interaction = Launchpad::Interaction.new
       assert !interaction.closed?
       interaction.close
       assert interaction.closed?
     end
-    
+
   end
-  
+
   describe '#start' do
-    
+
     before do
       @interaction = Launchpad::Interaction.new
     end
-    
+
     after do
       mocha_teardown # so that expectations on Thread.join don't fail in here
       begin
@@ -150,30 +150,30 @@ describe Launchpad::Interaction do
         # ignore, should be handled in tests, this is just to close all the spawned threads
       end
     end
-    
+
     it 'sets active to true in blocking mode' do
       refute @interaction.active
       erg = timeout { @interaction.start }
       refute erg, 'there was no timeout'
       assert @interaction.active
     end
-    
+
     it 'sets active to true in detached mode' do
       refute @interaction.active
       @interaction.start(:detached => true)
       assert @interaction.active
     end
-    
+
     it 'blocks in blocking mode' do
       erg = timeout { @interaction.start }
       refute erg, 'there was no timeout'
     end
-    
+
     it 'returns immediately in detached mode' do
       erg = timeout { @interaction.start(:detached => true) }
       assert erg, 'there was a timeout'
     end
-    
+
     it 'raises CommunicationError when Portmidi::DeviceError occurs' do
       @interaction.device.stubs(:read_pending_actions).raises(Portmidi::DeviceError.new(0))
       assert_raises Launchpad::CommunicationError do
@@ -204,13 +204,13 @@ describe Launchpad::Interaction do
             }
           ])
       end
-      
+
       it 'calls respond_to_action with actions from respond_to_action in blocking mode' do
         erg = timeout(0.5) { @interaction.start }
         assert erg, 'the actions weren\'t called'
         assert @mixer_down, 'the mixer button wasn\'t pressed'
       end
-      
+
       it 'calls respond_to_action with actions from respond_to_action in detached mode' do
         @interaction.start(:detached => true)
         erg = timeout(0.5) { while @interaction.active; sleep 0.01; end }
@@ -219,9 +219,9 @@ describe Launchpad::Interaction do
       end
 
     end
-    
+
     describe 'latency' do
-      
+
       before do
         @device = @interaction.device
         @times = []
@@ -231,7 +231,7 @@ describe Launchpad::Interaction do
           []
         end
       end
-      
+
       it 'sleeps with default latency of 0.001s when none given' do
         timeout { @interaction.start }
         assert @times.size > 1
@@ -239,7 +239,7 @@ describe Launchpad::Interaction do
           assert_in_delta 0.001, b - a, 0.01
         end
       end
-      
+
       it 'sleeps with given latency' do
         @interaction = Launchpad::Interaction.new(:latency => 0.5, :device => @device)
         timeout(0.55) { @interaction.start }
@@ -248,7 +248,7 @@ describe Launchpad::Interaction do
           assert_in_delta 0.5, b - a, 0.01
         end
       end
-      
+
       it 'sleeps with absolute value of given negative latency' do
         @interaction = Launchpad::Interaction.new(:latency => -0.1, :device => @device)
         timeout(0.15) { @interaction.start }
@@ -257,7 +257,7 @@ describe Launchpad::Interaction do
           assert_in_delta 0.1, b - a, 0.01
         end
       end
-      
+
       it 'does not sleep when latency is 0' do
         @interaction = Launchpad::Interaction.new(:latency => 0, :device => @device)
         timeout(0.001) { @interaction.start }
@@ -266,30 +266,30 @@ describe Launchpad::Interaction do
           assert_in_delta 0, b - a, 0.1
         end
       end
-      
+
     end
-    
+
     it 'resets the device after the loop' do
       @interaction.device.expects(:reset)
       @interaction.start(:detached => true)
       @interaction.stop
     end
-    
+
     it 'raises NoOutputAllowedError on closed interaction' do
       @interaction.close
       assert_raises Launchpad::NoOutputAllowedError do
         @interaction.start
       end
     end
-    
+
   end
-  
+
   describe '#stop' do
 
     before do
       @interaction = Launchpad::Interaction.new
     end
-    
+
     it 'sets active to false in blocking mode' do
       erg = timeout { @interaction.start }
       refute erg, 'there was no timeout'
@@ -297,21 +297,21 @@ describe Launchpad::Interaction do
       @interaction.stop
       assert !@interaction.active
     end
-    
+
     it 'sets active to false in detached mode' do
       @interaction.start(:detached => true)
       assert @interaction.active
       @interaction.stop
       assert !@interaction.active
     end
-    
+
     it 'is callable anytime' do
       @interaction.stop
       @interaction.start(:detached => true)
       @interaction.stop
       @interaction.stop
     end
-    
+
     # this is kinda greybox tested, since I couldn't come up with another way to test tread handling [thomas, 2010-01-24]
     it 'raises pending exceptions in detached mode' do
       t = Thread.new {raise BreakError}
@@ -321,15 +321,15 @@ describe Launchpad::Interaction do
         @interaction.stop
       end
     end
-    
+
   end
-  
+
   describe '#response_to/#no_response_to/#respond_to' do
-    
+
     before do
       @interaction = Launchpad::Interaction.new
     end
-    
+
     it 'calls all responses that match, and not others' do
       @interaction.response_to(:mixer, :down) {|i, a| @mixer_down = true}
       @interaction.response_to(:all, :down) {|i, a| @all_down = true}
@@ -341,7 +341,7 @@ describe Launchpad::Interaction do
       assert !@all_up
       assert !@grid_down
     end
-    
+
     it 'does not call responses when they are deregistered' do
       @interaction.response_to(:mixer, :down) {|i, a| @mixer_down = true}
       @interaction.response_to(:mixer, :up) {|i, a| @mixer_up = true}
@@ -356,7 +356,7 @@ describe Launchpad::Interaction do
       assert @mixer_up
       assert !@all_down
     end
-    
+
     it 'does not call responses registered for both when removing for one of both states' do
       @interaction.response_to(:mixer, :both) {|i, a| @mixer = true}
       @interaction.no_response_to(:mixer, :down)
@@ -365,7 +365,7 @@ describe Launchpad::Interaction do
       @interaction.respond_to(:mixer, :up)
       assert @mixer
     end
-    
+
     it 'removes other responses when adding a new exclusive response' do
       @interaction.response_to(:mixer, :both) {|i, a| @mixer = true}
       @interaction.response_to(:mixer, :down, :exclusive => true) {|i, a| @exclusive_mixer = true}
@@ -428,11 +428,11 @@ describe Launchpad::Interaction do
       end
 
     end
-    
+
   end
-  
+
   describe 'regression tests' do
-    
+
     it 'does not raise an exception or write an error to the logger when calling stop within a response in attached mode' do
       log = StringIO.new
       logger = Logger.new(log)
@@ -450,7 +450,7 @@ describe Launchpad::Interaction do
       # assert erg, 'the actions weren\'t called'
       assert_equal '', log.string
     end
-    
+
   end
-  
+
 end
