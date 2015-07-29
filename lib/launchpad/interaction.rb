@@ -118,8 +118,8 @@ module Launchpad
         begin
           while @active do
             @device.read_pending_actions.each do |action|
-              action_thread = Thread.new(action) do |action|
-                respond_to_action(action)
+              action_thread = Thread.new(action) do |act|
+                respond_to_action(act)
               end
               @action_threads.add(action_thread)
             end
@@ -195,10 +195,10 @@ module Launchpad
       types = Array(types)
       opts ||= {}
       no_response_to(types, state) if opts[:exclusive] == true
-      Array(state == :both ? %w(down up) : state).each do |state|
+      Array(state == :both ? %w(down up) : state).each do |st|
         types.each do |type|
           combined_types(type, opts).each do |combined_type|
-            responses[combined_type][state.to_sym] << block
+            responses[combined_type][st.to_sym] << block
           end
         end
       end
