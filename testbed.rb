@@ -6,33 +6,22 @@ Bundler.require(:default, :development)
 
 require "launchpad"
 
-# interaction = Launchpad::Interaction.new(device_name: "Launchpad MK2")
-# interaction.response_to(:grid, :down) do |_interaction, action|
-#   puts action.inspect
-# end
-# # interaction.response_to(:mixer, :down) do |interaction, action|
-# #   interaction.stop
-# # end
-# interaction.start
-
-
-
-device = Launchpad::Device.new(device_name: "Launchpad MK2")
-output = device.instance_variable_get(:@output)
-
 # "Each element has a brightness value from 00h – 3Fh (0 – 63), where 0 is off and 3Fh is full brightness."
-def set_color(output, led, r, g, b)
-  # color = (r << 7) | (g << 6) | (b << 3)
-  # puts "%02x" % color
+def set_color(device, x, y, r, g, b)
+  output = device.instance_variable_get(:@output)
 
-  x = output.write_sysex([
+  puts "set_color(..., #{x}, #{y}, #{r}, #{g}, #{b})"
+  led = (y * 10) + x + 11
+  x   = output.write_sysex([
+    # SysEx Begin:
     0xF0,
-    # Manufacturer/Device/Command:
+    # Manufacturer/Device:
     0x00,
     0x20,
     0x29,
     0x02,
     0x18,
+    # Command:
     0x0B,
     # LED:
     led,
@@ -44,20 +33,34 @@ def set_color(output, led, r, g, b)
     0xF7,
   ])
 
-  if x != 0
-    puts x
-  else
-    printf "."
+  puts "ERROR: #{x}" if x != 0
+  x
+end
+
+def init_board(interaction)
+  (0..7).each do |x|
+    (0..7).each do |y|
+      set_color(interaction.device, x, y, 0x00, x + 0x10, y + 0x10)
+      sleep 0.01
+    end
   end
 end
 
-(0..7).each do |x|
-  (0..7).each do |y|
-    note = (y * 10) + x + 11
-    set_color(output, note, 0x00, x + 0x10, y + 0x10)
-    sleep 0.05
+interaction = Launchpad::Interaction.new(device_name: "Launchpad MK2")
+interaction.response_to(:grid) do |interaction, action|
+  puts action.inspect
+  if action[:state] == :down
+    set_color(interaction.device, action[:x], action[:y], 0x3F, 0x00, 0x00)
+  else
+    set_color(interaction.device, action[:x], action[:y], 0x00, action[:x] + 0x10, action[:y] + 0x10)
   end
 end
+interaction.response_to(:mixer, :down) do |_interaction, action|
+  puts "STAHP!"
+  interaction.stop
+end
+init_board(interaction)
+interaction.start
 
 # note = note - 11
 # data[:x] = note % 10
