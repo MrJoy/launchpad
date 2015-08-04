@@ -441,7 +441,7 @@ module Launchpad
           logger.error "wrong coordinates specified: x=#{x}, y=#{y}"
           raise NoValidGridCoordinatesError.new("you need to specify valid coordinates (x/y, 0-7, from top left), you specified: x=#{x}, y=#{y}")
         end
-        note = y * 16 + x
+        note = y * 10 + x
       end
       note
     end
