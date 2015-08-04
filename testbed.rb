@@ -6,9 +6,8 @@ Bundler.require(:default, :development)
 
 require "launchpad"
 
-device = Launchpad::Device.new(device_name: "Launchpad MK2")
 # interaction = Launchpad::Interaction.new(device_name: "Launchpad MK2")
-# interaction.response_to(:grid, :down) do |interaction, action|
+# interaction.response_to(:grid, :down) do |_interaction, action|
 #   puts action.inspect
 # end
 # # interaction.response_to(:mixer, :down) do |interaction, action|
@@ -18,6 +17,7 @@ device = Launchpad::Device.new(device_name: "Launchpad MK2")
 
 
 
+device = Launchpad::Device.new(device_name: "Launchpad MK2")
 output = device.instance_variable_get(:@output)
 
 # "Each element has a brightness value from 00h – 3Fh (0 – 63), where 0 is off and 3Fh is full brightness."
