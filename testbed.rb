@@ -33,11 +33,13 @@ def set_color(output, led, r, g, b)
     0x29,
     0x02,
     0x18,
-    0x0A,
+    0x0B,
     # LED:
     led,
     # Red, Green, Blue:
-    0x3F,
+    r,
+    g,
+    b,
     # SysEx End:
     0xF7,
   ])
@@ -51,7 +53,9 @@ end
 
 (0..7).each do |x|
   (0..7).each do |y|
-    set_color(output, (y * 10) + x + 11, 0, 0, 1)
+    note = (y * 10) + x + 11
+    set_color(output, note, 0x00, x + 0x10, y + 0x10)
+    sleep 0.05
   end
 end
 
@@ -59,6 +63,10 @@ end
 # data[:x] = note % 10
 # data[:y] = note / 10
 
+# {:timestamp=>140, :state=>:down, :type=>:grid, :note=>11, :x=>0, :y=>0}
+# {:timestamp=>2994, :state=>:down, :type=>:grid, :note=>18, :x=>7, :y=>0}
+# {:timestamp=>5002, :state=>:down, :type=>:grid, :note=>81, :x=>0, :y=>7}
+# {:timestamp=>6451, :state=>:down, :type=>:grid, :note=>88, :x=>7, :y=>7}
 
 
 
