@@ -7,42 +7,64 @@ Bundler.require(:default, :development)
 require "launchpad"
 
 device = Launchpad::Device.new(device_name: "Launchpad MK2")
+# interaction = Launchpad::Interaction.new(device_name: "Launchpad MK2")
+# interaction.response_to(:grid, :down) do |interaction, action|
+#   puts action.inspect
+# end
+# # interaction.response_to(:mixer, :down) do |interaction, action|
+# #   interaction.stop
+# # end
+# interaction.start
+
+
+
 output = device.instance_variable_get(:@output)
-output.write([
-  { message: [
-      # SysEx Start:
-      0xF0,
-      # Manufacturer/Device/Command:
-      0x00,
-      0x20,
-      0x29,
-    ],
-    # ].map { |n| Bignum.new(n) },
-    timestamp: 0 },
-  { message: [
-      0x02,
-      0x18,
-      0x0A,
-      # LED:
-      0x68, # Up arrow.
-    ],
-    # ].map { |n| Bignum.new(n) },
-    timestamp: 0 },
-  { message: [
-      # Red, Green, Blue:
-      0xFF,
-      0x00,
-      0x00,
-      # SysEx End:
-      0xF7,
-    ],
-    # ].map { |n| Bignum.new(n) },
-    timestamp: 0 },
-])
+
+# "Each element has a brightness value from 00h – 3Fh (0 – 63), where 0 is off and 3Fh is full brightness."
+def set_color(output, led, r, g, b)
+  # color = (r << 7) | (g << 6) | (b << 3)
+  # puts "%02x" % color
+
+  x = output.write_sysex([
+    0xF0,
+    # Manufacturer/Device/Command:
+    0x00,
+    0x20,
+    0x29,
+    0x02,
+    0x18,
+    0x0A,
+    # LED:
+    led,
+    # Red, Green, Blue:
+    0x3F,
+    # SysEx End:
+    0xF7,
+  ])
+
+  if x != 0
+    puts x
+  else
+    printf "."
+  end
+end
+
+(0..7).each do |x|
+  (0..7).each do |y|
+    set_color(output, (y * 10) + x + 11, 0, 0, 1)
+  end
+end
+
+# note = note - 11
+# data[:x] = note % 10
+# data[:y] = note / 10
+
+
+
 
 # F0h 00h 20h 29h 02h 18h 0Ah <LED>, <Red> <Green> <Blue> F7h
 
-puts device.inspect
+# puts device.inspect
 
 
     # module Launchpad
