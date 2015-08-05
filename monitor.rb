@@ -64,7 +64,11 @@ monitor = Thread.new do
     disk_pct    = (fields[2].to_f / 750.0) * 100.0
     disk_usage  = ((disk_pct / 100.0) * 8.0).round.to_i
 
-    puts "io=#{disk_pct}%, cpu=#{cpu_pct}%"
+    puts "I/O=#{disk_pct}%, CPU=#{cpu_pct}%"
+
+    # TODO: Network in/out...
+
+    # TODO: Make block I/O not be a bar but a fill, with scale indicated by color...
 
     bar(interaction, 0, cpu_usage, 0x3F, 0x00, 0x00)
     bar(interaction, 1, disk_usage, 0x00, 0x3F, 0x00)
