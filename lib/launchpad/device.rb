@@ -150,14 +150,14 @@ module Launchpad
     # Errors raised:
     #
     # [Launchpad::NoOutputAllowedError] when output is not enabled
-    def test_leds(brightness = :high)
-      brightness = brightness(brightness)
-      if brightness == 0
-        reset
-      else
-        output(Status::CC, Status::NIL, Velocity::TEST_LEDS + brightness)
-      end
-    end
+    # def test_leds(brightness = :high)
+    #   brightness = brightness(brightness)
+    #   if brightness == 0
+    #     reset
+    #   else
+    #     output(Status::CC, Status::NIL, Velocity::TEST_LEDS + brightness)
+    #   end
+    # end
 
     # Changes a single LED.
     #
@@ -181,10 +181,33 @@ module Launchpad
     # [Launchpad::NoValidGridCoordinatesError] when coordinates aren't within the valid range
     # [Launchpad::NoValidBrightnessError] when brightness values aren't within the valid range
     # [Launchpad::NoOutputAllowedError] when output is not enabled
-    def change(type, opts = nil)
-      opts ||= {}
-      status = %w(up down left right session user1 user2 mixer).include?(type.to_s) ? Status::CC : Status::ON
-      output(status, note(type, opts), velocity(opts))
+    # def change(type, opts = nil)
+    #   opts ||= {}
+    #   status = %w(up down left right session user1 user2 mixer).include?(type.to_s) ? Status::CC : Status::ON
+    #   output(status, note(type, opts), velocity(opts))
+    # end
+    def change_grid(x, y, r, g, b)
+      led = (y * 10) + x + 11
+      @output.write_sysex([
+        # SysEx Begin:
+        0xF0,
+        # Manufacturer/Device:
+        0x00,
+        0x20,
+        0x29,
+        0x02,
+        0x18,
+        # Command:
+        0x0B,
+        # LED:
+        led,
+        # Red, Green, Blue:
+        r,
+        g,
+        b,
+        # SysEx End:
+        0xF7,
+      ])
     end
 
     # Changes all LEDs in batch mode.
@@ -211,38 +234,38 @@ module Launchpad
     #
     # [Launchpad::NoValidBrightnessError] when brightness values aren't within the valid range
     # [Launchpad::NoOutputAllowedError] when output is not enabled
-    def change_all(*colors)
-      # ensure that colors is at least and most 80 elements long
-      colors = colors.flatten[0..79]
-      colors += [0] * (80 - colors.size) if colors.size < 80
-      # send normal MIDI message to reset rapid LED change pointer
-      # in this case, set mapping mode to x-y layout (the default)
-      output(Status::CC, Status::NIL, GridLayout::XY)
-      # send colors in slices of 2
-      messages = []
-      colors.each_slice(2) do |c1, c2|
-        messages << message(Status::MULTI, velocity(c1), velocity(c2))
-      end
-      output_messages(messages)
-    end
+    # def change_all(*colors)
+    #   # ensure that colors is at least and most 80 elements long
+    #   colors = colors.flatten[0..79]
+    #   colors += [0] * (80 - colors.size) if colors.size < 80
+    #   # send normal MIDI message to reset rapid LED change pointer
+    #   # in this case, set mapping mode to x-y layout (the default)
+    #   output(Status::CC, Status::NIL, GridLayout::XY)
+    #   # send colors in slices of 2
+    #   messages = []
+    #   colors.each_slice(2) do |c1, c2|
+    #     messages << message(Status::MULTI, velocity(c1), velocity(c2))
+    #   end
+    #   output_messages(messages)
+    # end
 
     # Switches LEDs marked as flashing on when using custom timer for flashing.
     #
     # Errors raised:
     #
     # [Launchpad::NoOutputAllowedError] when output is not enabled
-    def flashing_on
-      buffering_mode(:display_buffer => 0)
-    end
+    # def flashing_on
+    #   buffering_mode(:display_buffer => 0)
+    # end
 
     # Switches LEDs marked as flashing off when using custom timer for flashing.
     #
     # Errors raised:
     #
     # [Launchpad::NoOutputAllowedError] when output is not enabled
-    def flashing_off
-      buffering_mode(:display_buffer => 1)
-    end
+    # def flashing_off
+    #   buffering_mode(:display_buffer => 1)
+    # end
 
     # Starts flashing LEDs marked as flashing automatically.
     # Stop flashing by calling flashing_on or flashing_off.
@@ -250,9 +273,9 @@ module Launchpad
     # Errors raised:
     #
     # [Launchpad::NoOutputAllowedError] when output is not enabled
-    def flashing_auto
-      buffering_mode(:flashing => true)
-    end
+    # def flashing_auto
+    #   buffering_mode(:flashing => true)
+    # end
 
     # Controls the two buffers.
     #
@@ -266,18 +289,18 @@ module Launchpad
     # Errors raised:
     #
     # [Launchpad::NoOutputAllowedError] when output is not enabled
-    def buffering_mode(opts = nil)
-      opts = {
-        :display_buffer => 0,
-        :update_buffer => 0,
-        :copy => false,
-        :flashing => false
-      }.merge(opts || {})
-      data = opts[:display_buffer] + 4 * opts[:update_buffer] + 32
-      data += 16 if opts[:copy]
-      data += 8 if opts[:flashing]
-      output(Status::CC, Status::NIL, data)
-    end
+    # def buffering_mode(opts = nil)
+    #   opts = {
+    #     :display_buffer => 0,
+    #     :update_buffer => 0,
+    #     :copy => false,
+    #     :flashing => false
+    #   }.merge(opts || {})
+    #   data = opts[:display_buffer] + 4 * opts[:update_buffer] + 32
+    #   data += 16 if opts[:copy]
+    #   data += 8 if opts[:flashing]
+    #   output(Status::CC, Status::NIL, data)
+    # end
 
     # Reads user actions (button presses/releases) that haven't been handled yet.
     # This is non-blocking, so when nothing happend yet you'll get an empty array.
@@ -340,7 +363,7 @@ module Launchpad
       logger.debug "creating #{device_type} with #{opts.inspect}, choosing from portmidi devices #{devices.inspect}"
       id = opts[:id]
       if id.nil?
-        name = opts[:name] || 'Launchpad'
+        name = opts[:name] || "Launchpad MK2"
         device = devices.select {|dev| dev.name == name}.first
         id = device.device_id unless device.nil?
       end
@@ -464,21 +487,21 @@ module Launchpad
     # Errors raised:
     #
     # [Launchpad::NoValidBrightnessError] when brightness values aren't within the valid range
-    def velocity(opts)
-      if opts.is_a?(Hash)
-        red = brightness(opts[:red] || 0)
-        green = brightness(opts[:green] || 0)
-        color = 16 * green + red
-        flags = case opts[:mode]
-                when :flashing  then  8
-                when :buffering then  0
-                else                  12
-                end
-        color + flags
-      else
-        opts.to_i + 12
-      end
-    end
+    # def velocity(opts)
+    #   if opts.is_a?(Hash)
+    #     red = brightness(opts[:red] || 0)
+    #     green = brightness(opts[:green] || 0)
+    #     color = 16 * green + red
+    #     flags = case opts[:mode]
+    #             when :flashing  then  8
+    #             when :buffering then  0
+    #             else                  12
+    #             end
+    #     color + flags
+    #   else
+    #     opts.to_i + 12
+    #   end
+    # end
 
     # Calculates the integer brightness for given brightness values.
     #
@@ -489,17 +512,17 @@ module Launchpad
     # Errors raised:
     #
     # [Launchpad::NoValidBrightnessError] when brightness values aren't within the valid range
-    def brightness(brightness)
-      case brightness
-      when 0, :off            then 0
-      when 1, :low,     :lo   then 1
-      when 2, :medium,  :med  then 2
-      when 3, :high,    :hi   then 3
-      else
-        logger.error "wrong brightness specified: #{brightness}"
-        raise NoValidBrightnessError.new("you need to specify the brightness as 0/1/2/3, :off/:low/:medium/:high or :off/:lo/:hi, you specified: #{brightness}")
-      end
-    end
+    # def brightness(brightness)
+    #   case brightness
+    #   when 0, :off            then 0
+    #   when 1, :low,     :lo   then 1
+    #   when 2, :medium,  :med  then 2
+    #   when 3, :high,    :hi   then 3
+    #   else
+    #     logger.error "wrong brightness specified: #{brightness}"
+    #     raise NoValidBrightnessError.new("you need to specify the brightness as 0/1/2/3, :off/:low/:medium/:high or :off/:lo/:hi, you specified: #{brightness}")
+    #   end
+    # end
 
     # Creates a MIDI message.
     #
