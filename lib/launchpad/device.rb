@@ -210,6 +210,30 @@ module Launchpad
       ])
     end
 
+    def change_command(position, r, g, b)
+      led = TYPE_TO_NOTE[position]
+      @output.write_sysex([
+        # SysEx Begin:
+        0xF0,
+        # Manufacturer/Device:
+        0x00,
+        0x20,
+        0x29,
+        0x02,
+        0x18,
+        # Command:
+        0x0B,
+        # LED:
+        led,
+        # Red, Green, Blue:
+        r,
+        g,
+        b,
+        # SysEx End:
+        0xF7,
+      ])
+    end
+
     # Changes all LEDs in batch mode.
     #
     # Parameters (see Launchpad for values):
