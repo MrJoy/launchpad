@@ -54,14 +54,13 @@ module Launchpad
       self.logger = opts[:logger]
       logger.debug "initializing Launchpad::Interaction##{object_id} with #{opts.inspect}"
 
-      @device = opts[:device]
-      @device ||= Device.new(opts.merge(
-        :input => true,
-        :output => true,
-        :logger => opts[:logger]
-      ))
-      @latency = (opts[:latency] || 0.001).to_f.abs
-      @active = false
+      @device       = opts[:device]
+      @use_threads  = opts[:use_threads] || true
+      @device     ||= Device.new(opts.merge(input: true,
+                                            output: true,
+                                            logger: opts[:logger]))
+      @latency      = (opts[:latency] || 0.001).to_f.abs
+      @active       = false
 
       @action_threads = ThreadGroup.new
     end
@@ -118,10 +117,14 @@ module Launchpad
         begin
           while @active do
             @device.read_pending_actions.each do |action|
-              action_thread = Thread.new(action) do |act|
-                respond_to_action(act)
+              if @use_threads
+                action_thread = Thread.new(action) do |act|
+                  respond_to_action(act)
+                end
+                @action_threads.add(action_thread)
+              else
+                respond_to_action(action)
               end
-              @action_threads.add(action_thread)
             end
             sleep @latency# if @latency > 0.0
           end
