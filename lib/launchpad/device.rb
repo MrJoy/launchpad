@@ -54,14 +54,14 @@ module Launchpad
       :user1    => ControlButton::USER1,
       :user2    => ControlButton::USER2,
       :mixer    => ControlButton::MIXER,
-      :scene1   => SceneButton::SCENE1,
-      :scene2   => SceneButton::SCENE2,
-      :scene3   => SceneButton::SCENE3,
-      :scene4   => SceneButton::SCENE4,
-      :scene5   => SceneButton::SCENE5,
-      :scene6   => SceneButton::SCENE6,
-      :scene7   => SceneButton::SCENE7,
-      :scene8   => SceneButton::SCENE8
+      :scene1   => SceneButton::SCENE1, # Volume
+      :scene2   => SceneButton::SCENE2, # Pan
+      :scene3   => SceneButton::SCENE3, # Send A
+      :scene4   => SceneButton::SCENE4, # Send B
+      :scene5   => SceneButton::SCENE5, # Stop
+      :scene6   => SceneButton::SCENE6, # Mute
+      :scene7   => SceneButton::SCENE7, # Solo
+      :scene8   => SceneButton::SCENE8, # Record Arm
     }.freeze
 
     # Initializes the launchpad device. When output capabilities are requested,
