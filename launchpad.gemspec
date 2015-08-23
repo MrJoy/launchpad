@@ -3,13 +3,13 @@ $:.push File.expand_path("../lib", __FILE__)
 require "launchpad/version"
 
 Gem::Specification.new do |s|
-  s.name        = "launchpad"
+  s.name        = "mrjoy-launchpad"
   s.version     = Launchpad::VERSION
-  s.authors     = ["Thomas Jachmann"]
-  s.email       = ["self@thomasjachmann.com"]
-  s.homepage    = "https://github.com/thomasjachmann/launchpad"
-  s.summary     = %q{A gem for accessing novation's launchpad programmatically and easily.}
-  s.description = %q{This gem provides an interface to access novation's launchpad programmatically. LEDs can be lighted and button presses can be evaluated using launchpad's MIDI input/output.}
+  s.authors     = ["Jon Frisby", "Thomas Jachmann"]
+  s.email       = ["jfrisby@mrjoy.com", "self@thomasjachmann.com"]
+  s.homepage    = "https://github.com/MrJoy/launchpad"
+  s.summary     = %q{A gem for accessing Novation's LaunchPad programmatically and easily.}
+  s.description = %q{This gem provides an interface to access Novation's LaunchPad programmatically. LEDs can be lighted and button presses can be evaluated using launchpad's MIDI input/output.}
 
   s.rubyforge_project = "launchpad"
 
