@@ -68,9 +68,9 @@ end
 
 def flip_quad!(inter, cc, quad_x, quad_y)
   quad                      = QUADRANTS[quad_y][quad_x]
-  QUADRANTS[quad_y][quad_x] = { red: 0x3F - quad[:red],
-                                green: 0x3F - quad[:green],
-                                blue: 0x3F - quad[:blue] }
+  QUADRANTS[quad_y][quad_x] = { red:    0x3F - quad[:red],
+                                green:  0x3F - quad[:green],
+                                blue:   0x3F - quad[:blue] }
   FLIPPED[quad_y][quad_x]   = !FLIPPED[quad_y][quad_x]
   if FLIPPED[quad_y][quad_x]
     color = { red: 0x1F, green: 0x1F, blue: 0x1F }
