@@ -9,7 +9,7 @@ require "launchpad"
 def init_board(interaction)
   (0..7).each do |x|
     (0..7).each do |y|
-      interaction.device.change_grid(x, y, 0x00, x + 0x10, y + 0x10)
+      interaction.device.change([x, y], red: 0x00, green: x + 0x10, blue: y + 0x10)
       sleep 0.002
     end
   end
@@ -20,7 +20,7 @@ def goodbye(interaction)
     ii = 64 - i
     (0..7).each do |x|
       (0..7).each do |y|
-        interaction.device.change_grid(x, y, ii, 0x00, ii)
+        interaction.device.change([x, y], red: ii, green: 0x00, blue: ii)
         sleep 0.002
       end
     end
@@ -36,7 +36,7 @@ interaction.response_to(:grid) do |inter, action|
   else
     r, g, b = 0x00, x + 0x10, y + 0x10
   end
-  inter.device.change_grid(x, y, r, g, b)
+  inter.device.change([x, y], red: r, green: g, blue: b)
 end
 
 interaction.response_to(:mixer, :down) do |_interaction, action|

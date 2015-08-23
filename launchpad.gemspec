@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.summary     = %q{A gem for accessing Novation's LaunchPad programmatically and easily.}
   s.description = %q{This gem provides an interface to access Novation's LaunchPad programmatically. LEDs can be lighted and button presses can be evaluated using launchpad's MIDI input/output.}
 
-  s.rubyforge_project = "launchpad"
+  s.required_ruby_version = ">= 2.2.0"
 
   s.add_dependency "portmidi", ">= 0.0.6"
   s.add_dependency "ffi"

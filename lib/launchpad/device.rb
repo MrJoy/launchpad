@@ -163,14 +163,13 @@ module Launchpad
     #
     # Parameters (see Launchpad for values):
     #
-    # [+type+] type of the button to change
+    # [+button+] type of the button to change, or an x/y coordinate pair (as an <tt>Array</tt>)
     #
     # Optional options hash (see Launchpad for values):
     #
-    # [<tt>:x</tt>]     x coordinate
-    # [<tt>:y</tt>]     y coordinate
     # [<tt>:red</tt>]   brightness of red LED
     # [<tt>:green</tt>] brightness of green LED
+    # [<tt>:blue</tt>]  brightness of blue LED
     # [<tt>:mode</tt>]  button mode, defaults to <tt>:normal</tt>, one of:
     #                   [<tt>:normal/tt>]     updates the LED for all circumstances (the new value will be written to both buffers)
     #                   [<tt>:flashing/tt>]   updates the LED for flashing (the new value will be written to buffer 0 while the LED will be off in buffer 1, see buffering_mode)
@@ -186,8 +185,7 @@ module Launchpad
     #   status = %w(up down left right session user1 user2 mixer).include?(type.to_s) ? Status::CC : Status::ON
     #   output(status, note(type, opts), velocity(opts))
     # end
-    def change_grid(x, y, r, g, b)
-      led = (y * 10) + x + 11
+    def change(button, red: 0x00, green: 0x00, blue: 0x00)
       @output.write_sysex([
         # SysEx Begin:
         0xF0,
@@ -197,41 +195,21 @@ module Launchpad
         0x29,
         0x02,
         0x18,
-        # Command:
-        0x0B,
-        # LED:
-        led,
-        # Red, Green, Blue:
-        r,
-        g,
-        b,
+        # Message:
+        msg_set_led_color(button, red, green, blue),
         # SysEx End:
         0xF7,
       ])
     end
 
-    def change_command(position, r, g, b)
-      led = TYPE_TO_NOTE[position]
-      @output.write_sysex([
-        # SysEx Begin:
-        0xF0,
-        # Manufacturer/Device:
-        0x00,
-        0x20,
-        0x29,
-        0x02,
-        0x18,
-        # Command:
-        0x0B,
-        # LED:
-        led,
-        # Red, Green, Blue:
-        r,
-        g,
-        b,
-        # SysEx End:
-        0xF7,
-      ])
+    def decode_button(button)
+      led = TYPE_TO_NOTE[button]
+      led ||= (button[1] * 10) + button[0] + 11
+      led
+    end
+
+    def msg_set_led_color(button, r, g, b)
+      [0x0B, decode_button(button), r, g, b]
     end
 
     # Changes all LEDs in batch mode.
