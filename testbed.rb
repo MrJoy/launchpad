@@ -97,11 +97,26 @@ interaction.response_to(:scene4, :down) do |inter, action|
 end
 
 interaction.response_to(:mixer, :down) do |_interaction, action|
-  goodbye(interaction)
   interaction.stop
 end
 interaction.device.change({ red: 0x03, green: 0x00, blue: 0x00, cc: :mixer })
 interaction.device.changes(%i(scene1 scene2 scene3 scene4).map { |cc| { red: 0x03, green: 0x02, blue: 0x03, cc: cc } })
 
 init_board(interaction)
-interaction.start
+input_thread = Thread.new do
+  interaction.start
+end
+animation_thread = Thread.new do
+  loop do
+    (0..1).each do |quad_x|
+      (0..1).each do |quad_y|
+        init_board(interaction)
+        sleep 0.05
+      end
+    end
+  end
+end
+
+input_thread.join
+animation_thread.terminate
+goodbye(interaction)
