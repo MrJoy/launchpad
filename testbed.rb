@@ -10,7 +10,7 @@ def init_board(interaction)
   (0..7).each do |x|
     (0..7).each do |y|
       interaction.device.change_grid(x, y, 0x00, x + 0x10, y + 0x10)
-      sleep 0.001
+      sleep 0.002
     end
   end
 end
@@ -21,7 +21,7 @@ def goodbye(interaction)
     (0..7).each do |x|
       (0..7).each do |y|
         interaction.device.change_grid(x, y, ii, 0x00, ii)
-        sleep 0.001
+        sleep 0.002
       end
     end
   end
