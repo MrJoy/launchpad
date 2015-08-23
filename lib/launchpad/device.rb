@@ -185,31 +185,38 @@ module Launchpad
     #   status = %w(up down left right session user1 user2 mixer).include?(type.to_s) ? Status::CC : Status::ON
     #   output(status, note(type, opts), velocity(opts))
     # end
-    def change(button, red: 0x00, green: 0x00, blue: 0x00)
-      @output.write_sysex([
-        # SysEx Begin:
-        0xF0,
-        # Manufacturer/Device:
-        0x00,
-        0x20,
-        0x29,
-        0x02,
-        0x18,
-        # Message:
-        msg_set_led_color(button, red, green, blue),
-        # SysEx End:
-        0xF7,
-      ].flatten)
+    def change(opts = nil)
+      opts ||= {}
+      @output.write_sysex([sysex_prefix, msg_led_color(opts), sysex_suffix].flatten)
     end
 
-    def decode_button(button)
-      led = TYPE_TO_NOTE[button]
-      led ||= (button[1] * 10) + button[0] + 11
-      led
+    def changes(values)
+      msgs  = values
+              .map do |value|
+                msg_led_color(value)
+              end
+      @output.write_sysex([sysex_prefix, msgs, sysex_suffix].flatten)
     end
 
-    def msg_set_led_color(button, r, g, b)
-      [0x0B, decode_button(button), r, g, b]
+    def sysex_prefix
+      @sysex_prefix ||= [ # SysEx Begin:
+                          0xF0,
+                          # Manufacturer/Device:
+                          0x00,
+                          0x20,
+                          0x29,
+                          0x02,
+                          0x18 ]
+    end
+
+    def sysex_suffix; 0xF7; end
+
+    def decode_button(opts)
+      opts[:button] ? TYPE_TO_NOTE[opts[:button]] : (opts[:y] * 10) + opts[:x] + 11
+    end
+
+    def msg_led_color(opts)
+      [0x0B, decode_button(opts), opts[:red], opts[:green], opts[:blue]]
     end
 
     # Changes all LEDs in batch mode.
