@@ -6,29 +6,29 @@ Bundler.require(:default, :development)
 
 require "launchpad"
 
-def init_board(interaction)
-  (0..7).each do |x|
-    (0..7).each do |y|
-      interaction.device.change({ x: x, y: y }.merge(base_color(x, y)))
-    end
-  end
+def base_color(x, y)
+  { red: 0x00, green: (x * 2) + 0x10, blue: (y * 2) + 0x10 }
+end
 
-  # values = []
-  # (0..7).each do |x|
-  #   values += (0..7).map { |y| { x: x, y: y }.merge(base_color(x, y)) }
-  # end
-  # interaction.device.changes(values)
+GRID = (0..7).map { |x| (0..7).map { |y| { grid: [x, y] } } }.flatten
+
+def init_board(interaction)
+  values = GRID.map { |value| value.merge(base_color(*value[:grid])) }
+  interaction.device.changes(values)
+end
+
+def set_grid_rgb(interaction, red:, green:, blue: )
+  values = GRID.map do |value|
+    value.merge(red: red, green: green, blue: blue)
+  end
+  interaction.device.changes(values)
 end
 
 def goodbye(interaction)
-  (0..64).step(4).each do |i|
-    ii = 64 - i
-    (0..7).each do |x|
-      (0..7).each do |y|
-        interaction.device.change(x: x, y: y, red: ii, green: 0x00, blue: ii)
-      end
-    end
-    sleep 0.05
+  (0..63).step(2).each do |i|
+    ii = (63 - i) - 1
+    set_grid_rgb(interaction, red: ii, green: 0x00, blue: ii)
+    sleep 0.01
   end
 end
 
@@ -37,11 +37,12 @@ interaction.response_to(:grid) do |inter, action|
   x = action[:x]
   y = action[:y]
   if action[:state] == :down
-    color = { red: 0x3F, green: 0x00, blue: 0x00 }
+    value = { red: 0x3F, green: 0x00, blue: 0x00 }
   else
-    color = base_color(x, y)
+    value = base_color(x, y)
   end
-  inter.device.change({ x: x, y: y }.merge(color))
+  value[:grid] = [x, y]
+  inter.device.change(value)
 end
 
 interaction.response_to(:mixer, :down) do |_interaction, action|

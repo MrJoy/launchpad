@@ -138,6 +138,7 @@ module Launchpad
     #
     # [Launchpad::NoOutputAllowedError] when output is not enabled
     def reset
+      set_layout(0x00)
       output(Status::CC, Status::NIL, Status::NIL)
     end
 
@@ -187,15 +188,27 @@ module Launchpad
     # end
     def change(opts = nil)
       opts ||= {}
-      @output.write_sysex([sysex_prefix, msg_led_color(opts), sysex_suffix].flatten)
+      command, payload = color_payload(opts)
+      @output.write_sysex(sysex_msg(command, payload[:led], payload[:color]))
     end
 
     def changes(values)
-      msgs  = values
-              .map do |value|
-                msg_led_color(value)
-              end
-      @output.write_sysex([sysex_prefix, msgs, sysex_suffix].flatten)
+      msg_by_command = {}
+      values.each do |value|
+        command, payload = color_payload(value)
+        msg_by_command[command] ||= []
+        msg_by_command[command] << payload
+      end
+      msg_by_command.each do |command, payloads|
+        while (slice = payloads.shift(48)).length > 0
+          msg = slice.map { |payload| [payload[:led], payload[:color]] }
+          @output.write_sysex(sysex_msg(command, *msg).flatten.compact)
+        end
+      end
+    end
+
+    def set_layout(mode)
+      @output.write_sysex(sysex_msg(0x22, mode))
     end
 
     def sysex_prefix
@@ -211,12 +224,44 @@ module Launchpad
 
     def sysex_suffix; 0xF7; end
 
-    def decode_button(opts)
-      opts[:button] ? TYPE_TO_NOTE[opts[:button]] : (opts[:y] * 10) + opts[:x] + 11
+    def sysex_msg(*payload)
+      (sysex_prefix + [payload, sysex_suffix]).flatten
     end
 
-    def msg_led_color(opts)
-      [0x0B, decode_button(opts), opts[:red], opts[:green], opts[:blue]]
+    def decode_led(opts)
+      case
+      when opts[:cc]
+        [:cc, TYPE_TO_NOTE[opts[:cc]]]
+      when opts[:grid]
+        if opts[:grid] == :all
+          [:all, nil]
+        else
+          [:grid, (opts[:grid][1] * 10) + opts[:grid][0] + 11]
+        end
+      when opts[:column]
+        [:column, opts[:column]]
+      when opts[:row]
+        [:row, opts[:row]]
+      end
+    end
+
+    def color_payload(opts)
+      type, led = decode_led(opts)
+      case type
+      when :cc, :grid
+        command = 0x0B
+        color   = [opts[:red] || 0x00, opts[:green] || 0x00, opts[:blue] || 0x00]
+      when :column
+        command = 0x0C
+        color   = opts[:color] || 0x00
+      when :row
+        command = 0x0D
+        color   = opts[:color] || 0x00
+      when :all
+        command = 0x0E
+        color   = opts[:color] || 0x00
+      end
+      [command, { led: led, color: color }]
     end
 
     # Changes all LEDs in batch mode.
