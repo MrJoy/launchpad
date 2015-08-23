@@ -199,7 +199,7 @@ module Launchpad
         msg_set_led_color(button, red, green, blue),
         # SysEx End:
         0xF7,
-      ])
+      ].flatten)
     end
 
     def decode_button(button)
