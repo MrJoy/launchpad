@@ -200,7 +200,7 @@ module Launchpad
         msg_by_command[command] << payload
       end
       msg_by_command.each do |command, payloads|
-        while (slice = payloads.shift(48)).length > 0
+        while (slice = payloads.shift(62)).length > 0
           msg = slice.map { |payload| [payload[:led], payload[:color]] }
           @output.write_sysex(sysex_msg(command, *msg).flatten.compact)
         end
