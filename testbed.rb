@@ -16,7 +16,8 @@ require "launchpad"
 # Launchpad MK2 supports tempos between 40 and 240 BPM.
 
 # Configuration
-SCALE = 2
+SCALE       = 2
+TIME_SCALE  = 4.0
 
 # State
 QUADRANTS = [
@@ -25,29 +26,33 @@ QUADRANTS = [
 ]
 FLIPPED = [[false, false], [false, false]]
 PRESSED = (0..7).map { |x| (0..7).map { |y| false } }
+NOW     = [Time.now.to_f]
 
 # Helpers
 CC      = %i(up down left right session user1 user2 scene1 scene2 scene3 scene4 scene5 scene6 scene7 scene8)
 GRID    = (0..7).map { |x| (0..7).map { |y| { grid: [x, y] } } }.flatten
 WHITE   = { red: 0x3F, green: 0x3F, blue: 0x3F }
 
+def clamp(val); (val > 0x3F) ? 0x3F : val; end
+
 def base_color(x, y)
   return nil if PRESSED[x][y]
-  quad_x = x / 4
-  quad_y = 1 - (y / 4)
-  quad = QUADRANTS[quad_y][quad_x]
-  tmp = { red:    0x00        + quad[:red],
-          green:  (x * SCALE) + quad[:green],
-          blue:   (y * SCALE) + quad[:blue] }
+  quad_x  = x / 4
+  quad_y  = 1 - (y / 4)
+  quad    = QUADRANTS[quad_y][quad_x]
+  s_t     = (Math.sin(NOW[0] * TIME_SCALE) * 0.5) + 0.5
+  tmp     = { red:    0x00        + quad[:red] + (s_t * 0x3F).round,
+              green:  (x * SCALE) + quad[:green],
+              blue:   (y * SCALE) + quad[:blue] }
   if FLIPPED[quad_y][quad_x]
     carry       = tmp[:red]
     tmp[:red]   = tmp[:green]
     tmp[:green] = tmp[:blue]
     tmp[:blue]  = carry
   end
-  { red:    tmp[:red] % 0x3F,
-    green:  tmp[:green] % 0x3F,
-    blue:   tmp[:blue] % 0x3F }
+  { red:    clamp(tmp[:red]),
+    green:  clamp(tmp[:green]),
+    blue:   clamp(tmp[:blue]) }
 end
 
 def init_board(interaction)
@@ -79,7 +84,6 @@ interaction.response_to(:grid) do |inter, action|
   PRESSED[x][y] = (action[:state] == :down)
   value         = base_color(x, y) || WHITE
   value[:grid]  = [x, y]
-  puts [action, value].inspect
   inter.device.change(value)
 end
 
@@ -132,12 +136,13 @@ end
 animation_thread = Thread.new do
   loop do
     begin
+      NOW[0] = Time.now.to_f
       init_board(interaction)
     rescue Exception => e
       puts e.inspect
       puts e.backtrace.join("\n")
     end
-    sleep 0.05
+    sleep 0.01
   end
 end
 
