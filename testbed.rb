@@ -123,7 +123,7 @@ interaction.response_to(:mixer, :down) do |_interaction, action|
   interaction.stop
 end
 interaction.device.change({ red: 0x03, green: 0x00, blue: 0x00, cc: :mixer })
-interaction.device.changes(%i(scene1 scene2 scene3 scene4).map { |cc| { red: 0x03, green: 0x02, blue: 0x03, cc: cc } })
+interaction.device.changes(%i(scene1 scene2 scene3 scene4).map { |cc| { red: 0x03, green: 0x03, blue: 0x03, cc: cc } })
 
 init_board(interaction)
 input_thread = Thread.new do
