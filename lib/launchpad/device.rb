@@ -1,7 +1,4 @@
-require 'portmidi'
-
 require 'launchpad/errors'
-require 'launchpad/logging'
 require 'launchpad/midi_codes'
 require 'launchpad/version'
 
@@ -22,7 +19,7 @@ module Launchpad
   #   device.change :grid, :x => 4, :y => 4, :red => :high, :green => :low
   class Device
 
-    include Logging
+    include ControlCenter::Logging
     include MidiCodes
 
     CODE_NOTE_TO_DATA_TYPE = {
@@ -424,12 +421,12 @@ module Launchpad
       if id.nil?
         message = "MIDI device #{opts[:id] || opts[:name]} doesn't exist"
         logger.fatal message
-        raise NoSuchDeviceError.new(message)
+        raise ControlCenter::NoSuchDeviceError.new(message)
       end
       device_type.new(id)
     rescue RuntimeError => e
       logger.fatal "error creating #{device_type}: #{e.inspect}"
-      raise DeviceBusyError.new(e)
+      raise ControlCenter::DeviceBusyError.new(e)
     end
 
     # Reads input from the MIDI device.
@@ -451,7 +448,7 @@ module Launchpad
     def input
       if @input.nil?
         logger.error "trying to read from device that's not been initialized for input"
-        raise NoInputAllowedError
+        raise ControlCenter::NoInputAllowedError
       end
       @input.read(16)
     end
@@ -484,7 +481,7 @@ module Launchpad
     def output_messages(messages)
       if @output.nil?
         logger.error "trying to write to device that's not been initialized for output"
-        raise NoOutputAllowedError
+        raise ControlCenter::NoOutputAllowedError
       end
       logger.debug "writing messages to launchpad:\n  #{messages.join("\n  ")}" if logger.debug?
       @output.write(messages)

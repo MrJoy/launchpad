@@ -1,4 +1,12 @@
-require 'launchpad/interaction'
+# APIs to enable access to various MIDI-based control surfaces.
+module ControlCenter
+end
+
+require "portmidi"
+require "errors"
+require "logging"
+require "launchpad/interaction"
+require "orbit/device"
 
 # All the fun of launchpad in one module!
 #

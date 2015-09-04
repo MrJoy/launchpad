@@ -1,5 +1,4 @@
 require 'launchpad/device'
-require 'launchpad/logging'
 
 module Launchpad
 
@@ -20,7 +19,7 @@ module Launchpad
   #   interaction.start
   class Interaction
 
-    include Logging
+    include ControlCenter::Logging
 
     # Returns the Launchpad::Device the Launchpad::Interaction acts on.
     attr_reader :device
@@ -130,7 +129,7 @@ module Launchpad
           end
         rescue Portmidi::DeviceError => e
           logger.fatal "could not read from device, stopping to read actions"
-          raise CommunicationError.new(e)
+          raise ControlCenter::CommunicationError.new(e)
         rescue Exception => e
           logger.fatal "error causing action reading to stop: #{e.inspect}"
           raise e

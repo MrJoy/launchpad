@@ -1,6 +1,6 @@
-require 'logger'
+require "logger"
 
-module Launchpad
+module ControlCenter
 
   # This module provides logging facilities. Just include it to be able to log
   # stuff.
