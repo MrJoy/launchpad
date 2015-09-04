@@ -1,149 +1,156 @@
-Bank 0:
-  Column 0:
-    {:raw=>{:raw=>102675496501392, :message=>[144, 0, 127, 0, 98, 0, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>103796474642560, :message=>[128, 0, 0, 0, 103, 0, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>105196642304144, :message=>[144, 0, 127, 0, 173, 0, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>106210246262912, :message=>[128, 0, 0, 0, 153, 0, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>107292586344592, :message=>[144, 0, 127, 0, 149, 0, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>108314780237952, :message=>[128, 0, 0, 0, 131, 0, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>109251091431568, :message=>[144, 0, 127, 0, 93, 0, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>110354889703552, :message=>[128, 0, 0, 0, 94, 0, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-  Column 1:
-    {:raw=>{:raw=>357508791074960, :message=>[144, 0, 127, 0, 39, 1, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>358642654118016, :message=>[128, 0, 0, 0, 47, 1, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>360373534261392, :message=>[144, 0, 127, 0, 194, 1, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>361610476519552, :message=>[128, 0, 0, 0, 226, 1, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>362886090129552, :message=>[144, 0, 127, 0, 11, 1, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>364037133041792, :message=>[128, 0, 0, 0, 23, 1, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>365342811422864, :message=>[144, 0, 127, 0, 71, 1, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>366687127863424, :message=>[128, 0, 0, 0, 128, 1, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-  Column 2:
-    {:raw=>{:raw=>431012861378704, :message=>[144, 0, 127, 0, 1, 1, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>432112364683392, :message=>[128, 0, 0, 0, 1, 1, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>433632791429264, :message=>[144, 0, 127, 0, 99, 1, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>434878323622016, :message=>[128, 0, 0, 0, 133, 1, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>436712282980496, :message=>[144, 0, 127, 0, 48, 1, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>437695822168192, :message=>[128, 0, 0, 0, 21, 1, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>439448177148048, :message=>[144, 0, 127, 0, 173, 1, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>440436011303040, :message=>[128, 0, 0, 0, 147, 1, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-  Column 3:
-    {:raw=>{:raw=>491279842476176, :message=>[144, 0, 127, 0, 209, 1, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>492482424995968, :message=>[128, 0, 0, 0, 233, 1, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>494015736643728, :message=>[144, 0, 127, 0, 78, 1, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>495033635569792, :message=>[128, 0, 0, 0, 59, 1, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>496644256628880, :message=>[144, 0, 127, 0, 178, 1, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>497795299541120, :message=>[128, 0, 0, 0, 190, 1, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>499427395436688, :message=>[144, 0, 127, 0, 58, 1, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>500814661550208, :message=>[128, 0, 0, 0, 125, 1, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
+Notes:
+  * Bank buttons only send on __change__
+Change Commands:
+  Bank 1: bf 01 01 00 5b 00 00 00
+  Bank 2: bf 01 02 00 16 00 00 00
+  Bank 3: bf 01 03 00 93 00 00 00
+  Bank 4: bf 01 04 00 bd 00 00 00
 Bank 1:
-  Column 0:
-    {:raw=>{:raw=>618896205742224, :message=>[144, 0, 127, 0, 226, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>620459565514880, :message=>[128, 0, 0, 0, 78, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>622014351999120, :message=>[144, 0, 127, 0, 184, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>623453157720192, :message=>[128, 0, 0, 0, 7, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>624578447474832, :message=>[144, 0, 127, 0, 13, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>625935648817280, :message=>[128, 0, 0, 0, 73, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>627352996348048, :message=>[144, 0, 127, 0, 147, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>628641478213760, :message=>[128, 0, 0, 0, 191, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
   Column 1:
-    {:raw=>{:raw=>685609932750992, :message=>[144, 0, 127, 0, 143, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>686567702134912, :message=>[128, 0, 0, 0, 110, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>687881970450576, :message=>[144, 0, 127, 0, 160, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>689020128460928, :message=>[128, 0, 0, 0, 169, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>690411706187920, :message=>[144, 0, 127, 0, 237, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>691356590669952, :message=>[128, 0, 0, 0, 201, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>692748168396944, :message=>[144, 0, 127, 0, 13, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>693821901897856, :message=>[128, 0, 0, 0, 7, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
+    90 00 7f 00 8c 00 00 00
+    80 00 00 00 40 00 00 00
+    90 00 7f 00 02 00 00 00
+    80 00 00 00 ac 00 00 00
+    90 00 7f 00 c0 00 00 00
+    80 00 00 00 7d 00 00 00
+    90 00 7f 00 e4 00 00 00
+    80 00 00 00 ac 00 00 00
   Column 2:
-    {:raw=>{:raw=>744811761959056, :message=>[144, 0, 127, 0, 103, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>745812481015936, :message=>[128, 0, 0, 0, 80, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>747036555018384, :message=>[144, 0, 127, 0, 109, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>748075928780928, :message=>[128, 0, 0, 0, 95, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>749428851802256, :message=>[144, 0, 127, 0, 154, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>750511175237760, :message=>[128, 0, 0, 0, 150, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>751803968716944, :message=>[144, 0, 127, 0, 195, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>753122515353728, :message=>[128, 0, 0, 0, 246, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
+    90 00 7f 00 d6 00 00 00
+    80 00 00 00 77 00 00 00
+    90 00 7f 00 4c 00 00 00
+    80 00 00 00 06 00 00 00
+    90 00 7f 00 e4 00 00 00
+    80 00 00 00 95 00 00 00
+    90 00 7f 00 91 00 00 00
+    80 00 00 00 41 00 00 00
   Column 3:
-    {:raw=>{:raw=>790746437189776, :message=>[144, 0, 127, 0, 46, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>791996264349824, :message=>[128, 0, 0, 0, 81, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>793078604431504, :message=>[144, 0, 127, 0, 77, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>794049258717312, :message=>[128, 0, 0, 0, 47, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>795049994420368, :message=>[144, 0, 127, 0, 24, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>795990583935104, :message=>[128, 0, 0, 0, 243, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>796785161207952, :message=>[144, 0, 127, 0, 172, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>797760110461056, :message=>[128, 0, 0, 0, 143, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
+    90 00 7f 00 87 00 00 00
+    80 00 00 00 58 00 00 00
+    90 00 7f 00 55 00 00 00
+    80 00 00 00 00 00 00 00
+    90 00 7f 00 5e 00 00 00
+    80 00 00 00 1a 00 00 00
+    90 00 7f 00 5b 00 00 00
+    80 00 00 00 48 00 00 00
+  Column 4:
+    90 00 7f 00 a3 00 00 00
+    80 00 00 00 63 00 00 00
+    90 00 7f 00 b9 00 00 00
+    80 00 00 00 63 00 00 00
+    90 00 7f 00 68 00 00 00
+    80 00 00 00 27 00 00 00
+    90 00 7f 00 4a 00 00 00
+    80 00 00 00 38 00 00 00
 Bank 2:
-  Column 0:
-    {:raw=>{:raw=>912397090881680, :message=>[144, 0, 127, 0, 210, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>913522363990144, :message=>[128, 0, 0, 0, 216, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>915017020932240, :message=>[144, 0, 127, 0, 52, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>915927545675904, :message=>[128, 0, 0, 0, 8, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>917379252945040, :message=>[144, 0, 127, 0, 90, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>918349907230848, :message=>[128, 0, 0, 0, 60, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>919492376854672, :message=>[144, 0, 127, 0, 70, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>920647714734208, :message=>[128, 0, 0, 0, 83, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
   Column 1:
-    {:raw=>{:raw=>942848409010320, :message=>[144, 0, 127, 0, 132, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>943754638786688, :message=>[128, 0, 0, 0, 87, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>944682360045712, :message=>[144, 0, 127, 0, 47, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>945588589822080, :message=>[128, 0, 0, 0, 2, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>946262908010640, :message=>[144, 0, 127, 0, 159, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>947194907590784, :message=>[128, 0, 0, 0, 120, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>947907880485008, :message=>[144, 0, 127, 0, 30, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>948711031046272, :message=>[128, 0, 0, 0, 217, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
+    90 00 7f 00 5a 00 00 00
+    80 00 00 00 49 00 00 00
+    90 00 7f 00 32 00 00 00
+    80 00 00 00 0f 00 00 00
+    90 00 7f 00 f0 00 00 00
+    80 00 00 00 d4 00 00 00
+    90 00 7f 00 b0 00 00 00
+    80 00 00 00 9a 00 00 00
   Column 2:
-    {:raw=>{:raw=>998227717324944, :message=>[144, 0, 127, 0, 226, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>999310040760448, :message=>[128, 0, 0, 0, 222, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>1000997971230864, :message=>[144, 0, 127, 0, 103, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>1001925675843712, :message=>[128, 0, 0, 0, 63, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>1003416037818512, :message=>[144, 0, 127, 0, 154, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>1004446821646464, :message=>[128, 0, 0, 0, 138, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>1005868464144528, :message=>[144, 0, 127, 0, 213, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>1006843413397632, :message=>[128, 0, 0, 0, 184, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
+    90 00 7f 00 d9 00 00 00
+    80 00 00 00 c6 00 00 00
+    90 00 7f 00 c0 00 00 00
+    80 00 00 00 ad 00 00 00
+    90 00 7f 00 bb 00 00 00
+    80 00 00 00 aa 00 00 00
+    90 00 7f 00 c2 00 00 00
+    80 00 00 00 a8 00 00 00
   Column 3:
-    {:raw=>{:raw=>1054032227401872, :message=>[144, 0, 127, 0, 163, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>1054929867243648, :message=>[128, 0, 0, 0, 116, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>1056308560068752, :message=>[144, 0, 127, 0, 181, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>1057227674747008, :message=>[128, 0, 0, 0, 139, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>1058795346133136, :message=>[144, 0, 127, 0, 248, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>1059658626236544, :message=>[128, 0, 0, 0, 193, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>1061299312066704, :message=>[144, 0, 127, 0, 63, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>1062686578180224, :message=>[128, 0, 0, 0, 130, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
+    90 00 7f 00 4d 00 00 00
+    80 00 00 00 25 00 00 00
+    90 00 7f 00 5f 00 00 00
+    80 00 00 00 21 00 00 00
+    90 00 7f 00 2b 00 00 00
+    80 00 00 00 ed 00 00 00
+    90 00 7f 00 d9 00 00 00
+    80 00 00 00 c9 00 00 00
+  Column 4:
+    90 00 7f 00 23 00 00 00
+    80 00 00 00 21 00 00 00
+    90 00 7f 00 e5 00 00 00
+    80 00 00 00 b1 00 00 00
+    90 00 7f 00 ba 00 00 00
+    80 00 00 00 a9 00 00 00
+    90 00 7f 00 76 00 00 00
+    80 00 00 00 94 00 00 00
 Bank 3:
-  Column 0:
-    {:raw=>{:raw=>554059104400,     :message=>[144, 0, 127, 0, 129, 0, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>9753870729344,    :message=>[128, 0,   0, 0, 223, 0, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>102688381403280,  :message=>[144, 0, 127, 0, 101, 0, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>105729209925760,  :message=>[128, 0,   0, 0,  41, 0, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>173718550544528,  :message=>[144, 0, 127, 0, 255, 0, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>175591147962496,  :message=>[128, 0,   0, 0, 179, 0, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>300755093225616,  :message=>[144, 0, 127, 0, 137, 1, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>302043575091328,  :message=>[128, 0,   0, 0, 181, 1, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
   Column 1:
-    {:raw=>{:raw=>744055847714960,  :message=>[144, 0, 127, 0, 183, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>745370099384448,  :message=>[128, 0,   0, 0, 233, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>759264326910096,  :message=>[144, 0, 127, 0, 140, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>760359535247488,  :message=>[128, 0,   0, 0, 139, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>761914321731728,  :message=>[144, 0, 127, 0, 245, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>763194213662848,  :message=>[128, 0,   0, 0,  31, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>764817719623824,  :message=>[144, 0, 127, 0, 153, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>766011712209024,  :message=>[128, 0,   0, 0, 175, 2, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
+    90 00 7f 00 df 00 00 00
+    80 00 00 00 ab 00 00 00
+    90 00 7f 00 9c 00 00 00
+    80 00 00 00 79 00 00 00
+    90 00 7f 00 50 00 00 00
+    80 00 00 00 21 00 00 00
+    90 00 7f 00 df 00 00 00
+    80 00 00 00 ae 00 00 00
   Column 2:
-    {:raw=>{:raw=>1020565842231440, :message=>[144, 0, 127, 0,  51, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>1021759834816640, :message=>[128, 0,   0, 0,  73, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>1023580909273232, :message=>[144, 0, 127, 0, 241, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>1024813556564096, :message=>[128, 0,   0, 0,  16, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>1027296055984272, :message=>[144, 0, 127, 0,  82, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>1028726271770752, :message=>[128, 0,   0, 0, 159, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>1030547346227344, :message=>[144, 0, 127, 0,  71, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>1032291094626432, :message=>[128, 0,   0, 0, 221, 3, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
+    90 00 7f 00 a3 00 00 00
+    80 00 00 00 ad 00 00 00
+    90 00 7f 00 96 00 00 00
+    80 00 00 00 81 00 00 00
+    90 00 7f 00 75 00 00 00
+    80 00 00 00 27 00 00 00
+    90 00 7f 00 2f 00 00 00
+    80 00 00 00 15 00 00 00
   Column 3:
-    {:raw=>{:raw=>2079794971738256, :message=>[144, 0, 127, 0, 144, 7, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>2081405576151168, :message=>[128, 0,   0, 0,   7, 7, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>2084158658510992, :message=>[144, 0, 127, 0, 136, 7, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>2086138630111360, :message=>[128, 0,   0, 0,  85, 7, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>2087933934764176, :message=>[144, 0, 127, 0, 247, 7, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>2089518769373312, :message=>[128, 0,   0, 0, 104, 7, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
-    {:raw=>{:raw=>2092817312579728, :message=>[144, 0, 127, 0, 104, 7, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:down, :velocity=>127, :code=>144, :note=>0}
-    {:raw=>{:raw=>2094707089866880, :message=>[128, 0,   0, 0,  32, 7, 0, 0], :timestamp=>0}, :timestamp=>0, :state=>:up, :velocity=>0, :code=>128, :note=>0}
+    90 00 7f 00 b1 00 00 00
+    80 00 00 00 84 00 00 00
+    90 00 7f 00 a4 00 00 00
+    80 00 00 00 a0 00 00 00
+    90 00 7f 00 87 00 00 00
+    80 00 00 00 6a 00 00 00
+    90 00 7f 00 77 00 00 00
+    80 00 00 00 49 00 00 00
+  Column 4:
+    90 00 7f 00 0c 00 00 00
+    80 00 00 00 40 00 00 00
+    90 00 7f 00 4b 00 00 00
+    80 00 00 00 3b 00 00 00
+    90 00 7f 00 2c 00 00 00
+    80 00 00 00 0d 00 00 00
+    90 00 7f 00 e8 00 00 00
+    80 00 00 00 d9 00 00 00
 
+Bank 4:
+  Column 1:
+    90 00 7f 00 22 00 00 00
+    80 00 00 00 08 00 00 00
+    90 00 7f 00 e6 00 00 00
+    80 00 00 00 b9 00 00 00
+    90 00 7f 00 8c 00 00 00
+    80 00 00 00 5a 00 00 00
+    90 00 7f 00 f1 00 00 00
+    80 00 00 00 b8 00 00 00
+  Column 2:
+    90 00 7f 00 bd 00 00 00
+    80 00 00 00 b2 00 00 00
+    90 00 7f 00 87 00 00 00
+    80 00 00 00 81 00 00 00
+    90 00 7f 00 3c 00 00 00
+    80 00 00 00 ed 00 00 00
+    90 00 7f 00 e2 00 00 00
+    80 00 00 00 c1 00 00 00
+  Column 3:
+    90 00 7f 00 6e 00 00 00
+    80 00 00 00 4a 00 00 00
+    90 00 7f 00 95 00 00 00
+    80 00 00 00 59 00 00 00
+    90 00 7f 00 44 00 00 00
+    80 00 00 00 12 00 00 00
+    90 00 7f 00 f9 00 00 00
+    80 00 00 00 d2 00 00 00
+  Column 4:
+    90 00 7f 00 26 00 00 00
+    80 00 00 00 35 00 00 00
+    90 00 7f 00 45 00 00 00
+    80 00 00 00 17 00 00 00
+    90 00 7f 00 dd 00 00 00
+    80 00 00 00 d1 00 00 00
+    90 00 7f 00 b6 00 00 00
+    80 00 00 00 da 00 00 00

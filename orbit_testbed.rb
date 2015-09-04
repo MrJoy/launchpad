@@ -10,9 +10,9 @@ device = Orbit::Device.new
 loop do
   inputs = device.read_pending_actions
   inputs.each do |input|
-    puts input.inspect
+    puts input[:raw][:message].map { |b| "%02x" % b }.join(" ")
+    # puts input.inspect
   end
-
 end
 
 # interaction = Launchpad::Interaction.new
