@@ -1,6 +1,5 @@
-require 'launchpad/errors'
-require 'launchpad/midi_codes'
-require 'launchpad/version'
+require "launchpad/errors"
+require "launchpad/midi_codes"
 
 module Launchpad
 
