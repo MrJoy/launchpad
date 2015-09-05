@@ -44,7 +44,7 @@ def decode_message(message)
   raw_type, note, velocity, _ = message[:raw][:message]
   raw_type_high               = raw_type & 0xF0
   raw_type_low                = raw_type & 0x0F
-  debug fmt_message(message)
+  # debug fmt_message(message)
   meta                        = CONTROLS[raw_type_high][raw_type_low]
   unrecognized                = false
   case meta[:type]
