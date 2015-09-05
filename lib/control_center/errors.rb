@@ -1,5 +1,5 @@
 module ControlCenter
-  # Generic launchpad error.
+  # Unclassified error.
   class GenericError < StandardError; end
 
   # Error raised when the MIDI device specified doesn't exist.
@@ -8,16 +8,15 @@ module ControlCenter
   # Error raised when the MIDI device specified is busy.
   class DeviceBusyError < GenericError; end
 
-  # Error raised when an input has been requested, although
-  # launchpad has been initialized without input.
+  # Error raised when an input has been requested, although device has been initialized without
+  # input.
   class NoInputAllowedError < GenericError; end
 
-  # Error raised when an output has been requested, although
-  # launchpad has been initialized without output.
+  # Error raised when an output has been requested, although device has been initialized without
+  # output.
   class NoOutputAllowedError < GenericError; end
 
-  # Error raised when anything fails while communicating
-  # with the launchpad.
+  # Error raised when anything fails while communicating with a device.
   class CommunicationError < GenericError
     attr_accessor :source
     def initialize(e)
