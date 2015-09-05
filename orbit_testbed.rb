@@ -14,25 +14,28 @@ TYPES = {
 loop do
   inputs = device.read_pending_actions
   inputs.each do |input|
-    (type_channel, note, velocity) = input[:raw][:message]
-    if type_channel == 0xBF
-      bank = velocity
+    (type, note, velocity) = input[:raw][:message]
+    if TYPES[type & 0xF0]
+      channel = type & 0x0F
+      type    = type & 0xF0
+    end
+    case type
+    when 0xBF
       case note
       when 1
         # Switching banks...
-        puts "Switching bank: ##{bank}"
+        puts "Switching bank:  #{velocity}"
       when 2
-        puts "Switching VKnob: #{bank}"
+        puts "Switching VKnob: #{velocity}"
       else
-        puts "WAT: #{input[:raw][:message].inspect}"
+        puts "WAT:             #{input[:raw][:message].inspect}"
       end
-
+    when 0x90
+      puts "Down:              #{[channel, note].map { |x| '%02x' % x }.join(' ')}"
+    when 0x80
+      puts "Up:                #{[channel, note].map { |x| '%02x' % x }.join(' ')}"
     else
-      type    = type_channel & 0xF0
-      channel = type_channel & 0x0F
-      type    = TYPES[type]
-      next if type == "  up"
-      puts [type, "%2d" % channel, "%08b" % note, velocity].join(" ")
+      puts "WAT:               #{input[:raw][:message].inspect}"
     end
   end
 end
