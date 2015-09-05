@@ -44,10 +44,10 @@ module ControlCenter
 
       def enrich_decoded_message(decoded, note, velocity, timestamp)
         case decoded[:type]
-        when :shoulder then decoded = decode_shoulder(decoded, note, velocity)
-        when :pad then      decoded = decode_pad(decoded, note, velocity)
-        when :knob then     decoded = decode_knob(decoded, note, velocity)
-        when :control then  decoded = decode_control(decoded, note, velocity)
+        when :shoulder  then decoded = decode_shoulder(decoded, note, velocity)
+        when :pad       then decoded = decode_pad(decoded, note, velocity)
+        when :knob      then decoded = decode_knob(decoded, note, velocity)
+        when :control   then decoded = decode_control(decoded, note, velocity)
         end
         decoded[:timestamp] = timestamp
         decoded
