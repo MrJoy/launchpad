@@ -1,18 +1,5 @@
 module ControlCenter
   module Launchpad
-    # This class is used to exchange data with the launchpad.
-    # It provides methods to light LEDs and to get information about button presses/releases.
-    #
-    # Example:
-    #
-    #   require 'launchpad/device'
-    #
-    #   device = Launchpad::Device.new
-    #   device.test_leds
-    #   sleep 1
-    #   device.reset
-    #   sleep 1
-    #   device.change :grid, :x => 4, :y => 4, :red => :high, :green => :low
     class Device < ControlCenter::Device
       include MIDICodes
 
@@ -120,36 +107,23 @@ module ControlCenter
         end
       end
 
+      TYPE_TO_COMMAND = { cc:     0x0B,
+                          grid:   0x0B,
+                          column: 0x0C,
+                          row:    0x0D,
+                          all:    0x0E }.freeze
       def color_payload(opts)
         type, led = decode_led(opts)
+        command   = TYPE_TO_COMMAND[type]
         case type
         when :cc, :grid
-          command = 0x0B
           color   = [opts[:red] || 0x00, opts[:green] || 0x00, opts[:blue] || 0x00]
-        when :column
-          command = 0x0C
-          color   = opts[:color] || 0x00
-        when :row
-          command = 0x0D
-          color   = opts[:color] || 0x00
-        when :all
-          command = 0x0E
+        when :column, :row, :all
           color   = opts[:color] || 0x00
         end
         [command, { led: led, color: color }]
       end
 
-      # Writes data to the MIDI device.
-      #
-      # Parameters:
-      #
-      # [+status+]  MIDI status code
-      # [+data1+]   MIDI data 1 (note)
-      # [+data2+]   MIDI data 2 (velocity)
-      #
-      # Errors raised:
-      #
-      # [Launchpad::NoOutputAllowedError] when output is not enabled
       def output!(status, data1, data2)
         outputs!(message(status, data1, data2))
       end
