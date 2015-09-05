@@ -14,22 +14,21 @@ device = Orbit::Device.new
 TYPES = { 0x80 => :up,
           0x90 => :down,
           0xB0 => :controller }
-CONTROLS  = { 0x90 => { 0x00 => { type: :pad,       action: :down, bank: 1 },
-                        0x01 => { type: :pad,       action: :down, bank: 2 },
-                        0x02 => { type: :pad,       action: :down, bank: 3 },
-                        0x03 => { type: :pad,       action: :down, bank: 4 },
-                        0x0F => { type: :shoulder,  action: :down } },
-              0x80 => { 0x00 => { type: :pad,       action: :up,   bank: 1 },
-                        0x01 => { type: :pad,       action: :up,   bank: 2 },
-                        0x02 => { type: :pad,       action: :up,   bank: 3 },
-                        0x03 => { type: :pad,       action: :up,   bank: 4 },
-                        0x0F => { type: :shoulder,  action: :up } },
-              0xB0 => { 0x00 => { type: :knob,      action: :update,  vknob: 1 },
-                        0x01 => { type: :knob,      action: :update,  vknob: 2 },
-                        0x02 => { type: :knob,      action: :update,  vknob: 3 },
-                        0x03 => { type: :knob,      action: :update,  vknob: 4 },
-                        0x0F => { 0x01 => { type: :control, action: :switch, collection: :banks },
-                                  0x02 => { type: :control, action: :switch, collection: :vknobs } } } }
+CONTROLS  = { 0x90 => { 0x00 => { type: :pad,           action: :down,    bank: 1 },
+                        0x01 => { type: :pad,           action: :down,    bank: 2 },
+                        0x02 => { type: :pad,           action: :down,    bank: 3 },
+                        0x03 => { type: :pad,           action: :down,    bank: 4 },
+                        0x0F => { type: :shoulder,      action: :down } },
+              0x80 => { 0x00 => { type: :pad,           action: :up,      bank: 1 },
+                        0x01 => { type: :pad,           action: :up,      bank: 2 },
+                        0x02 => { type: :pad,           action: :up,      bank: 3 },
+                        0x03 => { type: :pad,           action: :up,      bank: 4 },
+                        0x0F => { type: :shoulder,      action: :up } },
+              0xB0 => { 0x00 => { type: :knob,          action: :update,  vknob: 1 },
+                        0x01 => { type: :knob,          action: :update,  vknob: 2 },
+                        0x02 => { type: :knob,          action: :update,  vknob: 3 },
+                        0x03 => { type: :knob,          action: :update,  vknob: 4 },
+                        0x0F => { type: :control,       action: :switch } } }
 # TODO: With current mapping, accelerometers are ambiguous.  Need to fix that...
 
 def debug(msg)
@@ -59,13 +58,13 @@ def decode_message(message)
   when :knob
     meta[:bank]   = note + 1
     meta[:value]  = velocity
-  when nil
-    meta = meta[note]
-    if meta
-      meta[:index] = velocity
-    else
-      unrecognized = true
+  when :control
+    case note
+    when 0x01 then meta[:collection] = :banks
+    when 0x02 then meta[:collection] = :vknobs
+    else           unrecognized = true
     end
+    meta[:index] = velocity
   end
 
   debug "Unknown message: #{fmt_message(message)}" if unrecognized
