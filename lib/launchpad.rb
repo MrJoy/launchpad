@@ -6,37 +6,37 @@ require "portmidi"
 
 # Monkey-patch portmidi to handle messages longer than 4 bytes, as sent by
 # things like the Numark Orbit.
-module Portmidi
-  module PM_Map
-    class Event < FFI::Struct
-      layout :message, :int64,
-             :timestamp, :int32
-    end
-  end
-end
+# module Portmidi
+#   module PM_Map
+#     class Event < FFI::Struct
+#       layout :message, :int64,
+#              :timestamp, :int32
+#     end
+#   end
+# end
 
 
-module Portmidi
-  class Input
-  private
-    def parseEvent(event)
-      {
-        :raw => event[:message],
-        :message => [
-          ((event[:message]) & 0xFF),
-          (((event[:message]) >> 8) & 0xFF),
-          (((event[:message]) >> 16) & 0xFF),
-          (((event[:message]) >> 24) & 0xFF),
-          (((event[:message]) >> 32) & 0xFF),
-          (((event[:message]) >> 48) & 0xFF),
-          (((event[:message]) >> 56) & 0xFF),
-          (((event[:message]) >> 64) & 0xFF),
-        ],
-        :timestamp => event[:timestamp]
-      }
-    end
-  end
-end
+# module Portmidi
+#   class Input
+#   private
+#     def parseEvent(event)
+#       {
+#         :raw => event[:message],
+#         :message => [
+#           ((event[:message]) & 0xFF),
+#           (((event[:message]) >> 8) & 0xFF),
+#           (((event[:message]) >> 16) & 0xFF),
+#           (((event[:message]) >> 24) & 0xFF),
+#           (((event[:message]) >> 32) & 0xFF),
+#           (((event[:message]) >> 48) & 0xFF),
+#           (((event[:message]) >> 56) & 0xFF),
+#           (((event[:message]) >> 64) & 0xFF),
+#         ],
+#         :timestamp => event[:timestamp]
+#       }
+#     end
+#   end
+# end
 
 # All the fun of launchpad in one module!
 #

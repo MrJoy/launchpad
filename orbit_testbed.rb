@@ -7,11 +7,33 @@ Bundler.require(:default, :development)
 require "launchpad"
 
 device = Orbit::Device.new
+TYPES = {
+  0x80 => "  up",
+  0x90 => "down",
+}
 loop do
   inputs = device.read_pending_actions
   inputs.each do |input|
-    puts input[:raw][:message].map { |b| "%02x" % b }.join(" ")
-    # puts input.inspect
+    (type_channel, note, velocity) = input[:raw][:message]
+    if type_channel == 0xBF
+      bank = velocity
+      case note
+      when 1
+        # Switching banks...
+        puts "Switching bank: ##{bank}"
+      when 2
+        puts "Switching VKnob: #{bank}"
+      else
+        puts "WAT: #{input[:raw][:message].inspect}"
+      end
+
+    else
+      type    = type_channel & 0xF0
+      channel = type_channel & 0x0F
+      type    = TYPES[type]
+      next if type == "  up"
+      puts [type, "%2d" % channel, "%08b" % note, velocity].join(" ")
+    end
   end
 end
 
