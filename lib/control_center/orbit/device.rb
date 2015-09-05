@@ -19,6 +19,9 @@ module ControlCenter
       end
 
     protected
+
+      def sysex_prefix; @sysex_prefix ||= super + [0x00, 0x01, 0x3F, 0x2B, 0x03]; end
+
       def decode_shoulder(decoded, note, _velocity)
         decoded[:control].merge!(ControlCenter::Orbit::Device::SHOULDERS[note])
         decoded
