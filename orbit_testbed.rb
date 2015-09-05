@@ -6,37 +6,77 @@ Bundler.require(:default, :development)
 
 require "launchpad"
 
+class Fixnum
+  def to_hex; "%02X" % self; end
+end
+
 device = Orbit::Device.new
-TYPES = {
-  0x80 => "  up",
-  0x90 => "down",
-}
+TYPES = { 0x80 => :up,
+          0x90 => :down,
+          0xB0 => :controller }
+CONTROLS  = { 0x90 => { 0x00 => { type: :pad,       action: :down, bank: 1 },
+                        0x01 => { type: :pad,       action: :down, bank: 2 },
+                        0x02 => { type: :pad,       action: :down, bank: 3 },
+                        0x03 => { type: :pad,       action: :down, bank: 4 },
+                        0x0F => { type: :shoulder,  action: :down } },
+              0x80 => { 0x00 => { type: :pad,       action: :up,   bank: 1 },
+                        0x01 => { type: :pad,       action: :up,   bank: 2 },
+                        0x02 => { type: :pad,       action: :up,   bank: 3 },
+                        0x03 => { type: :pad,       action: :up,   bank: 4 },
+                        0x0F => { type: :shoulder,  action: :up } },
+              0xB0 => { 0x00 => { type: :knob,      action: :update,  vknob: 1 },
+                        0x01 => { type: :knob,      action: :update,  vknob: 2 },
+                        0x02 => { type: :knob,      action: :update,  vknob: 3 },
+                        0x03 => { type: :knob,      action: :update,  vknob: 4 },
+                        0x0F => { 0x01 => { type: :control, action: :switch, collection: :banks },
+                                  0x02 => { type: :control, action: :switch, collection: :vknobs } } } }
+# TODO: With current mapping, accelerometers are ambiguous.  Need to fix that...
+
+def debug(msg)
+  STDERR.puts "DEBUG: #{msg}"
+end
+
+def fmt_message(message)
+  message[:raw][:message].map(&:to_hex).join(' ')
+end
+
+def decode_message(message)
+  raw_type, note, velocity, _ = message[:raw][:message]
+  raw_type_high               = raw_type & 0xF0
+  raw_type_low                = raw_type & 0x0F
+  meta                        = CONTROLS[raw_type_high][raw_type_low]
+  unrecognized                = false
+  debug fmt_message(message)
+  case meta[:type]
+  when :shoulder
+    case note
+    when 0x03 then meta[:button] = :left
+    when 0x04 then meta[:button] = :right
+    else           unrecognized = true
+    end
+  when :pad
+    meta[:button] = note
+  when :knob
+    meta[:bank]   = note + 1
+    meta[:value]  = velocity
+  when nil
+    meta = meta[note]
+    if meta
+      meta[:index] = velocity
+    else
+      unrecognized = true
+    end
+  end
+
+  debug "Unknown message: #{fmt_message(message)}" if unrecognized
+
+  meta
+end
+
 loop do
   inputs = device.read_pending_actions
   inputs.each do |input|
-    (type, note, velocity) = input[:raw][:message]
-    if TYPES[type & 0xF0]
-      channel = type & 0x0F
-      type    = type & 0xF0
-    end
-    case type
-    when 0xBF
-      case note
-      when 1
-        # Switching banks...
-        puts "Switching bank:  #{velocity}"
-      when 2
-        puts "Switching VKnob: #{velocity}"
-      else
-        puts "WAT:             #{input[:raw][:message].inspect}"
-      end
-    when 0x90
-      puts "Down:              #{[channel, note].map { |x| '%02x' % x }.join(' ')}"
-    when 0x80
-      puts "Up:                #{[channel, note].map { |x| '%02x' % x }.join(' ')}"
-    else
-      puts "WAT:               #{input[:raw][:message].inspect}"
-    end
+    puts decode_message(input).inspect
   end
 end
 
