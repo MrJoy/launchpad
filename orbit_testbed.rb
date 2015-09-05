@@ -28,8 +28,9 @@ CONTROLS  = { 0x90 => { 0x00 => { type: :pad,           action: :down,    bank: 
                         0x01 => { type: :knob,          action: :update,  vknob: 2 },
                         0x02 => { type: :knob,          action: :update,  vknob: 3 },
                         0x03 => { type: :knob,          action: :update,  vknob: 4 },
+                        0x0C => { type: :accelerometer, action: :tilt,    axis: :x },
+                        0x0D => { type: :accelerometer, action: :tilt,    axis: :y },
                         0x0F => { type: :control,       action: :switch } } }
-# TODO: With current mapping, accelerometers are ambiguous.  Need to fix that...
 
 def debug(msg)
   STDERR.puts "DEBUG: #{msg}"
