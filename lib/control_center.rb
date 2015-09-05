@@ -11,10 +11,11 @@ module ControlCenter
   end
 end
 
+require "control_center/version"
 require "control_center/errors"
 require "control_center/logging"
 require "control_center/device"
-require "control_center/version"
+require "control_center/interaction"
 
 require "control_center/launchpad/errors"
 require "control_center/launchpad/midi_codes"

@@ -19,22 +19,35 @@ module ControlCenter
       end
 
     protected
-      def decode_shoulder(note, _velocity); ControlCenter::Orbit::Device::SHOULDERS[note]; end
-      def decode_pad(note, _velocity); { button: note }; end
-      def decode_knob(note, velocity); { bank: note + 1, value: velocity }; end
+      def decode_shoulder(decoded, note, _velocity)
+        decoded[:control].merge!(ControlCenter::Orbit::Device::SHOULDERS[note])
+        decoded
+      end
 
-      def decode_control(note, velocity)
-        tmp         = ControlCenter::Orbit::Device::COLLECTIONS[note]
+      def decode_pad(decoded, note, _velocity)
+        decoded[:control][:button] = note
+        decoded
+      end
+
+      def decode_knob(decoded, note, velocity)
+        decoded[:control][:bank] = note + 1
+        decoded[:value] = velocity
+        decoded
+      end
+
+      def decode_control(decoded, note, velocity)
+        tmp         = ControlCenter::Orbit::Device::SELECTORS[note]
         tmp[:index] = velocity
-        tmp
+        decoded[:control].merge!(tmp)
+        decoded
       end
 
       def enrich_decoded_message(decoded, note, velocity, timestamp)
         case decoded[:type]
-        when :shoulder then decoded.merge!(decode_shoulder(note, velocity))
-        when :pad then      decoded.merge!(decode_pad(note, velocity))
-        when :knob then     decoded.merge!(decode_knob(note, velocity))
-        when :control then  decoded.merge!(decode_control(note, velocity))
+        when :shoulder then decoded = decode_shoulder(decoded, note, velocity)
+        when :pad then      decoded = decode_pad(decoded, note, velocity)
+        when :knob then     decoded = decode_knob(decoded, note, velocity)
+        when :control then  decoded = decode_control(decoded, note, velocity)
         end
         decoded[:timestamp] = timestamp
         decoded

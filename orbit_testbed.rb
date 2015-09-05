@@ -27,7 +27,7 @@ loop do
   end
 end
 
-# interaction = Launchpad::Interaction.new
+# interaction = ControlCenter::Launchpad::Interaction.new
 # interaction.response_to(:grid) do |inter, action|
 #   x = action[:x]
 #   y = action[:y]
