@@ -11,7 +11,8 @@ module ControlCenter
 
       def reset!
         # TODO: This... doesn't appear to work.  At all.
-        mappings = [0x01, 0x70,
+        mappings = [0x03, 0x01, 0x70,
+
                     0x00, 0x00, 0x00,
                     0x00, 0x04, 0x00,
                     0x00, 0x08, 0x00,
@@ -93,7 +94,7 @@ module ControlCenter
                     0x0D, 0x00, 0x0C,
                     0x00, 0x0D, 0x00]
 
-        sysex!(0x03, *mappings)
+        sysex!(*mappings)
         sysex!(0x01, 0x00, 0x00)
       end
 
