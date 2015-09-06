@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>areSourcesShown</key>
+	<true/>
+	<key>messageData</key>
+	<data>
+	YnBsaXN0MDDUAQIDBAUGTU5YJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3AS
+	AAGGoK0HCA8hKC8wNDg9RUZJVSRudWxs0gkKCw5aTlMub2JqZWN0c1YkY2xhc3OiDA2A
+	AoAJgAzZChAREhMUFRYXGBkaGxwdHh8fWHRpbWVCYXNlXxAQdGltZVN0YW1wSW5OYW5v
+	c1RkYXRhXxATb3JpZ2luYXRpbmdFbmRwb2ludFl0aW1lU3RhbXBac3RhdHVzQnl0ZV8Q
+	Endhc1JlY2VpdmVkV2l0aEVPWF8QHHRpbWVTdGFtcFdhc1plcm9XaGVuUmVjZWl2ZWSA
+	CIADEwAAFz07KVlEgAaABRAAEPAJCdQKIiMkJSYnJl8QD2hvc3RUaW1lSW5OYW5vc1x0
+	aW1lSW50ZXJ2YWxYaG9zdFRpbWWABBMAABWXJKj1MCNBu5vDaz31SdIpKissWiRjbGFz
+	c25hbWVYJGNsYXNzZXNfEBFTTU1lc3NhZ2VUaW1lQmFzZaItLl8QEVNNTWVzc2FnZVRp
+	bWVCYXNlWE5TT2JqZWN0XxAPVG8gTnVtYXJrIE9SQklU0jEKMjNXTlMuZGF0YUcAAT8r
+	AQAAgAfSKSo1Nl1OU011dGFibGVEYXRhozU3LlZOU0RhdGHSKSo5Ol8QGFNNU3lzdGVt
+	RXhjbHVzaXZlTWVzc2FnZaM7PC5fEBhTTVN5c3RlbUV4Y2x1c2l2ZU1lc3NhZ2VZU01N
+	ZXNzYWdl2QoQERITFBUWFxgZQEFCQB4fRIAIgAMTAAAXPUm2WLyAC4AKCQhfEBFGcm9t
+	IE51bWFyayBPUkJJVNIxCkczTxD3AAE/KwIBcAAAAAAEAAAIAAAMAAABAAAFAAAJAAAN
+	AAACAAAGAAAKAAAOAAADAAAHAAALAAAPAAEAAAEEAAEIAAEMAAEBAAEFAAEJAAENAAEC
+	AAEGAAEKAAEOAAEDAAEHAAELAAEPAAIAAAIEAAIIAAIMAAIBAAIFAAIJAAINAAICAAIG
+	AAIKAAIOAAIDAAIHAAILAAIPAAMAAAMEAAMIAAMMAAMBAAMFAAMJAAMNAAMCAAMGAAMK
+	AAMOAAMDAAMHAAMLAAMPAAAAAQACAAMAAAEBAQIBAwEAAgECAgIDAgADAQMCAwMDDAAN
+	AAwADQAMAA0ADAANAIAH0ikqSktXTlNBcnJheaJMLldOU0FycmF5XxAPTlNLZXllZEFy
+	Y2hpdmVy0U9QVHJvb3SAAQAIABEAGgAjAC0AMgA3AEUASwBQAFsAYgBlAGcAaQBrAH4A
+	hwCaAJ8AtQC/AMoA3wD+AQABAgELAQ0BDwERARMBFAEVAR4BMAE9AUYBSAFRAVoBXwFq
+	AXMBhwGKAZ4BpwG5Ab4BxgHOAdAB1QHjAecB7gHzAg4CEgItAjcCSgJMAk4CVwJZAlsC
+	XAJdAnECdgNwA3IDdwN/A4IDigOcA58DpAAAAAAAAAIBAAAAAAAAAFEAAAAAAAAAAAAA
+	AAAAAAOm
+	</data>
+	<key>messagesScrollPointX</key>
+	<real>0.0</real>
+	<key>messagesScrollPointY</key>
+	<real>0.0</real>
+	<key>streamSettings</key>
+	<dict>
+		<key>portInputStream</key>
+		<array>
+			<dict>
+				<key>name</key>
+				<string>from Numark Orbit Editor 2</string>
+				<key>uniqueID</key>
+				<integer>237178648</integer>
+			</dict>
+			<dict>
+				<key>name</key>
+				<string>Numark ORBIT</string>
+				<key>uniqueID</key>
+				<integer>134698784</integer>
+			</dict>
+			<dict>
+				<key>name</key>
+				<string>from Numark Orbit Editor 1</string>
+				<key>uniqueID</key>
+				<integer>161109201</integer>
+			</dict>
+		</array>
+		<key>spyingInputStream</key>
+		<array>
+			<dict>
+				<key>name</key>
+				<string>Numark ORBIT</string>
+				<key>uniqueID</key>
+				<integer>-1861395230</integer>
+			</dict>
+			<dict>
+				<key>name</key>
+				<string>to Numark Orbit Editor 2</string>
+				<key>uniqueID</key>
+				<integer>-1754376240</integer>
+			</dict>
+			<dict>
+				<key>name</key>
+				<string>to Numark Orbit Editor 1</string>
+				<key>uniqueID</key>
+				<integer>-808978640</integer>
+			</dict>
+		</array>
+	</dict>
+	<key>version</key>
+	<integer>2</integer>
+	<key>windowFrame</key>
+	<string>65 495 1855 682 0 0 1920 1177 </string>
+</dict>
+</plist>
