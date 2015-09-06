@@ -116,8 +116,8 @@ module ControlCenter
       end
 
       def decode_knob(decoded, note, velocity)
-        decoded[:control][:bank] = note + 1
-        decoded[:value] = velocity
+        decoded[:control][:bank]  = note + 1
+        decoded[:value]           = velocity
         decoded
       end
 
