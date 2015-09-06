@@ -9,31 +9,6 @@ module ControlCenter
       end
 
       def reset!
-        # TODO: Implement me.
-        # Colors:
-        # 0x00 == Off                 >0000 0000
-        # 0x01 == Dark Blue           >0000 0001
-        # 0x02 == Blue                >0000 0010
-        # 0x03 == Light Blue          >0000 0011
-
-        # 0x04 == Green               >0000 0100
-        # 0x05 == Cyan                >0000 0101
-        # 0x06 == Light Sky Blue      >0000 0110
-        # 0x07 == Sky Blue            >0000 0111
-        # 0x08 == Green               >0000 1000
-        # 0x09 == Greenish Cyan       >0000 1001
-        # 0x0A == Bright Cyan         >0000 1010
-
-        # 0x10 == Red                 >0001 0000
-        # 0x11 == Magenta             >0001 0001
-        # 0x12 == Violet              >0001 0010
-        # 0x13 == Purple              >0001 0011
-        # 0x14 == Yellow              >0001 0100
-
-        # ...
-
-        # 0x3F == White               >0001 1111
-
         reset_message = [0x01, 0x70,
                          0x00, 0x00, 0x00,
                          0x00, 0x04, 0x00,
