@@ -165,6 +165,7 @@ module ControlCenter
       end
 
       def decode_input(input)
+        puts [input[:code].to_hex, input[:note].to_hex, input[:velocity].to_hex].join(" ")
         note      = input[:note]
         velocity  = input[:velocity]
         code_high = input[:code] & 0xF0

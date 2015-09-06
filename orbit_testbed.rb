@@ -6,9 +6,9 @@ Bundler.require(:default, :development)
 
 require "control_center"
 
-# class Fixnum
-#   def to_hex; "%02X" % self; end
-# end
+class Fixnum
+  def to_hex; "%02X" % self; end
+end
 
 # def debug(msg)
 #   STDERR.puts "DEBUG: #{msg}"
