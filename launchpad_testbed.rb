@@ -80,6 +80,7 @@ def goodbye(interaction)
   interaction.close
 end
 
+ControlCenter.init!
 interaction = ControlCenter::Launchpad::Interaction.new
 interaction.response_to(:grid) do |inter, action|
   x = action[:x]
