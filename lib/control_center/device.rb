@@ -60,7 +60,11 @@ module ControlCenter
     def sysex_prefix; [0xF0]; end
     def sysex_suffix; 0xF7; end
     def sysex_msg(*payload); (sysex_prefix + [payload, sysex_suffix]).flatten.compact; end
-    def sysex!(*payload); @output.write_sysex(sysex_msg(payload)); end
+    def sysex!(*payload)
+      msg = sysex_msg(payload)
+      puts "#{msg.length}: 0x#{msg.map(&:to_hex).join(", 0x")}"
+      @output.write_sysex(msg)
+    end
 
     def create_device!(devices, device_type, opts)
       logger.debug "Creating #{device_type} with #{opts.inspect}, choosing from portmidi devices: #{devices.inspect}"

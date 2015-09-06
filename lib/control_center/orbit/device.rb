@@ -95,6 +95,8 @@ module ControlCenter
         sysex!(0x03, *reset_message)
         sysex!(0x01, 0x00, 0x00)
         sysex!(0x02, *reset_message)
+        require "pry"
+        binding.pry
       end
 
       def read
