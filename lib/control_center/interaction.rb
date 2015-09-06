@@ -22,6 +22,9 @@ module ControlCenter
       @action_threads = ThreadGroup.new
     end
 
+    def change(opts); @device.change(opts); end
+    def changes(opts); @device.changes(opts); end
+
     def close
       logger.debug "Closing #{self.class}##{object_id}"
       stop

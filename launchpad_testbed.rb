@@ -58,12 +58,12 @@ def init_board(interaction)
     next unless tmp
     value.merge(tmp)
   end
-  interaction.device.changes(values.compact)
+  interaction.changes(values.compact)
 end
 
 def set_grid_rgb(interaction, red:, green:, blue: )
   values = GRID.map { |value| value.merge(red: red, green: green, blue: blue) }
-  interaction.device.changes(values)
+  interaction.changes(values)
 end
 
 def goodbye(interaction)
@@ -81,7 +81,7 @@ interaction.response_to(:grid) do |inter, action|
   PRESSED[x][y] = (action[:state] == :down)
   value         = base_color(x, y) || WHITE
   value[:grid]  = [x, y]
-  inter.device.change(value)
+  inter.change(value)
 end
 
 def flip_quad!(inter, cc, quad_x, quad_y)
@@ -91,7 +91,7 @@ def flip_quad!(inter, cc, quad_x, quad_y)
   else
     color = { red: 0x03, green: 0x03, blue: 0x03 }
   end
-  inter.device.change(color.merge(cc: cc))
+  inter.change(color.merge(cc: cc))
 end
 
 interaction.response_to(:scene1, :down) do |inter, action|
@@ -110,8 +110,8 @@ end
 interaction.response_to(:mixer, :down) do |_interaction, action|
   interaction.stop
 end
-interaction.device.change({ red: 0x03, green: 0x00, blue: 0x00, cc: :mixer })
-interaction.device.changes(%i(scene1 scene2 scene3 scene4).map { |cc| { red: 0x03, green: 0x03, blue: 0x03, cc: cc } })
+interaction.change({ red: 0x03, green: 0x00, blue: 0x00, cc: :mixer })
+interaction.changes(%i(scene1 scene2 scene3 scene4).map { |cc| { red: 0x03, green: 0x03, blue: 0x03, cc: cc } })
 
 init_board(interaction)
 input_thread = Thread.new do
