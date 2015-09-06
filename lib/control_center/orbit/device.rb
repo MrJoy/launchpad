@@ -9,7 +9,8 @@ module ControlCenter
       end
 
       def reset!
-        reset_message = [0x01, 0x70,
+        reset_message = [0x03, 0x01, 0x01,
+                         0x70,
                          0x00, 0x00, 0x00,
                          0x00, 0x04, 0x00,
                          0x00, 0x08, 0x00,
@@ -91,7 +92,7 @@ module ControlCenter
                          0x0D, 0x00, 0x0C,
                          0x00, 0x0D, 0x00]
         sysex!(*reset_message)
-        sysex!(0x00, 0x00)
+        sysex!(0x01, 0x00, 0x00)
         sysex!(*reset_message)
       end
 
@@ -103,7 +104,7 @@ module ControlCenter
 
     protected
 
-      def sysex_prefix; @sysex_prefix ||= super + [0x00, 0x01, 0x3F, 0x2B, 0x03]; end
+      def sysex_prefix; @sysex_prefix ||= super + [0x00, 0x01, 0x3F, 0x2B]; end
 
       def decode_shoulder(decoded, note, _velocity)
         decoded[:control].merge!(ControlCenter::Orbit::Device::SHOULDERS[note])
