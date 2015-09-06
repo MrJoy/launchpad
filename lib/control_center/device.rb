@@ -66,7 +66,7 @@ module ControlCenter
       id = opts[:id]
       if id.nil?
         name    = opts[:name] || "Numark ORBIT"
-        device  = devices.select {|dev| dev.name == name}.first
+        device  = devices.select { |dev| dev.name == name }.first
         id      = device.device_id unless device.nil?
       end
       if id.nil?
