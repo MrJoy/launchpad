@@ -48,6 +48,7 @@ module ControlCenter
       Array(@input.read(16)).collect do |midi_message|
         (code, note, velocity) = midi_message[:message]
         { timestamp:  midi_message[:timestamp],
+          state:      (velocity == 127) ? :down : :up,
           velocity:   velocity,
           code:       code,
           note:       note }
@@ -65,7 +66,7 @@ module ControlCenter
       logger.debug "Creating #{device_type} with #{opts.inspect}, choosing from portmidi devices: #{devices.inspect}"
       id = opts[:id]
       if id.nil?
-        name    = opts[:name] || "Numark ORBIT"
+        name    = opts[:name] || @name
         device  = devices.select { |dev| dev.name == name }.first
         id      = device.device_id unless device.nil?
       end

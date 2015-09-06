@@ -1,6 +1,10 @@
 module ControlCenter
   module Orbit
     class Interaction < ControlCenter::Interaction
+      def initialize(opts = nil)
+        @device_class = Device
+        super(opts)
+      end
 
     private
 

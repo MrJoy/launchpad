@@ -11,11 +11,11 @@ module ControlCenter
       self.logger = opts[:logger]
       logger.debug "Initializing #{self.class}##{object_id} with #{opts.inspect}"
 
-      @device       = opts[:device]
       @use_threads  = opts[:use_threads] || true
-      @device     ||= Device.new(opts.merge(input: true,
-                                            output: true,
-                                            logger: opts[:logger]))
+      @device       = opts[:device]
+      @device     ||= @device_class.new(opts.merge(input: true,
+                                                   output: true,
+                                                   logger: opts[:logger]))
       @latency      = (opts[:latency] || 0.001).to_f.abs
       @active       = false
 

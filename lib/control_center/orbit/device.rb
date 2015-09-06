@@ -4,6 +4,7 @@ module ControlCenter
       include MIDICodes
 
       def initialize(opts = nil)
+        @name = "Numark ORBIT"
         super(opts)
         reset!
       end

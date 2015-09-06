@@ -4,7 +4,7 @@ require "rubygems"
 require "bundler/setup"
 Bundler.require(:default, :development)
 
-require "launchpad"
+require "control_center"
 
 # Flash:    F0h 00h 20h 29h 02h 18h 23h <LED> <Colour> F7h
 # Pulse:    F0h 00h 20h 29h 02h 18h 28h <LED> <Colour> F7h
@@ -77,7 +77,7 @@ def goodbye(interaction)
   end
 end
 
-interaction = Launchpad::Interaction.new
+interaction = ControlCenter::Launchpad::Interaction.new
 interaction.response_to(:grid) do |inter, action|
   x = action[:x]
   y = action[:y]

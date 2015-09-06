@@ -40,6 +40,7 @@ module ControlCenter
                             scene8:  Scene::SCENE8 }.freeze # Record Arm
 
       def initialize(opts = nil)
+        @name = "Launchpad MK2"
         super(opts)
         reset! if output_enabled?
       end
@@ -75,13 +76,14 @@ module ControlCenter
 
       def read
         super.collect do |input|
-          data[:type] = CODE_NOTE_TO_TYPE[[input[:code], input[:note]]] || :grid
-          if data[:type] == :grid
+          note          = input[:note]
+          input[:type]  = CODE_NOTE_TO_TYPE[[input[:code], note]] || :grid
+          if input[:type] == :grid
             note      = note - 11
-            data[:x]  = note % 10
-            data[:y]  = note / 10
+            input[:x] = note % 10
+            input[:y] = note / 10
           end
-          data
+          input
         end
       end
 
