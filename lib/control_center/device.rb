@@ -26,7 +26,7 @@ module ControlCenter
 
     # Closes the device - nothing can be done with the device afterwards.
     def close
-      logger.debug "Closing #{self.class.to_sym}##{object_id}"
+      logger.debug "Closing #{self.class}##{object_id}"
       @input.close unless @input.nil?
       @input = nil
       @output.close unless @output.nil?
