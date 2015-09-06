@@ -21,8 +21,7 @@ end
 ControlCenter.init!
 device = ControlCenter::Orbit::Device.new
 loop do
-  inputs = device.read
-  inputs.each do |input|
+  device.read.each do |input|
     puts input.inspect
   end
 end

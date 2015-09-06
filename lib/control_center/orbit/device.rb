@@ -98,9 +98,9 @@ module ControlCenter
       end
 
       def read
-        super.map do |input|
-          decode_input(input)
-        end
+        super
+          .map { |input| decode_input(input) }
+          .compact
       end
 
     protected
@@ -142,13 +142,15 @@ module ControlCenter
       end
 
       def decode_input(input)
-        puts [input[:code].to_hex, input[:note].to_hex, input[:velocity].to_hex].join(" ")
+puts [input[:code].to_hex, input[:note].to_hex, input[:velocity].to_hex].join(" ")
         note      = input[:note]
         velocity  = input[:velocity]
         code_high = input[:code] & 0xF0
         code_low  = input[:code] & 0x0F
-        raw       = ControlCenter::Orbit::Device::CONTROLS[code_high][code_low]
-        enrich_decoded_message(raw, note, velocity, input[:timestamp])
+        raw       = ControlCenter::Orbit::Device::CONTROLS[code_high]
+        raw       = raw[code_low] if raw
+        raw       = enrich_decoded_message(raw, note, velocity, input[:timestamp]) if raw
+        raw
       end
     end
   end
