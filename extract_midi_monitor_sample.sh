@@ -26,4 +26,8 @@ xpath ${FNAME%.mmon}.tmp "//dict/array/dict[9]/data" 2>/dev/null |
   grep -v -E '(^<data>)|(</data>$)' |
   base64 -D > ${FNAME%.mmon}.2.raw
 
+xpath ${FNAME%.mmon}.tmp "//dict/array/dict[11]/data" 2>/dev/null |
+  grep -v -E '(^<data>)|(</data>$)' |
+  base64 -D > ${FNAME%.mmon}.3.raw
+
 rm ${FNAME%.mmon}.tmp
