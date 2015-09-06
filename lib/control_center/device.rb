@@ -22,8 +22,6 @@ module ControlCenter
                                  Portmidi::Output,
                                  id:   opts[:output_device_id],
                                  name: opts[:device_name]) if opts[:output]
-
-      reset!
     end
 
     # Closes the device - nothing can be done with the device afterwards.
