@@ -10,8 +10,7 @@ module ControlCenter
       end
 
       def reset!
-        # TODO: This appears to map buttons out properly, but doesn't seem to
-        # TODO: work in terms of setting pad colors.  AUGH!
+        # TODO: This... doesn't appear to work.  At all.
         mappings = [0x01, 0x70,
                     0x00, 0x00, 0x00,
                     0x00, 0x04, 0x00,
@@ -93,9 +92,9 @@ module ControlCenter
                     0x00, 0x0C, 0x00,
                     0x0D, 0x00, 0x0C,
                     0x00, 0x0D, 0x00]
-        sysex!(0x03, *mappings)
-        # sysex!(0x01, 0x00, 0x00)
         # sysex!(0x02, *mappings)
+        sysex!(0x01, 0x00, 0x00)
+        sysex!(0x03, *mappings)
       end
 
       def read
