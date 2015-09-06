@@ -10,8 +10,8 @@ module ControlCenter
       end
 
       def reset!
-        reset_message = [0x03, 0x01, 0x01,
-                         0x70,
+        reset_message = [0x01, 0x70,
+
                          0x00, 0x00, 0x00,
                          0x00, 0x04, 0x00,
                          0x00, 0x08, 0x00,
@@ -92,9 +92,9 @@ module ControlCenter
                          0x00, 0x0C, 0x00,
                          0x0D, 0x00, 0x0C,
                          0x00, 0x0D, 0x00]
-        sysex!(*reset_message)
+        sysex!(0x03, *reset_message)
         sysex!(0x01, 0x00, 0x00)
-        sysex!(*reset_message)
+        sysex!(0x02, *reset_message)
       end
 
       def read
