@@ -1,6 +1,6 @@
 require 'helper'
 
-describe Launchpad::Device do
+describe ControlCenter::Launchpad::Device do
 
   CONTROL_BUTTONS = {
     :up       => 0x68,
