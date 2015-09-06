@@ -4,57 +4,30 @@ require "rubygems"
 require "bundler/setup"
 Bundler.require(:default, :development)
 
-require "launchpad"
-
-# "Each element has a brightness value from 00h – 3Fh (0 – 63), where 0 is off and 3Fh is full brightness."
-def set_color(device, x, y, r, g, b)
-  output = device.instance_variable_get(:@output)
-
-  led = (y * 10) + x + 11
-  x   = output.write_sysex([
-    # SysEx Begin:
-    0xF0,
-    # Manufacturer/Device:
-    0x00,
-    0x20,
-    0x29,
-    0x02,
-    0x18,
-    # Command:
-    0x0B,
-    # LED:
-    led,
-    # Red, Green, Blue:
-    r,
-    g,
-    b,
-    # SysEx End:
-    0xF7,
-  ])
-
-  puts "ERROR: #{x}" if x != 0
-  x
-end
+require "control_center"
 
 def goodbye(interaction)
+  data = []
   (0..7).each do |x|
     (0..7).each do |y|
-      set_color(interaction.device, x, y, 0x00, 0x00, 0x00)
-      sleep 0.001
+      data << { x: x, y: y, red: 0x00, green: 0x00, blue: 0x00 }
     end
   end
+  interaction.changes(data)
 end
 
 def bar(interaction, x, val, r, g, b)
+  data = []
   (0..val).each do |y|
-    set_color(interaction.device, x, y, r, g, b)
+    data << { x: x, y: y, red: r, green: g, blue: b }
   end
   ((val+1)..7).each do |y|
-    set_color(interaction.device, x, y, 0x00, 0x00, 0x00)
+    data << { x: x, y: y, red: 0x00, green: 0x00, blue: 0x00 }
   end
+  interaction.changes(data)
 end
 
-interaction = Launchpad::Interaction.new(device_name: "Launchpad MK2")
+interaction = ControlCenter::Launchpad::Interaction.new
 monitor = Thread.new do
   loop do
     fields      = `iostat -c 2 disk0`.split(/\n/).last.strip.split(/\s+/)
