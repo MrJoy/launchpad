@@ -94,7 +94,9 @@ module ControlCenter
                     0x0D, 0x00, 0x0C,
                     0x00, 0x0D, 0x00]
 
-        sysex!(*mappings)
+        if (result = sysex!(*mappings)) != 0
+          raise "Expected success (0) setting mappings, got: #{result}"
+        end
         sysex!(0x01, 0x00, 0x00)
       end
 
