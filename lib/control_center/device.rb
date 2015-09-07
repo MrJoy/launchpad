@@ -62,7 +62,7 @@ module ControlCenter
     def sysex_msg(*payload); (sysex_prefix + [payload, sysex_suffix]).flatten.compact; end
     def sysex!(*payload)
       msg = sysex_msg(payload)
-      puts "#{msg.length}: 0x#{msg.map(&:to_hex).join(", 0x")}"
+puts "#{msg.length}: 0x#{msg.map(&:to_hex).join(", 0x")}"
       @output.write_sysex(msg)
     end
 
