@@ -24,6 +24,7 @@ loop do
   device.read.each do |input|
     puts input.inspect
   end
+  sleep 0.1
 end
 
 # interaction = ControlCenter::Launchpad::Interaction.new
