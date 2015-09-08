@@ -38,3 +38,13 @@ Sleep mode will activate after 3 minutes of inactivity.  Move the Orbit to wake 
 
 * 100 ft maximum distance with line of sight.
 * 2.4Ghz frequency spectrum (turn off wifi/etc for best results).
+
+
+## Hard Reset
+
+1. Turn Orbit off, and unplug USB adapter.
+1. Press and hold `Pad Bank Selectors` `1` and `4`.
+1. Turn Orbit on.
+1. Press the upper-left-most pad.
+1. Press the pad to the right of the upper-left-most pad.
+1. Turn Orbit off, and back on.
