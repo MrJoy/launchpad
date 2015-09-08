@@ -5,6 +5,7 @@ module SurfaceMaster
     # This is all predicated upon our fixed mapping being applied.
     module MIDICodes
       # TODO: Use a lib to do a deep-freeze.
+      # rubocop:disable Metrics/LineLength
       CONTROLS    = { 0x90 => { 0x00 => { type: :pad,           action: :down,    control: { bank: 1 } },
                                 0x01 => { type: :pad,           action: :down,    control: { bank: 2 } },
                                 0x02 => { type: :pad,           action: :down,    control: { bank: 3 } },
@@ -22,6 +23,7 @@ module SurfaceMaster
                                 0x0C => { type: :accelerometer, action: :tilt,    control: { axis: :x } },
                                 0x0D => { type: :accelerometer, action: :tilt,    control: { axis: :y } },
                                 0x0F => { type: :control,       action: :switch,  control: {} } } }.freeze
+      # rubocop:enable Metrics/LineLength
       SHOULDERS   = { 0x03 => { button: :left },
                       0x04 => { button: :right } }.freeze
       SELECTORS   = { 0x01 => { selector: :banks },

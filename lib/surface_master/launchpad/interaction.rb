@@ -1,42 +1,12 @@
 module SurfaceMaster
   module Launchpad
+    # Higher-level interface to Novation Launchpad Mark 2, providing an input
+    # handling loop and event-hooks for input events.
     class Interaction < SurfaceMaster::Interaction
       def initialize(opts = nil)
         @device_class = Device
         super(opts)
       end
-
-      # def response_to(types = :all, state = :both, opts = nil, &block)
-      #   logger.debug "setting response to #{types.inspect} for state #{state.inspect} with #{opts.inspect}"
-      #   types = Array(types)
-      #   opts ||= {}
-      #   no_response_to(types, state) if opts[:exclusive] == true
-      #   Array(state == :both ? %i(down up) : state).each do |st|
-      #     types.each do |type|
-      #       combined_types(type, opts).each do |combined_type|
-      #         responses[combined_type][st] << block
-      #       end
-      #     end
-      #   end
-      #   nil
-      # end
-
-      # def no_response_to(types = nil, state = :both, opts = nil)
-      #   logger.debug "removing response to #{types.inspect} for state #{state.inspect}"
-      #   types = Array(types)
-      #   Array(state == :both ? %i(down up) : state).each do |st|
-      #     types.each do |type|
-      #       combined_types(type, opts).each do |combined_type|
-      #         responses[combined_type][st].clear
-      #       end
-      #     end
-      #   end
-      #   nil
-      # end
-
-      # def respond_to(type, state, opts = nil)
-      #   respond_to_action((opts || {}).merge(type: type, state: state))
-      # end
 
     protected
 
@@ -65,21 +35,33 @@ module SurfaceMaster
       end
 
       def respond_to_action(action)
-        type    = action[:type].to_sym
-        state   = action[:state].to_sym
-        actions = []
-        if type == :grid
-          actions += responses[:"grid#{action[:x]}#{action[:y]}"][state]
-          actions += responses[:"grid#{action[:x]}-"][state]
-          actions += responses[:"grid-#{action[:y]}"][state]
+        mappings_for_action(action).each do |block|
+          block.call(self, action)
         end
-        actions += responses[type][state]
-        actions += responses[:all][state]
-        actions.compact.each { |block| block.call(self, action) }
         nil
       rescue Exception => e # TODO: StandardException, RuntimeError, or Exception?
         logger.error "Error when responding to action #{action.inspect}: #{e.inspect}"
         raise e
+      end
+
+      def mappings_for_action(action)
+        type    = action[:type].to_sym
+        state   = action[:state].to_sym
+        actions = []
+        if type == :grid
+          actions += mappings_for_grid_action(state, action[:x], action[:y])
+        end
+        actions += responses[type][state]
+        actions += responses[:all][state]
+        actions.compact
+      end
+
+      def mappings_for_grid_action(state, x, y)
+        actions = []
+        actions += responses[:"grid#{x}#{y}"][state]
+        actions += responses[:"grid#{x}-"][state]
+        actions += responses[:"grid-#{y}"][state]
+        actions
       end
     end
   end

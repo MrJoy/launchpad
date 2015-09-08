@@ -68,10 +68,16 @@ describe SurfaceMaster::Launchpad::Interaction do
 
     it "creates device with given input_device_id/output_device_id" do
       device = SurfaceMaster::Launchpad::Device.new
-      SurfaceMaster::Launchpad::Device.expects(:new)
-        .with(input_device_id: "in", output_device_id: "out", input: true, output: true, logger: nil)
+      SurfaceMaster::Launchpad::Device
+        .expects(:new)
+        .with(input_device_id:  "in",
+              output_device_id: "out",
+              input:            true,
+              output:           true,
+              logger:           nil)
         .returns(device)
-      interaction = SurfaceMaster::Launchpad::Interaction.new(input_device_id: "in", output_device_id: "out")
+      interaction = SurfaceMaster::Launchpad::Interaction.new(input_device_id:  "in",
+                                                              output_device_id: "out")
       assert_same device, interaction.device
     end
 
@@ -134,7 +140,9 @@ describe SurfaceMaster::Launchpad::Interaction do
       mocha_teardown # so that expectations on Thread.join don't fail in here
       begin
         @interaction.close
+      # rubocop:disable Lint/HandleExceptions
       rescue
+      # rubocop:enable Lint/HandleExceptions
         # ignore, should be handled in tests, this is just to close all the spawned threads
       end
     end

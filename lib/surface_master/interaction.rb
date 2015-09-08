@@ -57,7 +57,7 @@ module SurfaceMaster
           end
         rescue Portmidi::DeviceError => e
           logger.fatal "Could not read from device, stopping reader!"
-          raise SurfaceMaster::CommunicationError.new(e)
+          raise SurfaceMaster::CommunicationError, e
         rescue Exception => e
           logger.fatal "Unkown error, stopping reader: #{e.inspect}"
           raise e

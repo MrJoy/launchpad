@@ -1,5 +1,6 @@
 module SurfaceMaster
   module Launchpad
+    # Low-level interface to Novation Launchpad Mark 2 control surface.
     class Device < SurfaceMaster::Device
       include MIDICodes
 
@@ -167,20 +168,6 @@ module SurfaceMaster
         logger.debug "writing messages to launchpad:\n  #{messages.join("\n  ")}" if logger.debug?
         @output.write(messages)
         nil
-      end
-
-      def note(type, opts)
-        note = TYPE_TO_NOTE[type]
-        if note.nil?
-          x = (opts[:x] || -1).to_i
-          y = (opts[:y] || -1).to_i
-          if x < 0 || x > 7 || y < 0 || y > 7
-            logger.error "wrong coordinates specified: x=#{x}, y=#{y}"
-            fail NoValidGridCoordinatesError.new("you need to specify valid coordinates (x/y, 0-7, from top left), you specified: x=#{x}, y=#{y}")
-          end
-          note = y * 10 + x
-        end
-        note
       end
     end
   end

@@ -1,19 +1,16 @@
 require "minitest/spec"
 require "minitest/autorun"
+require "minitest/reporters"
 
-begin
-  require "minitest/reporters"
-  MiniTest::Reporters.use!
-rescue LoadError
-  # ignore when it's not there - must be ruby 1.8
-end
+MiniTest::Reporters.use!
 
 require "mocha/setup"
 
 require "surface_master"
 
-# mock Portmidi for tests
+# Mock for tests
 module Portmidi
+  # Mock for tests
   class Input
     attr_accessor :device_id
     def initialize(device_id)
@@ -24,6 +21,7 @@ module Portmidi
     def close; nil; end
   end
 
+  # Mock for tests
   class Output
     attr_accessor :device_id
     def initialize(device_id)

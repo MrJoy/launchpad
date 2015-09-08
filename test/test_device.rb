@@ -73,7 +73,9 @@ describe SurfaceMaster::Launchpad::Device do
     it "initializes the correct input output devices when specified by id" do
       Portmidi.stubs(:input_devices).returns(mock_devices(id: 4))
       Portmidi.stubs(:output_devices).returns(mock_devices(id: 5))
-      d = SurfaceMaster::Launchpad::Device.new(input_device_id: 4, output_device_id: 5, device_name: "nonexistant")
+      d = SurfaceMaster::Launchpad::Device.new(input_device_id:   4,
+                                               output_device_id:  5,
+                                               device_name:       "nonexistant")
       assert_equal Portmidi::Input, (input = d.instance_variable_get("@input")).class
       assert_equal 4, input.device_id
       assert_equal Portmidi::Output, (output = d.instance_variable_get("@output")).class
@@ -135,7 +137,7 @@ describe SurfaceMaster::Launchpad::Device do
           @device.read
         end
         assert_raises SurfaceMaster::NoOutputAllowedError do
-          @device.change({ red: 0x00, green: 0x00, blue: 0x00, cc: :mixer })
+          @device.change(cc: :mixer, red: 0x00, green: 0x00, blue: 0x00)
         end
       end
     end
@@ -187,7 +189,7 @@ describe SurfaceMaster::Launchpad::Device do
     it "raises NoOutputAllowedError when not initialized with output" do
       assert_raises SurfaceMaster::NoOutputAllowedError do
         SurfaceMaster::Launchpad::Device.new(output: false)
-          .change({ red: 0x00, green: 0x00, blue: 0x00, cc: :mixer })
+          .change(cc: :mixer, red: 0x00, green: 0x00, blue: 0x00)
       end
     end
 
@@ -197,23 +199,27 @@ describe SurfaceMaster::Launchpad::Device do
       end
 
       it "returns nil" do
-        assert_nil @device.change({ red: 0x00, green: 0x00, blue: 0x00, cc: :mixer })
+        assert_nil @device.change(cc: :mixer, red: 0x00, green: 0x00, blue: 0x00)
       end
 
       describe "control buttons" do
         CONTROL_BUTTONS.each do |type, value|
-          it "sends 0x0B, #{value}, 0x01, 0x02, 0x03 when given { red: 0x01, green: 0x02, blue: 0x03, cc: :#{type} }" do
-            expects_output(@device, [[0x0B, value, 0x01, 0x02, 0x03]])
-            @device.change({ red: 0x01, green: 0x02, blue: 0x03, cc: type })
+          input   = { cc: type, red: 0x01, green: 0x02, blue: 0x03 }
+          output  = [0x0B, value, 0x01, 0x02, 0x03]
+          it "sends #{output.inspect} when given #{input.inspect}" do
+            expects_output(@device, [output])
+            @device.change(input)
           end
         end
       end
 
       describe "scene buttons" do
         SCENE_BUTTONS.each do |type, value|
-          it "sends 0x90, #{value}, 0x01, 0x02, 0x03 when given { cc: :#{type}, red: 0x01, green: 0x02, blue: 0x03 }" do
-            expects_output(@device, [[0x0B, value, 0x01, 0x02, 0x03]])
-            @device.change({ cc: type, red: 0x01, green: 0x02, blue: 0x03 })
+          input   = { cc: type, red: 0x01, green: 0x02, blue: 0x03 }
+          output  = [0x0B, value, 0x01, 0x02, 0x03]
+          it "sends #{output.inspect} when given #{input.inspect}" do
+            expects_output(@device, [output])
+            @device.change(input)
           end
         end
       end
@@ -221,52 +227,55 @@ describe SurfaceMaster::Launchpad::Device do
       describe "grid buttons" do
         8.times do |x|
           8.times do |y|
-            it "sends 0x90, #{10 * y + x}, 12 when given { grid: [#{x}, #{y}], red: 0x01, green: 0x02, blue: 0x03 }" do
-              expects_output(@device, [[0x0B, 10 * y + x + 11, 0x01, 0x02, 0x03]])
-              @device.change({ grid: [x, y], red: 0x01, green: 0x02, blue: 0x03 })
+            input   = { grid: [x, y], red: 0x01, green: 0x02, blue: 0x03 }
+            output  = [0x0B, 10 * y + x + 11, 0x01, 0x02, 0x03]
+
+            it "sends #{output.inspect} when given #{input.inspect}" do
+              expects_output(@device, [output])
+              @device.change(input)
             end
           end
         end
 
         it "raises NoValidGridCoordinatesError if x is nil" do
           assert_raises SurfaceMaster::Launchpad::NoValidGridCoordinatesError do
-            @device.change({ grid: [nil, 1], red: 0x01, green: 0x02, blue: 0x03 })
+            @device.change(grid: [nil, 1], red: 0x01, green: 0x02, blue: 0x03)
           end
         end
 
         it "raises NoValidGridCoordinatesError if it only gets one coordinate" do
           assert_raises SurfaceMaster::Launchpad::NoValidGridCoordinatesError do
-            @device.change({ grid: [1], red: 0x01, green: 0x02, blue: 0x03 })
+            @device.change(grid: [1], red: 0x01, green: 0x02, blue: 0x03)
           end
         end
 
         it "raises NoValidGridCoordinatesError if x is below 0" do
           assert_raises SurfaceMaster::Launchpad::NoValidGridCoordinatesError do
-            @device.change({ grid: [-1, 1], red: 0x01, green: 0x02, blue: 0x03 })
+            @device.change(grid: [-1, 1], red: 0x01, green: 0x02, blue: 0x03)
           end
         end
 
         it "raises NoValidGridCoordinatesError if x is above 7" do
           assert_raises SurfaceMaster::Launchpad::NoValidGridCoordinatesError do
-            @device.change({ grid: [8, 1], red: 0x01, green: 0x02, blue: 0x03 })
+            @device.change(grid: [8, 1], red: 0x01, green: 0x02, blue: 0x03)
           end
         end
 
         it "raises NoValidGridCoordinatesError if y is nil" do
           assert_raises SurfaceMaster::Launchpad::NoValidGridCoordinatesError do
-            @device.change({ grid: [1, nil], red: 0x01, green: 0x02, blue: 0x03 })
+            @device.change(grid: [1, nil], red: 0x01, green: 0x02, blue: 0x03)
           end
         end
 
         it "raises NoValidGridCoordinatesError if y is below 0" do
           assert_raises SurfaceMaster::Launchpad::NoValidGridCoordinatesError do
-            @device.change({ grid: [1, -1], red: 0x01, green: 0x02, blue: 0x03 })
+            @device.change(grid: [1, -1], red: 0x01, green: 0x02, blue: 0x03)
           end
         end
 
         it "raises NoValidGridCoordinatesError if y is above 7" do
           assert_raises SurfaceMaster::Launchpad::NoValidGridCoordinatesError do
-            @device.change({ grid: [1, 8], red: 0x01, green: 0x02, blue: 0x03 })
+            @device.change(grid: [1, 8], red: 0x01, green: 0x02, blue: 0x03)
           end
         end
       end
@@ -321,11 +330,12 @@ describe SurfaceMaster::Launchpad::Device do
       end
 
       it "builds proper actions for multiple pending actions" do
-        stub_input(@device,
-                   { timestamp: 1, message: [0x90, 0x0B, 0x7F] },
-                   { timestamp: 2, message: [0xB0, 0x68, 0x00] })
-        assert_equal [{ timestamp: 1, state: :down,  type: :grid, x: 0, y: 0 },
-                      { timestamp: 2, state: :up,    type: :up }], @device.read
+        TEST_MESSAGES   = [{ timestamp: 1, message: [0x90, 0x0B, 0x7F] },
+                           { timestamp: 2, message: [0xB0, 0x68, 0x00] }]
+        TEST_OUTPUTS    = [{ timestamp: 1, state: :down,  type: :grid, x: 0, y: 0 },
+                           { timestamp: 2, state: :up,    type: :up }]
+        stub_input(@device, *TEST_MESSAGES)
+        assert_equal TEST_OUTPUTS, @device.read
       end
     end
   end
