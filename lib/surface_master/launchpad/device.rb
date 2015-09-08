@@ -54,12 +54,18 @@ module SurfaceMaster
       # TODO: Support more of the LaunchPad Mark 2's functionality.
 
       def change(opts = nil)
+        raise NoOutputAllowedError unless output_enabled?
         opts ||= {}
         command, payload = color_payload(opts)
-        sysex!(command, payload[:led], payload[:color])
+        result = sysex!(command, payload[:led], payload[:color])
+        if result != 0
+          # TODO: Raise an exception.
+        end
+        nil
       end
 
       def changes(values)
+        raise NoOutputAllowedError unless output_enabled?
         msg_by_command = {}
         values.each do |value|
           command, payload = color_payload(value)
@@ -69,12 +75,17 @@ module SurfaceMaster
           # The documented batch size for RGB LED updates is 80.  The docs lie, at least on my current
           # firmware version -- anything above 62 crashes the device hard.
           while (slice = payloads.shift(62)).length > 0
-            sysex!(command, *slice.map { |payload| [payload[:led], payload[:color]] })
+            result = sysex!(command, *slice.map { |payload| [payload[:led], payload[:color]] })
+            if result != 0
+              # TODO: Raise an exception.
+            end
           end
         end
+        nil
       end
 
       def read
+        raise NoInputAllowedError unless input_enabled?
         super.collect do |input|
           note          = input[:note]
           input[:type]  = CODE_NOTE_TO_TYPE[[input[:code], note]] || :grid
@@ -103,6 +114,18 @@ module SurfaceMaster
           if opts[:grid] == :all
             [:all, nil]
           else
+            x = opts[:grid][0]
+            y = opts[:grid][1]
+            if opts[:grid].length != 2 ||
+               !x ||
+               !y ||
+               x < 0 ||
+               x > 7 ||
+               y < 0 ||
+               y > 7
+              raise SurfaceMaster::Launchpad::NoValidGridCoordinatesError
+            end
+
             [:grid, (opts[:grid][1] * 10) + opts[:grid][0] + 11]
           end
         when opts[:column]
@@ -110,6 +133,8 @@ module SurfaceMaster
         when opts[:row]
           [:row, opts[:row]]
         end
+      rescue
+        raise SurfaceMaster::Launchpad::NoValidGridCoordinatesError
       end
 
       TYPE_TO_COMMAND = { cc:     0x0B,
