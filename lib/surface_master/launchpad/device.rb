@@ -138,7 +138,7 @@ module SurfaceMaster
         fail SurfaceMaster::Launchpad::NoValidGridCoordinatesError
       end
 
-      def coord_in_range?(val); val && x >= 0 && val <= 7; end
+      def coord_in_range?(val); val && val >= 0 && val <= 7; end
 
       TYPE_TO_COMMAND = { cc:     0x0B,
                           grid:   0x0B,
