@@ -10,29 +10,21 @@ describe SurfaceMaster::Launchpad::Device do
                       user1:    0x6D,
                       user2:    0x6E,
                       mixer:    0x6F }
-  SCENE_BUTTONS = { scene1: 0x59,
-                    scene2: 0x4F,
-                    scene3: 0x45,
-                    scene4: 0x3B,
-                    scene5: 0x31,
-                    scene6: 0x27,
-                    scene7: 0x1D,
-                    scene8: 0x13 }
-  COLORS = {
-    nil => 0, 0 => 0, :off => 0,
-    1 => 1, :lo => 1, :low => 1,
-    2 => 2, :med => 2, :medium => 2,
-    3 => 3, :hi => 3, :high => 3
-  }
-  STATES = {
-    :down     => 127,
-    :up       => 0
-  }
+  SCENE_BUTTONS   = { scene1: 0x59,
+                      scene2: 0x4F,
+                      scene3: 0x45,
+                      scene4: 0x3B,
+                      scene5: 0x31,
+                      scene6: 0x27,
+                      scene7: 0x1D,
+                      scene8: 0x13 }
+  STATES          = { down: 127,
+                      up:   0 }
 
   def expects_output(device, *args)
     args = [args] unless args.first.is_a?(Array)
-    messages = args.collect {|data| {:message => data, :timestamp => 0}}
-    device.instance_variable_get('@output').expects(:write).with(messages)
+    messages = args.collect { |data| device.send(:sysex_prefix) + data + [device.send(:sysex_suffix)] }
+    device.instance_variable_get('@output').expects(:write_sysex).with(*messages)
   end
 
   def stub_input(device, *args)
@@ -203,15 +195,14 @@ describe SurfaceMaster::Launchpad::Device do
   end
 
   describe '#change' do
-
     it 'raises NoOutputAllowedError when not initialized with output' do
       assert_raises SurfaceMaster::NoOutputAllowedError do
-        SurfaceMaster::Launchpad::Device.new(output: false).change({ red: 0x00, green: 0x00, blue: 0x00, cc: :mixer })
+        SurfaceMaster::Launchpad::Device.new(output: false).
+          change({ red: 0x00, green: 0x00, blue: 0x00, cc: :mixer })
       end
     end
 
     describe 'initialized with output' do
-
       before do
         @device = SurfaceMaster::Launchpad::Device.new(input: false)
       end
@@ -222,8 +213,8 @@ describe SurfaceMaster::Launchpad::Device do
 
       describe 'control buttons' do
         CONTROL_BUTTONS.each do |type, value|
-          it "sends 0xB0, #{value}, 12 when given #{type}" do
-            expects_output(@device, 0xB0, value, 0x01, 0x02, 0x03)
+          it "sends 0x0B, #{value}, 0x01, 0x02, 0x03 when given { red: 0x01, green: 0x02, blue: 0x03, cc: :#{type} }" do
+            expects_output(@device, 0x0B, value, 0x01, 0x02, 0x03)
             @device.change({ red: 0x01, green: 0x02, blue: 0x03, cc: type })
           end
         end
@@ -231,9 +222,9 @@ describe SurfaceMaster::Launchpad::Device do
 
       describe 'scene buttons' do
         SCENE_BUTTONS.each do |type, value|
-          it "sends 0x90, #{value}, 12 when given #{type}" do
-            expects_output(@device, 0x90, value, 0x01, 0x02, 0x03)
-            @device.change({ red: 0x01, green: 0x02, blue: 0x03, cc: type })
+          it "sends 0x90, #{value}, 0x01, 0x02, 0x03 when given { cc: :#{type}, red: 0x01, green: 0x02, blue: 0x03 }" do
+            expects_output(@device, 0x0B, value, 0x01, 0x02, 0x03)
+            @device.change({ cc: type, red: 0x01, green: 0x02, blue: 0x03 })
           end
         end
       end
@@ -241,46 +232,52 @@ describe SurfaceMaster::Launchpad::Device do
       describe 'grid buttons' do
         8.times do |x|
           8.times do |y|
-            it "sends 0x90, #{10 * y + x}, 12 when given x: #{x}, y: #{y}, red: 0x01, green: 0x02, blue: 0x03" do
-              expects_output(@device, 0x90, 10 * y + x, 12, 0x01, 0x02, 0x03)
-              @device.change({ x: x, y: y, red: 0x01, green: 0x02, blue: 0x03 })
+            it "sends 0x90, #{10 * y + x}, 12 when given { grid: [#{x}, #{y}], red: 0x01, green: 0x02, blue: 0x03 }" do
+              expects_output(@device, 0x0B, 10 * y + x + 11, 0x01, 0x02, 0x03)
+              @device.change({ grid: [x, y], red: 0x01, green: 0x02, blue: 0x03 })
             end
           end
         end
 
-        it 'raises NoValidGridCoordinatesError if x is not specified' do
+        it 'raises NoValidGridCoordinatesError if x is nil' do
           assert_raises SurfaceMaster::Launchpad::NoValidGridCoordinatesError do
-            @device.change({ y: 1, red: 0x01, green: 0x02, blue: 0x03 })
+            @device.change({ grid: [nil, 1], red: 0x01, green: 0x02, blue: 0x03 })
+          end
+        end
+
+        it 'raises NoValidGridCoordinatesError if it only gets one coordinate' do
+          assert_raises SurfaceMaster::Launchpad::NoValidGridCoordinatesError do
+            @device.change({ grid: [1], red: 0x01, green: 0x02, blue: 0x03 })
           end
         end
 
         it 'raises NoValidGridCoordinatesError if x is below 0' do
           assert_raises SurfaceMaster::Launchpad::NoValidGridCoordinatesError do
-            @device.change({ x: -1, y: 1, red: 0x01, green: 0x02, blue: 0x03 })
+            @device.change({ grid: [-1, 1], red: 0x01, green: 0x02, blue: 0x03 })
           end
         end
 
         it 'raises NoValidGridCoordinatesError if x is above 7' do
           assert_raises SurfaceMaster::Launchpad::NoValidGridCoordinatesError do
-            @device.change({ x: 8, y: 1, red: 0x01, green: 0x02, blue: 0x03 })
+            @device.change({ grid: [8, 1], red: 0x01, green: 0x02, blue: 0x03 })
           end
         end
 
-        it 'raises NoValidGridCoordinatesError if y is not specified' do
+        it 'raises NoValidGridCoordinatesError if y is nil' do
           assert_raises SurfaceMaster::Launchpad::NoValidGridCoordinatesError do
-            @device.change({ x: 1, red: 0x01, green: 0x02, blue: 0x03 })
+            @device.change({ grid: [1, nil], red: 0x01, green: 0x02, blue: 0x03 })
           end
         end
 
         it 'raises NoValidGridCoordinatesError if y is below 0' do
           assert_raises SurfaceMaster::Launchpad::NoValidGridCoordinatesError do
-            @device.change({ x: 1, y: -1, red: 0x01, green: 0x02, blue: 0x03 })
+            @device.change({ grid: [1, -1], red: 0x01, green: 0x02, blue: 0x03 })
           end
         end
 
         it 'raises NoValidGridCoordinatesError if y is above 7' do
           assert_raises SurfaceMaster::Launchpad::NoValidGridCoordinatesError do
-            @device.change({ x: 1, y: 8, red: 0x01, green: 0x02, blue: 0x03 })
+            @device.change({ grid: [1, 8], red: 0x01, green: 0x02, blue: 0x03 })
           end
         end
       end
@@ -295,7 +292,6 @@ describe SurfaceMaster::Launchpad::Device do
     end
 
     describe 'initialized with input' do
-
       before do
         @device = SurfaceMaster::Launchpad::Device.new(output: false)
       end
@@ -327,7 +323,7 @@ describe SurfaceMaster::Launchpad::Device do
           8.times do |y|
             STATES.each do |state, velocity|
               it "builds proper action for grid button #{x},#{y}, #{state}" do
-                stub_input(@device, {:timestamp => 0, :message => [0x90, 10 * y + x, velocity]})
+                stub_input(@device, {:timestamp => 0, :message => [0x90, 10 * y + x + 11, velocity]})
                 assert_equal [{timestamp: 0, state: state, type: :grid, x: x, y: y}], @device.read
               end
             end
@@ -336,12 +332,12 @@ describe SurfaceMaster::Launchpad::Device do
       end
 
       it 'builds proper actions for multiple pending actions' do
-        stub_input(@device, {:timestamp => 1, :message => [0x90, 0, 127]}, {:timestamp => 2, :message => [0xB0, 0x68, 0]})
-        assert_equal [{:timestamp => 1, :state => :down, :type => :grid, :x => 0, :y => 0}, {:timestamp => 2, :state => :up, :type => :up}], @device.read
+        stub_input(@device,
+                  { timestamp: 1, message: [0x90, 0x0B, 0x7F] },
+                  { timestamp: 2, message: [0xB0, 0x68, 0x00] })
+        assert_equal [{ timestamp: 1, state: :down,  type: :grid, x: 0, y: 0 },
+                      { timestamp: 2, state: :up,    type: :up}], @device.read
       end
-
     end
-
   end
-
 end
