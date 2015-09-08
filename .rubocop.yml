@@ -1,0 +1,107 @@
+AllCops:
+  Include:
+    - '**/Gemfile'
+    - '**/Rakefile'
+    - '**/*.rake'
+    - '**/*.gemspec'
+  Exclude:
+    - tmp/**/*
+    - pkg/**/*
+
+Lint/FormatParameterMismatch:
+  Enabled: true
+
+# Lint/OptionHash:
+#   Enabled: true
+
+Metrics/LineLength:
+  Max: 100
+
+Metrics/MethodLength:
+  Exclude:
+  - 'db/migrate/*'
+
+Performance/StringReplacement:
+  Enabled: true
+
+Style/AccessModifierIndentation:
+  EnforcedStyle: outdent
+
+Style/AlignHash:
+  EnforcedColonStyle: table
+  # TODO: Err, maybe keys here?
+  EnforcedLastArgumentHashStyle: ignore_implicit
+
+Style/CollectionMethods:
+  PreferredMethods:
+    find: detect
+    inject: reduce
+    collect: map
+    find_all: select
+
+# Allow comments to be aligned to one another.
+Style/CommentIndentation:
+  Enabled: false
+
+# Don't bother with class documentation for Rails application class, and DB
+# migrations.
+Style/Documentation:
+  Exclude:
+  - 'db/migrate/*'
+  - 'config/application.rb'
+
+# We like the truthiness operator.
+Style/DoubleNegation:
+  Enabled: false
+
+# Style/DotPosition:
+#   EnforcedStyle: trailing
+
+Style/EmptyLineBetweenDefs:
+  AllowAdjacentOneLineDefs: true
+
+Style/ExtraSpacing:
+  AllowForAlignment: true
+
+Style/FormatString:
+  EnforcedStyle: 'String#%'
+  SupportedStyles: 'String#%'
+
+# Style/GuardClause:
+#   Enabled: false
+
+Style/IfUnlessModifier:
+  Enabled: false
+
+Style/LineEndConcatenation:
+  Enabled: false
+
+Style/RegexpLiteral:
+  AllowInnerSlashes: false
+
+Style/RescueEnsureAlignment:
+  Enabled: true
+
+# Style/RescueModifier:
+#   Enabled: false
+
+# We like terse methods.
+Style/SingleLineMethods:
+  Enabled: false
+
+Style/SpaceAroundOperators:
+  MultiSpaceAllowedForOperators:
+    - '='
+    - '=>'
+    - '||='
+    - '+='
+    - '-='
+    - '*='
+    - '/='
+
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
+
+Style/TrailingComma:
+  EnforcedStyleForMultiline: comma
+  SupportedStyles: comma
