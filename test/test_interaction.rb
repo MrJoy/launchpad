@@ -4,7 +4,6 @@ require 'timeout'
 class BreakError < StandardError; end
 
 describe SurfaceMaster::Launchpad::Interaction do
-
   # returns true/false whether the operation ended or the timeout was hit
   def timeout(timeout = 0.02, &block)
     Timeout.timeout(timeout, &block)
@@ -25,7 +24,7 @@ describe SurfaceMaster::Launchpad::Interaction do
     end
     8.times do |y|
       8.times do |x|
-        press(interaction, :grid, :x => x, :y => y)
+        press(interaction, :grid, x: x, y: y)
       end
       press(interaction, :"scene#{y + 1}")
     end
@@ -34,59 +33,59 @@ describe SurfaceMaster::Launchpad::Interaction do
   describe '#initialize' do
 
     it 'creates device if not given' do
-      device = Launchpad::Device.new
-      Launchpad::Device.expects(:new).
+      device = SurfaceMaster::Launchpad::Device.new
+      SurfaceMaster::Launchpad::Device.expects(:new).
         with(:input => true, :output => true, :logger => nil).
         returns(device)
-      interaction = Launchpad::Interaction.new
+      interaction = SurfaceMaster::Launchpad::Interaction.new
       assert_same device, interaction.device
     end
 
     it 'creates device with given device_name' do
-      device = Launchpad::Device.new
-      Launchpad::Device.expects(:new).
+      device = SurfaceMaster::Launchpad::Device.new
+      SurfaceMaster::Launchpad::Device.expects(:new).
         with(:device_name => 'device', :input => true, :output => true, :logger => nil).
         returns(device)
-      interaction = Launchpad::Interaction.new(:device_name => 'device')
+      interaction = SurfaceMaster::Launchpad::Interaction.new(:device_name => 'device')
       assert_same device, interaction.device
     end
 
     it 'creates device with given input_device_id' do
-      device = Launchpad::Device.new
-      Launchpad::Device.expects(:new).
+      device = SurfaceMaster::Launchpad::Device.new
+      SurfaceMaster::Launchpad::Device.expects(:new).
         with(:input_device_id => 'in', :input => true, :output => true, :logger => nil).
         returns(device)
-      interaction = Launchpad::Interaction.new(:input_device_id => 'in')
+      interaction = SurfaceMaster::Launchpad::Interaction.new(:input_device_id => 'in')
       assert_same device, interaction.device
     end
 
     it 'creates device with given output_device_id' do
-      device = Launchpad::Device.new
-      Launchpad::Device.expects(:new).
+      device = SurfaceMaster::Launchpad::Device.new
+      SurfaceMaster::Launchpad::Device.expects(:new).
         with(:output_device_id => 'out', :input => true, :output => true, :logger => nil).
         returns(device)
-      interaction = Launchpad::Interaction.new(:output_device_id => 'out')
+      interaction = SurfaceMaster::Launchpad::Interaction.new(:output_device_id => 'out')
       assert_same device, interaction.device
     end
 
     it 'creates device with given input_device_id/output_device_id' do
-      device = Launchpad::Device.new
-      Launchpad::Device.expects(:new).
+      device = SurfaceMaster::Launchpad::Device.new
+      SurfaceMaster::Launchpad::Device.expects(:new).
         with(:input_device_id => 'in', :output_device_id => 'out', :input => true, :output => true, :logger => nil).
         returns(device)
-      interaction = Launchpad::Interaction.new(:input_device_id => 'in', :output_device_id => 'out')
+      interaction = SurfaceMaster::Launchpad::Interaction.new(:input_device_id => 'in', :output_device_id => 'out')
       assert_same device, interaction.device
     end
 
     it 'initializes device if given' do
-      device = Launchpad::Device.new
-      interaction = Launchpad::Interaction.new(:device => device)
+      device = SurfaceMaster::Launchpad::Device.new
+      interaction = SurfaceMaster::Launchpad::Interaction.new(:device => device)
       assert_same device, interaction.device
     end
 
     it 'stores the logger given' do
       logger = Logger.new(nil)
-      interaction = Launchpad::Interaction.new(:logger => logger)
+      interaction = SurfaceMaster::Launchpad::Interaction.new(:logger => logger)
       assert_same logger, interaction.logger
       assert_same logger, interaction.device.logger
     end
@@ -100,9 +99,8 @@ describe SurfaceMaster::Launchpad::Interaction do
   describe '#logger=' do
 
     it 'stores the logger and passes it to the device as well' do
-      logger = Logger.new(nil)
-      interaction = Launchpad::Interaction.new
-      interaction.logger = logger
+      logger              = Logger.new(nil)
+      interaction         = SurfaceMaster::Launchpad::Interaction.new(logger: logger)
       assert_same logger, interaction.logger
       assert_same logger, interaction.device.logger
     end
@@ -112,13 +110,13 @@ describe SurfaceMaster::Launchpad::Interaction do
   describe '#close' do
 
     it 'stops the interaction' do
-      interaction = Launchpad::Interaction.new
+      interaction = SurfaceMaster::Launchpad::Interaction.new
       interaction.expects(:stop)
       interaction.close
     end
 
     it 'closes the device' do
-      interaction = Launchpad::Interaction.new
+      interaction = SurfaceMaster::Launchpad::Interaction.new
       interaction.device.expects(:close)
       interaction.close
     end
@@ -128,7 +126,7 @@ describe SurfaceMaster::Launchpad::Interaction do
   describe '#closed?' do
 
     it 'returns false on a newly created interaction, but true after closing' do
-      interaction = Launchpad::Interaction.new
+      interaction = SurfaceMaster::Launchpad::Interaction.new
       assert !interaction.closed?
       interaction.close
       assert interaction.closed?
@@ -139,7 +137,7 @@ describe SurfaceMaster::Launchpad::Interaction do
   describe '#start' do
 
     before do
-      @interaction = Launchpad::Interaction.new
+      @interaction = SurfaceMaster::Launchpad::Interaction.new
     end
 
     after do
@@ -175,8 +173,8 @@ describe SurfaceMaster::Launchpad::Interaction do
     end
 
     it 'raises CommunicationError when Portmidi::DeviceError occurs' do
-      @interaction.device.stubs(:read_pending_actions).raises(Portmidi::DeviceError.new(0))
-      assert_raises Launchpad::CommunicationError do
+      @interaction.device.stubs(:read).raises(Portmidi::DeviceError.new(0))
+      assert_raises SurfaceMaster::Launchpad::CommunicationError do
         @interaction.start
       end
     end
@@ -189,7 +187,7 @@ describe SurfaceMaster::Launchpad::Interaction do
           sleep 0.001 # sleep to make "sure" :mixer :down has been processed
           i.stop
         end
-        @interaction.device.expects(:read_pending_actions).
+        @interaction.device.expects(:read).
           at_least_once.
           returns([
             {
@@ -241,7 +239,7 @@ describe SurfaceMaster::Launchpad::Interaction do
       end
 
       it 'sleeps with given latency' do
-        @interaction = Launchpad::Interaction.new(:latency => 0.5, :device => @device)
+        @interaction = SurfaceMaster::Launchpad::Interaction.new(:latency => 0.5, :device => @device)
         timeout(0.55) { @interaction.start }
         assert @times.size > 1
         @times.each_cons(2) do |a,b|
@@ -250,7 +248,7 @@ describe SurfaceMaster::Launchpad::Interaction do
       end
 
       it 'sleeps with absolute value of given negative latency' do
-        @interaction = Launchpad::Interaction.new(:latency => -0.1, :device => @device)
+        @interaction = SurfaceMaster::Launchpad::Interaction.new(:latency => -0.1, :device => @device)
         timeout(0.15) { @interaction.start }
         assert @times.size > 1
         @times.each_cons(2) do |a,b|
@@ -259,7 +257,7 @@ describe SurfaceMaster::Launchpad::Interaction do
       end
 
       it 'does not sleep when latency is 0' do
-        @interaction = Launchpad::Interaction.new(:latency => 0, :device => @device)
+        @interaction = SurfaceMaster::Launchpad::Interaction.new(:latency => 0, :device => @device)
         timeout(0.001) { @interaction.start }
         assert @times.size > 1
         @times.each_cons(2) do |a,b|
@@ -277,7 +275,7 @@ describe SurfaceMaster::Launchpad::Interaction do
 
     it 'raises NoOutputAllowedError on closed interaction' do
       @interaction.close
-      assert_raises Launchpad::NoOutputAllowedError do
+      assert_raises SurfaceMaster::Launchpad::NoOutputAllowedError do
         @interaction.start
       end
     end
@@ -287,7 +285,7 @@ describe SurfaceMaster::Launchpad::Interaction do
   describe '#stop' do
 
     before do
-      @interaction = Launchpad::Interaction.new
+      @interaction = SurfaceMaster::Launchpad::Interaction.new
     end
 
     it 'sets active to false in blocking mode' do
@@ -327,7 +325,7 @@ describe SurfaceMaster::Launchpad::Interaction do
   describe '#response_to/#no_response_to/#respond_to' do
 
     before do
-      @interaction = Launchpad::Interaction.new
+      @interaction = SurfaceMaster::Launchpad::Interaction.new
     end
 
     it 'calls all responses that match, and not others' do
@@ -437,7 +435,7 @@ describe SurfaceMaster::Launchpad::Interaction do
       log = StringIO.new
       logger = Logger.new(log)
       logger.level = Logger::ERROR
-      i = Launchpad::Interaction.new(:logger => logger)
+      i = SurfaceMaster::Launchpad::Interaction.new(:logger => logger)
       i.response_to(:mixer, :down) {|i,a| i.stop}
       i.device.expects(:read_pending_actions).
         at_least_once.
