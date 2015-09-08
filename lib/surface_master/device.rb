@@ -69,7 +69,8 @@ module SurfaceMaster
     end
 
     def create_device!(devices, device_type, opts)
-      logger.debug "Creating #{device_type} with #{opts.inspect}, choosing from portmidi devices: #{devices.inspect}"
+      logger.debug "Creating #{device_type} with #{opts.inspect}, choosing from portmidi devices:"\
+        " #{devices.inspect}"
       id = opts[:id]
       if id.nil?
         name    = opts[:name] || @name
@@ -79,12 +80,12 @@ module SurfaceMaster
       if id.nil?
         message = "MIDI Device `#{opts[:id] || opts[:name]}` doesn't exist!"
         logger.fatal message
-        fail SurfaceMaster::NoSuchDeviceError.new(message)
+        fail SurfaceMaster::NoSuchDeviceError, message
       end
       device_type.new(id)
     rescue RuntimeError => e # TODO: Uh, this should be StandardException, perhaps?
       logger.fatal "Error creating #{device_type}: #{e.inspect}"
-      raise SurfaceMaster::DeviceBusyError.new(e)
+      raise SurfaceMaster::DeviceBusyError, e
     end
 
     def message(status, data1, data2); { message: [status, data1, data2], timestamp: 0 }; end

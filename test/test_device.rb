@@ -129,7 +129,7 @@ describe SurfaceMaster::Launchpad::Device do
         @device = SurfaceMaster::Launchpad::Device.new
       end
 
-      it "closes input/output and raise NoInputAllowedError/NoOutputAllowedError on subsequent read/write accesses" do
+      it "closes input/output, and raises No<x>AllowedError on subsequent accesses" do
         @input.expects(:close)
         @output.expects(:close)
         @device.close

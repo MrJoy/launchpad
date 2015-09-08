@@ -1,5 +1,6 @@
 module SurfaceMaster
-  # Base class for event-based drivers.  Sub-classes should extend the constructor, and implement `respond_to_action`
+  # Base class for event-based drivers.  Sub-classes should extend the constructor, and implement
+  # `respond_to_action`, etc.
   class Interaction
     include Logging
 
@@ -44,14 +45,7 @@ module SurfaceMaster
         begin
           while @active
             @device.read.each do |action|
-              if @use_threads
-                action_thread = Thread.new(action) do |act|
-                  respond_to_action(act)
-                end
-                @action_threads.add(action_thread)
-              else
-                respond_to_action(action)
-              end
+              handle_action(action)
             end
             sleep @latency if @latency && @latency > 0.0
           end
@@ -90,7 +84,8 @@ module SurfaceMaster
     end
 
     def response_to(types = :all, state = :both, opts = nil, &block)
-      logger.debug "Setting response to #{types.inspect} for state #{state.inspect} with #{opts.inspect}"
+      logger.debug "Setting response to #{types.inspect} for state #{state.inspect} with"\
+        " #{opts.inspect}"
       types = Array(types)
       opts ||= {}
       no_response_to(types, state) if opts[:exclusive] == true
@@ -122,6 +117,17 @@ module SurfaceMaster
     end
 
   protected
+
+    def handle_action(action)
+      if @use_threads
+        action_thread = Thread.new(action) do |act|
+          respond_to_action(act)
+        end
+        @action_threads.add(action_thread)
+      else
+        respond_to_action(action)
+      end
+    end
 
     def responses
       # TODO: Generalize for arbitrary actions...

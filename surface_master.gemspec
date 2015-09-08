@@ -9,8 +9,10 @@ Gem::Specification.new do |s|
   s.email       = ["jfrisby@mrjoy.com"]
   s.homepage    = "https://github.com/MrJoy/surface_master"
   s.summary     = "A gem for accessing various MIDI control surfaces programmatically."
-  s.description = "This gem provides an interface to access Novation's LaunchPad Mark 2, and Numark's Orbit programmatically. LEDs can be lit and button presses can be read."
-  # TODO: Update docs to give credit to Thomas Jachmann (self@thomasjachmann.com) for his `launchpad` gem.
+  s.description = "This gem provides an interface to access Novation's LaunchPad Mark 2, and"\
+    " Numark's Orbit programmatically. LEDs can be lit and button presses can be read."
+  # TODO: Update docs to give credit to Thomas Jachmann (self@thomasjachmann.com) for his
+  # TODO: `launchpad` gem.
 
   s.required_ruby_version = ">= 2.2.0"
 

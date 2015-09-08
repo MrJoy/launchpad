@@ -1,5 +1,6 @@
 module SurfaceMaster
   module Orbit
+    # Higher-level interface for Numark Orbit wireless MIDI control surface.
     class Interaction < SurfaceMaster::Interaction
       def initialize(opts = nil)
         @device_class = Device

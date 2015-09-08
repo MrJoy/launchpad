@@ -73,10 +73,11 @@ module SurfaceMaster
           (msg_by_command[command] ||= []) << payload
         end
         msg_by_command.each do |command, payloads|
-          # The documented batch size for RGB LED updates is 80.  The docs lie, at least on my current
-          # firmware version -- anything above 62 crashes the device hard.
+          # The documented batch size for RGB LED updates is 80.  The docs lie, at least on my
+          # current firmware version -- anything above 62 crashes the device hard.
           while (slice = payloads.shift(62)).length > 0
-            result = sysex!(command, *slice.map { |payload| [payload[:led], payload[:color]] })
+            messages = slice.map { |payload| [payload[:led], payload[:color]] }
+            result = sysex!(command, *messages)
             if result != 0
               # TODO: Raise an exception.
             end
@@ -109,34 +110,35 @@ module SurfaceMaster
 
       def decode_led(opts)
         case
-        when opts[:cc]
-          [:cc, TYPE_TO_NOTE[opts[:cc]]]
-        when opts[:grid]
-          if opts[:grid] == :all
-            [:all, nil]
-          else
-            x = opts[:grid][0]
-            y = opts[:grid][1]
-            if opts[:grid].length != 2 ||
-               !x ||
-               !y ||
-               x < 0 ||
-               x > 7 ||
-               y < 0 ||
-               y > 7
-              fail SurfaceMaster::Launchpad::NoValidGridCoordinatesError
-            end
-
-            [:grid, (opts[:grid][1] * 10) + opts[:grid][0] + 11]
-          end
-        when opts[:column]
-          [:column, opts[:column]]
-        when opts[:row]
-          [:row, opts[:row]]
+        when opts[:cc]      then [:cc, TYPE_TO_NOTE[opts[:cc]]]
+        when opts[:grid]    then decode_grid_led(opts)
+        when opts[:column]  then [:column, opts[:column]]
+        when opts[:row]     then [:row, opts[:row]]
         end
       rescue
         raise SurfaceMaster::Launchpad::NoValidGridCoordinatesError
       end
+
+      def decode_grid_led(opts)
+        if opts[:grid] == :all
+          [:all, nil]
+        else
+          check_xy_values!(opts[:grid])
+          [:grid, (opts[:grid][1] * 10) + opts[:grid][0] + 11]
+        end
+      end
+
+      def check_xy_values!(xy_pair)
+        x = xy_pair[0]
+        y = xy_pair[1]
+        return unless xy_pair.length != 2 ||
+                      !coord_in_range?(x) ||
+                      !coord_in_range?(y)
+
+        fail SurfaceMaster::Launchpad::NoValidGridCoordinatesError
+      end
+
+      def coord_in_range?(val); val && x >= 0 && val <= 7; end
 
       TYPE_TO_COMMAND = { cc:     0x0B,
                           grid:   0x0B,
@@ -162,7 +164,7 @@ module SurfaceMaster
       def outputs!(*messages)
         messages = Array(messages)
         if @output.nil?
-          logger.error "trying to write to device that's not been initialized for output"
+          logger.error "trying to write to device not open for output"
           fail SurfaceMaster::NoOutputAllowedError
         end
         logger.debug "writing messages to launchpad:\n  #{messages.join("\n  ")}" if logger.debug?

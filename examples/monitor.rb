@@ -16,19 +16,31 @@ def goodbye(interaction)
   interaction.changes(data)
 end
 
-def bar(interaction, x, val, r, g, b)
-  data = []
-  (0..val).each do |y|
-    data << { x: x, y: y, red: r, green: g, blue: b }
+# Janky bar-graph widget.
+class Bar
+  BLACK = { red: 0x00, green: 0x00, blue: 0x00 }
+  def initialize(interaction, x, color)
+    @interaction  = interaction
+    @x            = x
+    @color        = color
   end
-  ((val + 1)..7).each do |y|
-    data << { x: x, y: y, red: 0x00, green: 0x00, blue: 0x00 }
+
+  def update(val)
+    data = []
+    (0..val).each do |y|
+      data << @color.merge(grid: [@x, y])
+    end
+    ((val + 1)..7).each do |y|
+      data << BLACK.merge(grid: [@x, y])
+    end
+    @interaction.changes(data)
   end
-  interaction.changes(data)
 end
 
 interaction = SurfaceMaster::Launchpad::Interaction.new
-monitor = Thread.new do
+cpu_bar     = Bar.new(interaction, 0, red: 0x3F, green: 0x00, blue: 0x00)
+io_bar      = Bar.new(interaction, 0, red: 0x00, green: 0x3F, blue: 0x00)
+monitor     = Thread.new do
   loop do
     fields      = `iostat -c 2 disk0`.split(/\n/).last.strip.split(/\s+/)
     cpu_pct     = 100 - fields[-4].to_i
@@ -43,8 +55,8 @@ monitor = Thread.new do
 
     # TODO: Make block I/O not be a bar but a fill, with scale indicated by color...
 
-    bar(interaction, 0, cpu_usage, 0x3F, 0x00, 0x00)
-    bar(interaction, 1, disk_usage, 0x00, 0x3F, 0x00)
+    cpu_bar.update(cpu_usage)
+    io_bar.update(disk_usage)
   end
 end
 

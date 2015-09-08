@@ -309,7 +309,8 @@ describe SurfaceMaster::Launchpad::Interaction do
       @interaction.stop
     end
 
-    # this is kinda greybox tested, since I couldn't come up with another way to test tread handling [thomas, 2010-01-24]
+    # this is kinda greybox tested, since I couldn't come up with another way to test thread
+    # handling [thomas, 2010-01-24]
     it "raises pending exceptions in detached mode" do
       t = Thread.new { fail BreakError }
       Thread.expects(:new).returns(t)
@@ -424,7 +425,7 @@ describe SurfaceMaster::Launchpad::Interaction do
   end
 
   describe "regression tests" do
-    it "does not raise an exception or write an error to the logger when calling stop within a response in attached mode" do
+    it "doesn't kvetch when calling stop in response in attached mode" do
       log = StringIO.new
       logger = Logger.new(log)
       logger.level = Logger::ERROR

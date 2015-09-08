@@ -25,7 +25,8 @@ PRESSED = (0..7).map { |_x| (0..7).map { |_y| false } }
 NOW     = [Time.now.to_f]
 
 # Helpers
-CC      = %i(up down left right session user1 user2 scene1 scene2 scene3 scene4 scene5 scene6 scene7 scene8)
+CC      = %i(up down left right session user1 user2 scene1 scene2 scene3 scene4 scene5 scene6 scene7
+             scene8)
 GRID    = (0..7).map { |x| (0..7).map { |y| { grid: [x, y] } } }.flatten
 WHITE   = { red: 0x3F, green: 0x3F, blue: 0x3F }
 
@@ -117,7 +118,8 @@ interaction.response_to(:mixer, :down) do |_interaction, _action|
   interaction.stop
 end
 interaction.change(red: 0x03, green: 0x00, blue: 0x00, cc: :mixer)
-interaction.changes(%i(scene1 scene2 scene3 scene4).map { |cc| { red: 0x03, green: 0x03, blue: 0x03, cc: cc } })
+BTN_COL = { red: 0x03, green: 0x03, blue: 0x03, cc: cc }
+interaction.changes(%i(scene1 scene2 scene3 scene4).map { |cc| BTN_COL.merge(cc: cc) })
 
 init_board(interaction)
 input_thread = Thread.new do
@@ -128,7 +130,7 @@ animation_thread = Thread.new do
     begin
       NOW[0] = Time.now.to_f
       init_board(interaction)
-    rescue Exception => e
+    rescue StandardError => e
       puts e.inspect
       puts e.backtrace.join("\n")
     end
