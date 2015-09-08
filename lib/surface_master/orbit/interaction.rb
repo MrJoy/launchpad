@@ -1,6 +1,6 @@
-module ControlCenter
+module SurfaceMaster
   module Orbit
-    class Interaction < ControlCenter::Interaction
+    class Interaction < SurfaceMaster::Interaction
       def initialize(opts = nil)
         @device_class = Device
         super(opts)

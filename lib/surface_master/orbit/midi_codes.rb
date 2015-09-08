@@ -1,4 +1,4 @@
-module ControlCenter
+module SurfaceMaster
   module Orbit
     # This module provides mapping information to help us decode messages from the Numark Orbit.
     #

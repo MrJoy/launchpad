@@ -1,4 +1,4 @@
-module ControlCenter
+module SurfaceMaster
   # This module provides logging facilities. Just include it to be able to log
   # stuff.
   module Logging

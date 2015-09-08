@@ -1,4 +1,4 @@
-module ControlCenter
+module SurfaceMaster
   # Unclassified error.
   class GenericError < StandardError; end
 

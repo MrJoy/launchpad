@@ -1,6 +1,6 @@
-module ControlCenter
+module SurfaceMaster
   module Launchpad
-    class Device < ControlCenter::Device
+    class Device < SurfaceMaster::Device
       include MIDICodes
 
       # TODO: Rename scenes to match Mk2
@@ -134,7 +134,7 @@ module ControlCenter
         messages = Array(messages)
         if @output.nil?
           logger.error "trying to write to device that's not been initialized for output"
-          raise ControlCenter::NoOutputAllowedError
+          raise SurfaceMaster::NoOutputAllowedError
         end
         logger.debug "writing messages to launchpad:\n  #{messages.join("\n  ")}" if logger.debug?
         @output.write(messages)

@@ -4,7 +4,7 @@ require "rubygems"
 require "bundler/setup"
 Bundler.require(:default, :development)
 
-require "control_center"
+require "surface_master"
 
 def goodbye(interaction)
   data = []
@@ -27,7 +27,7 @@ def bar(interaction, x, val, r, g, b)
   interaction.changes(data)
 end
 
-interaction = ControlCenter::Launchpad::Interaction.new
+interaction = SurfaceMaster::Launchpad::Interaction.new
 monitor = Thread.new do
   loop do
     fields      = `iostat -c 2 disk0`.split(/\n/).last.strip.split(/\s+/)

@@ -1,4 +1,4 @@
-module ControlCenter
+module SurfaceMaster
   # Base class for event-based drivers.  Sub-classes should extend the constructor, and implement `respond_to_action`
   class Interaction
     include Logging
@@ -57,7 +57,7 @@ module ControlCenter
           end
         rescue Portmidi::DeviceError => e
           logger.fatal "Could not read from device, stopping reader!"
-          raise ControlCenter::CommunicationError.new(e)
+          raise SurfaceMaster::CommunicationError.new(e)
         rescue Exception => e
           logger.fatal "Unkown error, stopping reader: #{e.inspect}"
           raise e

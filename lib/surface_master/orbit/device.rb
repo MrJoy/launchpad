@@ -1,6 +1,6 @@
-module ControlCenter
+module SurfaceMaster
   module Orbit
-    class Device < ControlCenter::Device
+    class Device < SurfaceMaster::Device
       include MIDICodes
 
       def initialize(opts = nil)
@@ -111,7 +111,7 @@ module ControlCenter
       def sysex_prefix; @sysex_prefix ||= super + [0x00, 0x01, 0x3F, 0x2B]; end
 
       def decode_shoulder(decoded, note, _velocity)
-        decoded[:control].merge!(ControlCenter::Orbit::Device::SHOULDERS[note])
+        decoded[:control].merge!(SurfaceMaster::Orbit::Device::SHOULDERS[note])
         decoded
       end
 
@@ -127,7 +127,7 @@ module ControlCenter
       end
 
       def decode_control(decoded, note, velocity)
-        tmp         = ControlCenter::Orbit::Device::SELECTORS[note]
+        tmp         = SurfaceMaster::Orbit::Device::SELECTORS[note]
         tmp[:index] = velocity
         decoded[:control].merge!(tmp)
         decoded
@@ -145,12 +145,12 @@ module ControlCenter
       end
 
       def decode_input(input)
-puts [input[:code].to_hex, input[:note].to_hex, input[:velocity].to_hex].join(" ")
+# puts [input[:code].to_hex, input[:note].to_hex, input[:velocity].to_hex].join(" ")
         note      = input[:note]
         velocity  = input[:velocity]
         code_high = input[:code] & 0xF0
         code_low  = input[:code] & 0x0F
-        raw       = ControlCenter::Orbit::Device::CONTROLS[code_high]
+        raw       = SurfaceMaster::Orbit::Device::CONTROLS[code_high]
         raw       = raw[code_low] if raw
         raw       = enrich_decoded_message(raw, note, velocity, input[:timestamp]) if raw
         raw

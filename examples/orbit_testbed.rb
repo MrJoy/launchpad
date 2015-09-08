@@ -4,7 +4,7 @@ require "rubygems"
 require "bundler/setup"
 Bundler.require(:default, :development)
 
-require "control_center"
+require "surface_master"
 
 class Fixnum
   def to_hex; "%02X" % self; end
@@ -18,8 +18,8 @@ end
 #   message[:raw][:message].map(&:to_hex).join(' ')
 # end
 
-ControlCenter.init!
-device = ControlCenter::Orbit::Device.new
+SurfaceMaster.init!
+device = SurfaceMaster::Orbit::Device.new
 loop do
   device.read.each do |input|
     puts input.inspect

@@ -1,4 +1,4 @@
-module ControlCenter
+module SurfaceMaster
   # Base class for MIDI controller drivers.
   #
   # Sub-classes should extend the constructor, extend `sysex_prefix`, implement `reset!`, and add
@@ -42,7 +42,7 @@ module ControlCenter
     def read
       unless input_enabled?
         logger.error "Trying to read from device that's not been initialized for input!"
-        raise ControlCenter::NoInputAllowedError
+        raise SurfaceMaster::NoInputAllowedError
       end
 
       Array(@input.read(16)).collect do |midi_message|
@@ -62,7 +62,7 @@ module ControlCenter
     def sysex_msg(*payload); (sysex_prefix + [payload, sysex_suffix]).flatten.compact; end
     def sysex!(*payload)
       msg = sysex_msg(payload)
-puts "#{msg.length}: 0x#{msg.map(&:to_hex).join(", 0x")}"
+      logger.debug { "#{msg.length}: 0x#{msg.map(&:to_hex).join(", 0x")}" }
       @output.write_sysex(msg)
     end
 
@@ -77,12 +77,12 @@ puts "#{msg.length}: 0x#{msg.map(&:to_hex).join(", 0x")}"
       if id.nil?
         message = "MIDI Device `#{opts[:id] || opts[:name]}` doesn't exist!"
         logger.fatal message
-        raise ControlCenter::NoSuchDeviceError.new(message)
+        raise SurfaceMaster::NoSuchDeviceError.new(message)
       end
       device_type.new(id)
     rescue RuntimeError => e # TODO: Uh, this should be StandardException, perhaps?
       logger.fatal "Error creating #{device_type}: #{e.inspect}"
-      raise ControlCenter::DeviceBusyError.new(e)
+      raise SurfaceMaster::DeviceBusyError.new(e)
     end
 
     def message(status, data1, data2); { message: [status, data1, data2], timestamp: 0 }; end

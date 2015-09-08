@@ -1,4 +1,4 @@
-module ControlCenter
+module SurfaceMaster
   module Launchpad
     module MIDICodes
       # Module defining MIDI status codes.

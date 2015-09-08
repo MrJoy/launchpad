@@ -1,6 +1,6 @@
-require 'helper'
+require "helper"
 
-describe ControlCenter::Launchpad::Device do
+describe SurfaceMaster::Launchpad::Device do
 
   CONTROL_BUTTONS = {
     :up       => 0x68,

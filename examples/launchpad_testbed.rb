@@ -1,10 +1,9 @@
 #!/usr/bin/env ruby
-# require "bignum"
 require "rubygems"
 require "bundler/setup"
 Bundler.require(:default, :development)
 
-require "control_center"
+require "surface_master"
 
 # Flash:    F0h 00h 20h 29h 02h 18h 23h <LED> <Colour> F7h
 # Pulse:    F0h 00h 20h 29h 02h 18h 28h <LED> <Colour> F7h
@@ -80,8 +79,8 @@ def goodbye(interaction)
   interaction.close
 end
 
-ControlCenter.init!
-interaction = ControlCenter::Launchpad::Interaction.new
+SurfaceMaster.init!
+interaction = SurfaceMaster::Launchpad::Interaction.new
 interaction.response_to(:grid) do |inter, action|
   x = action[:x]
   y = action[:y]

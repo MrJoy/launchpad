@@ -1,6 +1,6 @@
 module Launchpad
   # Generic launchpad error.
-  class LaunchpadError < ControlCenter::GenericError; end
+  class LaunchpadError < SurfaceMaster::GenericError; end
 
   # Error raised when <tt>x/y</tt> coordinates outside of the grid
   # or none were specified.
