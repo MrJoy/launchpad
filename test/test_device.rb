@@ -21,10 +21,9 @@ describe SurfaceMaster::Launchpad::Device do
   STATES          = { down: 127,
                       up:   0 }
 
-  def expects_output(device, *args)
-    args = [args] unless args.first.is_a?(Array)
-    messages = args.collect { |data| device.send(:sysex_prefix) + data + [device.send(:sysex_suffix)] }
-    device.instance_variable_get('@output').expects(:write_sysex).with(*messages)
+  def expects_output(device, args)
+    messages = args.map { |data| device.send(:sysex_prefix) + data + [device.send(:sysex_suffix)] }
+    device.instance_variable_get('@output').expects(write_sysex: messages)
   end
 
   def stub_input(device, *args)
@@ -32,7 +31,6 @@ describe SurfaceMaster::Launchpad::Device do
   end
 
   describe '#initialize' do
-
     it 'tries to initialize both input and output when not specified' do
       Portmidi.expects(:input_devices).returns(mock_devices)
       Portmidi.expects(:output_devices).returns(mock_devices)
@@ -84,28 +82,28 @@ describe SurfaceMaster::Launchpad::Device do
     end
 
     it 'raises NoSuchDeviceError when requested input device does not exist' do
-      assert_raises Launchpad::NoSuchDeviceError do
+      assert_raises SurfaceMaster::NoSuchDeviceError do
         Portmidi.stubs(:input_devices).returns(mock_devices(:name => 'Launchpad Input'))
         SurfaceMaster::Launchpad::Device.new
       end
     end
 
     it 'raises NoSuchDeviceError when requested output device does not exist' do
-      assert_raises Launchpad::NoSuchDeviceError do
+      assert_raises SurfaceMaster::NoSuchDeviceError do
         Portmidi.stubs(:output_devices).returns(mock_devices(:name => 'Launchpad Output'))
         SurfaceMaster::Launchpad::Device.new
       end
     end
 
     it 'raises DeviceBusyError when requested input device is busy' do
-      assert_raises Launchpad::DeviceBusyError do
+      assert_raises SurfaceMaster::DeviceBusyError do
         Portmidi::Input.stubs(:new).raises(RuntimeError)
         SurfaceMaster::Launchpad::Device.new
       end
     end
 
     it 'raises DeviceBusyError when requested output device is busy' do
-      assert_raises Launchpad::DeviceBusyError do
+      assert_raises SurfaceMaster::DeviceBusyError do
         Portmidi::Output.stubs(:new).raises(RuntimeError)
         SurfaceMaster::Launchpad::Device.new
       end
@@ -116,20 +114,17 @@ describe SurfaceMaster::Launchpad::Device do
       device = SurfaceMaster::Launchpad::Device.new(:logger => logger)
       assert_same logger, device.logger
     end
-
   end
 
   describe '#close' do
-
     it 'does not fail when neither input nor output are there' do
       SurfaceMaster::Launchpad::Device.new(:input => false, :output => false).close
     end
 
     describe 'with input and output devices' do
-
       before do
         Portmidi::Input.stubs(:new).returns(@input = mock('input'))
-        Portmidi::Output.stubs(:new).returns(@output = mock('output', :write => nil))
+        Portmidi::Output.stubs(:new).returns(@output = mock('output'))
         @device = SurfaceMaster::Launchpad::Device.new
       end
 
@@ -144,13 +139,10 @@ describe SurfaceMaster::Launchpad::Device do
           @device.change({ red: 0x00, green: 0x00, blue: 0x00, cc: :mixer })
         end
       end
-
     end
-
   end
 
   describe '#closed?' do
-
     it 'returns true when neither input nor output are there' do
       assert SurfaceMaster::Launchpad::Device.new(input: false, output: false).closed?
     end
@@ -169,16 +161,15 @@ describe SurfaceMaster::Launchpad::Device do
       d.close
       assert d.closed?
     end
-
   end
 
-  { reset:          [0xB0, 0x00, 0x00],
+  { reset:          [[0x22, 0x00],
+                     [0xB0, 0x00, 0x00]],
     # flashing_on:    [0xB0, 0x00, 0x20],
     # flashing_off:   [0xB0, 0x00, 0x21],
     # flashing_auto:  [0xB0, 0x00, 0x28],
   }.each do |method, codes|
     describe "##{method}" do
-
       it 'raises NoOutputAllowedError when not initialized with output' do
         assert_raises SurfaceMaster::NoOutputAllowedError do
           SurfaceMaster::Launchpad::Device.new(:output => false).send(method)
@@ -187,10 +178,9 @@ describe SurfaceMaster::Launchpad::Device do
 
       it "sends #{codes.inspect}" do
         d = SurfaceMaster::Launchpad::Device.new
-        expects_output(d, *codes)
+        expects_output(d, codes)
         d.send(method)
       end
-
     end
   end
 
@@ -214,7 +204,7 @@ describe SurfaceMaster::Launchpad::Device do
       describe 'control buttons' do
         CONTROL_BUTTONS.each do |type, value|
           it "sends 0x0B, #{value}, 0x01, 0x02, 0x03 when given { red: 0x01, green: 0x02, blue: 0x03, cc: :#{type} }" do
-            expects_output(@device, 0x0B, value, 0x01, 0x02, 0x03)
+            expects_output(@device, [[0x0B, value, 0x01, 0x02, 0x03]])
             @device.change({ red: 0x01, green: 0x02, blue: 0x03, cc: type })
           end
         end
@@ -223,7 +213,7 @@ describe SurfaceMaster::Launchpad::Device do
       describe 'scene buttons' do
         SCENE_BUTTONS.each do |type, value|
           it "sends 0x90, #{value}, 0x01, 0x02, 0x03 when given { cc: :#{type}, red: 0x01, green: 0x02, blue: 0x03 }" do
-            expects_output(@device, 0x0B, value, 0x01, 0x02, 0x03)
+            expects_output(@device, [[0x0B, value, 0x01, 0x02, 0x03]])
             @device.change({ cc: type, red: 0x01, green: 0x02, blue: 0x03 })
           end
         end
@@ -233,7 +223,7 @@ describe SurfaceMaster::Launchpad::Device do
         8.times do |x|
           8.times do |y|
             it "sends 0x90, #{10 * y + x}, 12 when given { grid: [#{x}, #{y}], red: 0x01, green: 0x02, blue: 0x03 }" do
-              expects_output(@device, 0x0B, 10 * y + x + 11, 0x01, 0x02, 0x03)
+              expects_output(@device, [[0x0B, 10 * y + x + 11, 0x01, 0x02, 0x03]])
               @device.change({ grid: [x, y], red: 0x01, green: 0x02, blue: 0x03 })
             end
           end
