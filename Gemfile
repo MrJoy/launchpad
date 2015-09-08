@@ -9,5 +9,7 @@ group :development do
   gem "rake",               require: false
   gem "minitest-reporters", require: false
   gem "mocha",              require: false
+  gem "bundler-audit",      require: false
+  gem "rubocop",            require: false
   gem "pry"
 end
