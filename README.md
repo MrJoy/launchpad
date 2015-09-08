@@ -9,7 +9,8 @@ Where appropriate this includes setting LEDs and responding to input events.
 
 * Novation Launchpad, Mark 2 (the one with RGB support)
 * Numark Orbit
-    * At present you need to use the Numark Orbit Editor to send a specific mapping to the device, and setting of LEDs doesn't work.
+    * At present you need to use the `Numark Orbit Editor` to send a specific mapping to the device, and setting of LEDs doesn't work.
+    * See `mappings/Orbit_Preset.json` for the preset to use with `Numark Orbit Editor`.
 
 
 ## Requirements
@@ -27,7 +28,7 @@ The gem is known to be compatible with the following ruby versions:
 
 ## Usage
 
-To be written.  In the meantime, see the examples directory.
+To be written.  In the meantime, see the `examples` directory.
 
 
 ## Future plans
@@ -37,6 +38,9 @@ To be written.  In the meantime, see the examples directory.
 * Support for setting up Numark Orbit button mappings.
 * Support for setting LEDs on Numark Orbit.
 * Expanded support for Novation Launchpad features (blinking/pulsing, etc)
+* Test suite.
+* Normalize message structures across devices a bit.
+* `Interaction` class for Orbit, or ditch the `Interaction` class entirely.
 
 
 ## License
