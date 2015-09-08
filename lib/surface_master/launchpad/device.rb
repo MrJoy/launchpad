@@ -83,6 +83,9 @@ module SurfaceMaster
             input[:x] = note % 10
             input[:y] = note / 10
           end
+          input.delete(:code)
+          input.delete(:note)
+          input.delete(:velocity)
           input
         end
       end
