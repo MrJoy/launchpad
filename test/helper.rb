@@ -10,11 +10,10 @@ end
 
 require 'mocha/setup'
 
-require 'launchpad'
+require 'surface_master'
 
 # mock Portmidi for tests
 module Portmidi
-
   class Input
     attr_accessor :device_id
     def initialize(device_id)
@@ -36,7 +35,6 @@ module Portmidi
   def self.input_devices; mock_devices; end
   def self.output_devices; mock_devices; end
   def self.start; end
-
 end
 
 def mock_devices(opts = {})

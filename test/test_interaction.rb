@@ -3,7 +3,7 @@ require 'timeout'
 
 class BreakError < StandardError; end
 
-describe Launchpad::Interaction do
+describe SurfaceMaster::Launchpad::Interaction do
 
   # returns true/false whether the operation ended or the timeout was hit
   def timeout(timeout = 0.02, &block)
