@@ -61,6 +61,7 @@ module SurfaceMaster
     def sysex_suffix; 0xF7; end
     def sysex_msg(*payload); (sysex_prefix + [payload, sysex_suffix]).flatten.compact; end
     def sysex!(*payload)
+      raise NoOutputAllowedError unless output_enabled?
       msg = sysex_msg(payload)
       logger.debug { "#{msg.length}: 0x#{msg.map(&:to_hex).join(", 0x")}" }
       @output.write_sysex(msg)
