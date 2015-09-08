@@ -42,7 +42,7 @@ module SurfaceMaster
 
       @reader_thread ||= Thread.new do
         begin
-          while @active do
+          while @active
             @device.read.each do |action|
               if @use_threads
                 action_thread = Thread.new(action) do |act|
@@ -128,6 +128,6 @@ module SurfaceMaster
       @responses ||= Hash.new { |hash, key| hash[key] = { down: [], up: [] } }
     end
 
-    def respond_to_action(action); end
+    def respond_to_action(_action); end
   end
 end

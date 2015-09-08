@@ -21,7 +21,7 @@ module SurfaceMaster
                                 0x03 => { type: :knob,          action: :update,  control: { vknob: 4 } },
                                 0x0C => { type: :accelerometer, action: :tilt,    control: { axis: :x } },
                                 0x0D => { type: :accelerometer, action: :tilt,    control: { axis: :y } },
-                                0x0F => { type: :control,       action: :switch,  control: { } } } }.freeze
+                                0x0F => { type: :control,       action: :switch,  control: {} } } }.freeze
       SHOULDERS   = { 0x03 => { button: :left },
                       0x04 => { button: :right } }.freeze
       SELECTORS   = { 0x01 => { selector: :banks },

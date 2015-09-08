@@ -1,16 +1,16 @@
-require 'minitest/spec'
-require 'minitest/autorun'
+require "minitest/spec"
+require "minitest/autorun"
 
 begin
-  require 'minitest/reporters'
+  require "minitest/reporters"
   MiniTest::Reporters.use!
 rescue LoadError
   # ignore when it's not there - must be ruby 1.8
 end
 
-require 'mocha/setup'
+require "mocha/setup"
 
-require 'surface_master'
+require "surface_master"
 
 # mock Portmidi for tests
 module Portmidi
@@ -19,7 +19,8 @@ module Portmidi
     def initialize(device_id)
       self.device_id = device_id
     end
-    def read(*args); nil; end
+
+    def read(*_args); nil; end
     def close; nil; end
   end
 
@@ -28,7 +29,8 @@ module Portmidi
     def initialize(device_id)
       self.device_id = device_id
     end
-    def write(*args); nil; end
+
+    def write(*_args); nil; end
     def close; nil; end
   end
 
@@ -38,5 +40,5 @@ module Portmidi
 end
 
 def mock_devices(opts = {})
-  [Portmidi::Device.new(opts[:id] || 1, 0, 0, opts[:name] || 'Launchpad MK2')]
+  [Portmidi::Device.new(opts[:id] || 1, 0, 0, opts[:name] || "Launchpad MK2")]
 end

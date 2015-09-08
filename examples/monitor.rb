@@ -21,7 +21,7 @@ def bar(interaction, x, val, r, g, b)
   (0..val).each do |y|
     data << { x: x, y: y, red: r, green: g, blue: b }
   end
-  ((val+1)..7).each do |y|
+  ((val + 1)..7).each do |y|
     data << { x: x, y: y, red: 0x00, green: 0x00, blue: 0x00 }
   end
   interaction.changes(data)
@@ -48,7 +48,7 @@ monitor = Thread.new do
   end
 end
 
-interaction.response_to(:mixer, :down) do |_interaction, action|
+interaction.response_to(:mixer, :down) do |_interaction, _action|
   puts "Shutting down"
   begin
     monitor.kill

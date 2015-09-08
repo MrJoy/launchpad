@@ -1,5 +1,5 @@
-require 'helper'
-require 'timeout'
+require "helper"
+require "timeout"
 
 class BreakError < StandardError; end
 
@@ -17,7 +17,6 @@ describe SurfaceMaster::Launchpad::Interaction do
     interaction.respond_to(type, :up, opts)
   end
 
-
   def press_all(interaction)
     %w(up down left right session user1 user2 mixer).each do |type|
       press(interaction, type.to_sym)
@@ -31,60 +30,60 @@ describe SurfaceMaster::Launchpad::Interaction do
   end
 
   describe '#initialize' do
-    it 'creates device if not given' do
+    it "creates device if not given" do
       device = SurfaceMaster::Launchpad::Device.new
-      SurfaceMaster::Launchpad::Device.expects(:new).
-        with(:input => true, :output => true, :logger => nil).
-        returns(device)
+      SurfaceMaster::Launchpad::Device.expects(:new)
+        .with(input: true, output: true, logger: nil)
+        .returns(device)
       interaction = SurfaceMaster::Launchpad::Interaction.new
       assert_same device, interaction.device
     end
 
-    it 'creates device with given device_name' do
+    it "creates device with given device_name" do
       device = SurfaceMaster::Launchpad::Device.new
-      SurfaceMaster::Launchpad::Device.expects(:new).
-        with(:device_name => 'device', :input => true, :output => true, :logger => nil).
-        returns(device)
-      interaction = SurfaceMaster::Launchpad::Interaction.new(:device_name => 'device')
+      SurfaceMaster::Launchpad::Device.expects(:new)
+        .with(device_name: "device", input: true, output: true, logger: nil)
+        .returns(device)
+      interaction = SurfaceMaster::Launchpad::Interaction.new(device_name: "device")
       assert_same device, interaction.device
     end
 
-    it 'creates device with given input_device_id' do
+    it "creates device with given input_device_id" do
       device = SurfaceMaster::Launchpad::Device.new
-      SurfaceMaster::Launchpad::Device.expects(:new).
-        with(:input_device_id => 'in', :input => true, :output => true, :logger => nil).
-        returns(device)
-      interaction = SurfaceMaster::Launchpad::Interaction.new(:input_device_id => 'in')
+      SurfaceMaster::Launchpad::Device.expects(:new)
+        .with(input_device_id: "in", input: true, output: true, logger: nil)
+        .returns(device)
+      interaction = SurfaceMaster::Launchpad::Interaction.new(input_device_id: "in")
       assert_same device, interaction.device
     end
 
-    it 'creates device with given output_device_id' do
+    it "creates device with given output_device_id" do
       device = SurfaceMaster::Launchpad::Device.new
-      SurfaceMaster::Launchpad::Device.expects(:new).
-        with(:output_device_id => 'out', :input => true, :output => true, :logger => nil).
-        returns(device)
-      interaction = SurfaceMaster::Launchpad::Interaction.new(:output_device_id => 'out')
+      SurfaceMaster::Launchpad::Device.expects(:new)
+        .with(output_device_id: "out", input: true, output: true, logger: nil)
+        .returns(device)
+      interaction = SurfaceMaster::Launchpad::Interaction.new(output_device_id: "out")
       assert_same device, interaction.device
     end
 
-    it 'creates device with given input_device_id/output_device_id' do
+    it "creates device with given input_device_id/output_device_id" do
       device = SurfaceMaster::Launchpad::Device.new
-      SurfaceMaster::Launchpad::Device.expects(:new).
-        with(:input_device_id => 'in', :output_device_id => 'out', :input => true, :output => true, :logger => nil).
-        returns(device)
-      interaction = SurfaceMaster::Launchpad::Interaction.new(:input_device_id => 'in', :output_device_id => 'out')
+      SurfaceMaster::Launchpad::Device.expects(:new)
+        .with(input_device_id: "in", output_device_id: "out", input: true, output: true, logger: nil)
+        .returns(device)
+      interaction = SurfaceMaster::Launchpad::Interaction.new(input_device_id: "in", output_device_id: "out")
       assert_same device, interaction.device
     end
 
-    it 'initializes device if given' do
+    it "initializes device if given" do
       device = SurfaceMaster::Launchpad::Device.new
-      interaction = SurfaceMaster::Launchpad::Interaction.new(:device => device)
+      interaction = SurfaceMaster::Launchpad::Interaction.new(device: device)
       assert_same device, interaction.device
     end
 
-    it 'stores the logger given' do
+    it "stores the logger given" do
       logger = Logger.new(nil)
-      interaction = SurfaceMaster::Launchpad::Interaction.new(:logger => logger)
+      interaction = SurfaceMaster::Launchpad::Interaction.new(logger: logger)
       assert_same logger, interaction.logger
       assert_same logger, interaction.device.logger
     end
@@ -95,7 +94,7 @@ describe SurfaceMaster::Launchpad::Interaction do
   end
 
   describe '#logger=' do
-    it 'stores the logger and passes it to the device as well' do
+    it "stores the logger and passes it to the device as well" do
       logger              = Logger.new(nil)
       interaction         = SurfaceMaster::Launchpad::Interaction.new(logger: logger)
       assert_same logger, interaction.logger
@@ -104,13 +103,13 @@ describe SurfaceMaster::Launchpad::Interaction do
   end
 
   describe '#close' do
-    it 'stops the interaction' do
+    it "stops the interaction" do
       interaction = SurfaceMaster::Launchpad::Interaction.new
       interaction.expects(:stop)
       interaction.close
     end
 
-    it 'closes the device' do
+    it "closes the device" do
       interaction = SurfaceMaster::Launchpad::Interaction.new
       interaction.device.expects(:close)
       interaction.close
@@ -118,7 +117,7 @@ describe SurfaceMaster::Launchpad::Interaction do
   end
 
   describe '#closed?' do
-    it 'returns false on a newly created interaction, but true after closing' do
+    it "returns false on a newly created interaction, but true after closing" do
       interaction = SurfaceMaster::Launchpad::Interaction.new
       assert !interaction.closed?
       interaction.close
@@ -140,46 +139,46 @@ describe SurfaceMaster::Launchpad::Interaction do
       end
     end
 
-    it 'sets active to true in blocking mode' do
+    it "sets active to true in blocking mode" do
       refute @interaction.active
       erg = timeout { @interaction.start }
-      refute erg, 'there was no timeout'
+      refute erg, "there was no timeout"
       assert @interaction.active
     end
 
-    it 'sets active to true in detached mode' do
+    it "sets active to true in detached mode" do
       refute @interaction.active
-      @interaction.start(:detached => true)
+      @interaction.start(detached: true)
       assert @interaction.active
     end
 
-    it 'blocks in blocking mode' do
+    it "blocks in blocking mode" do
       erg = timeout { @interaction.start }
-      refute erg, 'there was no timeout'
+      refute erg, "there was no timeout"
     end
 
-    it 'returns immediately in detached mode' do
-      erg = timeout { @interaction.start(:detached => true) }
-      assert erg, 'there was a timeout'
+    it "returns immediately in detached mode" do
+      erg = timeout { @interaction.start(detached: true) }
+      assert erg, "there was a timeout"
     end
 
-    it 'raises CommunicationError when Portmidi::DeviceError occurs' do
+    it "raises CommunicationError when Portmidi::DeviceError occurs" do
       @interaction.device.stubs(:read).raises(Portmidi::DeviceError.new(0))
       assert_raises SurfaceMaster::CommunicationError do
         @interaction.start
       end
     end
 
-    describe 'action handling' do
+    describe "action handling" do
       before do
         @interaction.response_to(:mixer, :down) { @mixer_down = true }
-        @interaction.response_to(:mixer, :up) do |i,a|
+        @interaction.response_to(:mixer, :up) do |i, _a|
           sleep 0.001 # sleep to make "sure" :mixer :down has been processed
           i.stop
         end
-        @interaction.device.expects(:read).
-          at_least_once.
-          returns([
+        @interaction.device.expects(:read)
+          .at_least_once
+          .returns([
             { timestamp: 0,
               state:     :down,
               type:      :mixer },
@@ -189,21 +188,21 @@ describe SurfaceMaster::Launchpad::Interaction do
           ])
       end
 
-      it 'calls respond_to_action with actions from respond_to_action in blocking mode' do
+      it "calls respond_to_action with actions from respond_to_action in blocking mode" do
         erg = timeout(0.5) { @interaction.start }
         assert erg, 'the actions weren\'t called'
         assert @mixer_down, 'the mixer button wasn\'t pressed'
       end
 
-      it 'calls respond_to_action with actions from respond_to_action in detached mode' do
-        @interaction.start(:detached => true)
-        erg = timeout(0.5) { while @interaction.active; sleep 0.01; end }
-        assert erg, 'there was a timeout'
+      it "calls respond_to_action with actions from respond_to_action in detached mode" do
+        @interaction.start(detached: true)
+        erg = timeout(0.5) { sleep 0.01 while @interaction.active }
+        assert erg, "there was a timeout"
         assert @mixer_down, 'the mixer button wasn\'t pressed'
       end
     end
 
-    describe 'latency' do
+    describe "latency" do
       # TODO: This seems like a REALLY janky way to handle these tests...
 
       # TODO: Also, at best the flow of which-code-creates-which-instance is
@@ -220,7 +219,7 @@ describe SurfaceMaster::Launchpad::Interaction do
         end
       end
 
-      it 'sleeps with default latency of 0.001s when none given' do
+      it "sleeps with default latency of 0.001s when none given" do
         @interaction = SurfaceMaster::Launchpad::Interaction.new(device: @device)
         timeout { @interaction.start }
         assert @times.size > 1
@@ -230,25 +229,25 @@ describe SurfaceMaster::Launchpad::Interaction do
         end
       end
 
-      it 'sleeps with given latency' do
+      it "sleeps with given latency" do
         @interaction = SurfaceMaster::Launchpad::Interaction.new(latency: 0.5, device: @device)
         timeout(0.55) { @interaction.start }
         assert @times.size > 1
-        @times.each_cons(2) do |a,b|
+        @times.each_cons(2) do |a, b|
           assert_in_delta 0.5, b - a, 0.01
         end
       end
 
-      it 'sleeps with absolute value of given negative latency' do
+      it "sleeps with absolute value of given negative latency" do
         @interaction = SurfaceMaster::Launchpad::Interaction.new(latency: -0.1, device: @device)
         timeout(0.15) { @interaction.start }
         assert @times.size > 1
-        @times.each_cons(2) do |a,b|
+        @times.each_cons(2) do |a, b|
           assert_in_delta 0.1, b - a, 0.11
         end
       end
 
-      it 'does not sleep when latency is 0' do
+      it "does not sleep when latency is 0" do
         @interaction = SurfaceMaster::Launchpad::Interaction.new(latency: 0, device: @device)
         timeout(0.01) { @interaction.start }
         assert @times.size > 1
@@ -267,7 +266,7 @@ describe SurfaceMaster::Launchpad::Interaction do
     #   @interaction.stop
     # end
 
-    it 'raises NoInputAllowedError on closed interaction' do
+    it "raises NoInputAllowedError on closed interaction" do
       @interaction.close
       assert_raises SurfaceMaster::NoInputAllowedError do
         @interaction.start
@@ -280,22 +279,22 @@ describe SurfaceMaster::Launchpad::Interaction do
       @interaction = SurfaceMaster::Launchpad::Interaction.new
     end
 
-    it 'sets active to false in blocking mode' do
+    it "sets active to false in blocking mode" do
       erg = timeout { @interaction.start }
-      refute erg, 'there was no timeout'
+      refute erg, "there was no timeout"
       assert @interaction.active
       @interaction.stop
       assert !@interaction.active
     end
 
-    it 'sets active to false in detached mode' do
+    it "sets active to false in detached mode" do
       @interaction.start(detached: true)
       assert @interaction.active
       @interaction.stop
       assert !@interaction.active
     end
 
-    it 'is callable anytime' do
+    it "is callable anytime" do
       @interaction.stop
       @interaction.start(detached: true)
       @interaction.stop
@@ -303,8 +302,8 @@ describe SurfaceMaster::Launchpad::Interaction do
     end
 
     # this is kinda greybox tested, since I couldn't come up with another way to test tread handling [thomas, 2010-01-24]
-    it 'raises pending exceptions in detached mode' do
-      t = Thread.new {raise BreakError}
+    it "raises pending exceptions in detached mode" do
+      t = Thread.new { fail BreakError }
       Thread.expects(:new).returns(t)
       @interaction.start(detached: true)
       assert_raises BreakError do
@@ -318,11 +317,11 @@ describe SurfaceMaster::Launchpad::Interaction do
       @interaction = SurfaceMaster::Launchpad::Interaction.new
     end
 
-    it 'calls all responses that match, and not others' do
-      @interaction.response_to(:mixer, :down) {|i, a| @mixer_down = true}
-      @interaction.response_to(:all, :down) {|i, a| @all_down = true}
-      @interaction.response_to(:all, :up) {|i, a| @all_up = true}
-      @interaction.response_to(:grid, :down) {|i, a| @grid_down = true}
+    it "calls all responses that match, and not others" do
+      @interaction.response_to(:mixer, :down) { |_i, _a| @mixer_down = true }
+      @interaction.response_to(:all, :down) { |_i, _a| @all_down = true }
+      @interaction.response_to(:all, :up) { |_i, _a| @all_up = true }
+      @interaction.response_to(:grid, :down) { |_i, _a| @grid_down = true }
       @interaction.respond_to(:mixer, :down)
       assert @mixer_down
       assert @all_down
@@ -330,10 +329,10 @@ describe SurfaceMaster::Launchpad::Interaction do
       assert !@grid_down
     end
 
-    it 'does not call responses when they are deregistered' do
-      @interaction.response_to(:mixer, :down) {|i, a| @mixer_down = true}
-      @interaction.response_to(:mixer, :up) {|i, a| @mixer_up = true}
-      @interaction.response_to(:all, :both) {|i, a| @all_down = a[:state] == :down}
+    it "does not call responses when they are deregistered" do
+      @interaction.response_to(:mixer, :down) { |_i, _a| @mixer_down = true }
+      @interaction.response_to(:mixer, :up) { |_i, _a| @mixer_up = true }
+      @interaction.response_to(:all, :both) { |_i, a| @all_down = a[:state] == :down }
       @interaction.no_response_to(:mixer, :down)
       @interaction.respond_to(:mixer, :down)
       assert !@mixer_down
@@ -345,8 +344,8 @@ describe SurfaceMaster::Launchpad::Interaction do
       assert !@all_down
     end
 
-    it 'does not call responses registered for both when removing for one of both states' do
-      @interaction.response_to(:mixer, :both) {|i, a| @mixer = true}
+    it "does not call responses registered for both when removing for one of both states" do
+      @interaction.response_to(:mixer, :both) { |_i, _a| @mixer = true }
       @interaction.no_response_to(:mixer, :down)
       @interaction.respond_to(:mixer, :down)
       assert !@mixer
@@ -354,9 +353,9 @@ describe SurfaceMaster::Launchpad::Interaction do
       assert @mixer
     end
 
-    it 'removes other responses when adding a new exclusive response' do
-      @interaction.response_to(:mixer, :both) {|i, a| @mixer = true}
-      @interaction.response_to(:mixer, :down, :exclusive => true) {|i, a| @exclusive_mixer = true}
+    it "removes other responses when adding a new exclusive response" do
+      @interaction.response_to(:mixer, :both) { |_i, _a| @mixer = true }
+      @interaction.response_to(:mixer, :down, exclusive: true) { |_i, _a| @exclusive_mixer = true }
       @interaction.respond_to(:mixer, :down)
       assert !@mixer
       assert @exclusive_mixer
@@ -365,73 +364,73 @@ describe SurfaceMaster::Launchpad::Interaction do
       assert @exclusive_mixer
     end
 
-    it 'allows for multiple types' do
+    it "allows for multiple types" do
       @downs = []
-      @interaction.response_to([:up, :down], :down) {|i, a| @downs << a[:type]}
+      @interaction.response_to([:up, :down], :down) { |_i, a| @downs << a[:type] }
       @interaction.respond_to(:up, :down)
       @interaction.respond_to(:down, :down)
       @interaction.respond_to(:up, :down)
       assert_equal [:up, :down, :up], @downs
     end
 
-    describe 'allows to bind to specific grid buttons' do
+    describe "allows to bind to specific grid buttons" do
       before do
         @downs = []
-        @action = lambda {|i, a| @downs << [a[:x], a[:y]]}
+        @action = ->(_i, a) { @downs << [a[:x], a[:y]] }
       end
 
-      it 'one specific grid button' do
-        @interaction.response_to(:grid, :down, :x => 4, :y => 2, &@action)
+      it "one specific grid button" do
+        @interaction.response_to(:grid, :down, x: 4, y: 2, &@action)
         press_all @interaction
         assert_equal [[4, 2]], @downs
       end
 
-      it 'a complete row of grid buttons' do
-        @interaction.response_to(:grid, :down, :y => 2, &@action)
+      it "a complete row of grid buttons" do
+        @interaction.response_to(:grid, :down, y: 2, &@action)
         press_all @interaction
         assert_equal [[0, 2], [1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2]], @downs
       end
 
-      it 'a complete column of grid buttons' do
-        @interaction.response_to(:grid, :down, :x => 3, &@action)
+      it "a complete column of grid buttons" do
+        @interaction.response_to(:grid, :down, x: 3, &@action)
         press_all @interaction
         assert_equal [[3, 0], [3, 1], [3, 2], [3, 3], [3, 4], [3, 5], [3, 6], [3, 7]], @downs
       end
 
-      it 'a complex range of grid buttons' do
-        @interaction.response_to(:grid, :down, :x => [1,[2]], :y => [1, 3..5], &@action)
+      it "a complex range of grid buttons" do
+        @interaction.response_to(:grid, :down, x: [1, [2]], y: [1, 3..5], &@action)
         press_all @interaction
         assert_equal [[1, 1], [2, 1], [1, 3], [2, 3], [1, 4], [2, 4], [1, 5], [2, 5]], @downs
       end
 
-      it 'a specific grid buttons, a column, a row, all grid buttons and all buttons' do
-        @interaction.response_to(:all, :down) { |i, a| @downs << [a[:x], a[:y], :all] }
-        @interaction.response_to(:grid, :down) { |i, a| @downs << [a[:x], a[:y], :grid] }
-        @interaction.response_to(:grid, :down, x: 0) { |i, a| @downs << [a[:x], a[:y], :col] }
-        @interaction.response_to(:grid, :down, y: 0) { |i, a| @downs << [a[:x], a[:y], :row] }
+      it "a specific grid buttons, a column, a row, all grid buttons and all buttons" do
+        @interaction.response_to(:all, :down) { |_i, a| @downs << [a[:x], a[:y], :all] }
+        @interaction.response_to(:grid, :down) { |_i, a| @downs << [a[:x], a[:y], :grid] }
+        @interaction.response_to(:grid, :down, x: 0) { |_i, a| @downs << [a[:x], a[:y], :col] }
+        @interaction.response_to(:grid, :down, y: 0) { |_i, a| @downs << [a[:x], a[:y], :row] }
         @interaction.response_to(:grid, :down, x: 0, y: 0, &@action)
-        press @interaction, :grid, :x => 0, :y => 0
+        press @interaction, :grid, x: 0, y: 0
         assert_equal [[0, 0], [0, 0, :col], [0, 0, :row], [0, 0, :grid], [0, 0, :all]], @downs
       end
     end
   end
 
-  describe 'regression tests' do
-    it 'does not raise an exception or write an error to the logger when calling stop within a response in attached mode' do
+  describe "regression tests" do
+    it "does not raise an exception or write an error to the logger when calling stop within a response in attached mode" do
       log = StringIO.new
       logger = Logger.new(log)
       logger.level = Logger::ERROR
-      inter = SurfaceMaster::Launchpad::Interaction.new(:logger => logger)
-      inter.response_to(:mixer, :down) { |i, a| i.stop }
-      inter.device.expects(:read).
-        at_least_once.
-        returns([{ timestamp: 0,
-                   state:     :down,
-                   type:      :mixer }])
+      inter = SurfaceMaster::Launchpad::Interaction.new(logger: logger)
+      inter.response_to(:mixer, :down) { |i, _a| i.stop }
+      inter.device.expects(:read)
+        .at_least_once
+        .returns([{ timestamp: 0,
+                    state:     :down,
+                    type:      :mixer }])
       # erg =
       timeout { inter.start }
       # assert erg, 'the actions weren\'t called'
-      assert_equal '', log.string
+      assert_equal "", log.string
     end
   end
 end

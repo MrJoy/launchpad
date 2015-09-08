@@ -95,7 +95,7 @@ module SurfaceMaster
                     0x00, 0x0D, 0x00]
 
         if (result = sysex!(*mappings)) != 0
-          raise "Expected success (0) setting mappings, got: #{result}"
+          fail "Expected success (0) setting mappings, got: #{result}"
         end
         sysex!(0x01, 0x00, 0x00)
       end

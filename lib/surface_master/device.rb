@@ -7,9 +7,9 @@ module SurfaceMaster
     include Logging
 
     def initialize(opts = nil)
-      opts  = { input:  true,
-                output: true }
-              .merge(opts || {})
+      opts = { input:  true,
+               output: true }
+             .merge(opts || {})
 
       self.logger = opts[:logger]
       logger.debug "Initializing #{self.class}##{object_id} with #{opts.inspect}"
@@ -42,16 +42,16 @@ module SurfaceMaster
     def read
       unless input_enabled?
         logger.error "Trying to read from device that's not been initialized for input!"
-        raise SurfaceMaster::NoInputAllowedError
+        fail SurfaceMaster::NoInputAllowedError
       end
 
       Array(@input.read(16)).collect do |midi_message|
         (code, note, velocity) = midi_message[:message]
-        { timestamp:  midi_message[:timestamp],
-          state:      (velocity == 127) ? :down : :up,
-          velocity:   velocity,
-          code:       code,
-          note:       note }
+        { timestamp: midi_message[:timestamp],
+          state:     (velocity == 127) ? :down : :up,
+          velocity:  velocity,
+          code:      code,
+          note:      note }
       end
     end
 
@@ -60,10 +60,11 @@ module SurfaceMaster
     def sysex_prefix; [0xF0]; end
     def sysex_suffix; 0xF7; end
     def sysex_msg(*payload); (sysex_prefix + [payload, sysex_suffix]).flatten.compact; end
+
     def sysex!(*payload)
-      raise NoOutputAllowedError unless output_enabled?
+      fail NoOutputAllowedError unless output_enabled?
       msg = sysex_msg(payload)
-      logger.debug { "#{msg.length}: 0x#{msg.map(&:to_hex).join(", 0x")}" }
+      logger.debug { "#{msg.length}: 0x#{msg.map(&:to_hex).join(', 0x')}" }
       @output.write_sysex(msg)
     end
 
@@ -72,13 +73,13 @@ module SurfaceMaster
       id = opts[:id]
       if id.nil?
         name    = opts[:name] || @name
-        device  = devices.select { |dev| dev.name == name }.first
+        device  = devices.find { |dev| dev.name == name }
         id      = device.device_id unless device.nil?
       end
       if id.nil?
         message = "MIDI Device `#{opts[:id] || opts[:name]}` doesn't exist!"
         logger.fatal message
-        raise SurfaceMaster::NoSuchDeviceError.new(message)
+        fail SurfaceMaster::NoSuchDeviceError.new(message)
       end
       device_type.new(id)
     rescue RuntimeError => e # TODO: Uh, this should be StandardException, perhaps?

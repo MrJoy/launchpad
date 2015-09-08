@@ -54,7 +54,7 @@ module SurfaceMaster
       # TODO: Support more of the LaunchPad Mark 2's functionality.
 
       def change(opts = nil)
-        raise NoOutputAllowedError unless output_enabled?
+        fail NoOutputAllowedError unless output_enabled?
         opts ||= {}
         command, payload = color_payload(opts)
         result = sysex!(command, payload[:led], payload[:color])
@@ -65,7 +65,7 @@ module SurfaceMaster
       end
 
       def changes(values)
-        raise NoOutputAllowedError unless output_enabled?
+        fail NoOutputAllowedError unless output_enabled?
         msg_by_command = {}
         values.each do |value|
           command, payload = color_payload(value)
@@ -85,12 +85,12 @@ module SurfaceMaster
       end
 
       def read
-        raise NoInputAllowedError unless input_enabled?
+        fail NoInputAllowedError unless input_enabled?
         super.collect do |input|
           note          = input[:note]
           input[:type]  = CODE_NOTE_TO_TYPE[[input[:code], note]] || :grid
           if input[:type] == :grid
-            note      = note - 11
+            note      -= 11
             input[:x] = note % 10
             input[:y] = note / 10
           end
@@ -123,7 +123,7 @@ module SurfaceMaster
                x > 7 ||
                y < 0 ||
                y > 7
-              raise SurfaceMaster::Launchpad::NoValidGridCoordinatesError
+              fail SurfaceMaster::Launchpad::NoValidGridCoordinatesError
             end
 
             [:grid, (opts[:grid][1] * 10) + opts[:grid][0] + 11]
@@ -162,7 +162,7 @@ module SurfaceMaster
         messages = Array(messages)
         if @output.nil?
           logger.error "trying to write to device that's not been initialized for output"
-          raise SurfaceMaster::NoOutputAllowedError
+          fail SurfaceMaster::NoOutputAllowedError
         end
         logger.debug "writing messages to launchpad:\n  #{messages.join("\n  ")}" if logger.debug?
         @output.write(messages)
@@ -176,7 +176,7 @@ module SurfaceMaster
           y = (opts[:y] || -1).to_i
           if x < 0 || x > 7 || y < 0 || y > 7
             logger.error "wrong coordinates specified: x=#{x}, y=#{y}"
-            raise NoValidGridCoordinatesError.new("you need to specify valid coordinates (x/y, 0-7, from top left), you specified: x=#{x}, y=#{y}")
+            fail NoValidGridCoordinatesError.new("you need to specify valid coordinates (x/y, 0-7, from top left), you specified: x=#{x}, y=#{y}")
           end
           note = y * 10 + x
         end

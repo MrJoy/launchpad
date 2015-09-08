@@ -56,8 +56,8 @@ module SurfaceMaster
           x = grid_range(opts[:x])
           y = grid_range(opts[:y])
           return [:grid] if x.nil? && y.nil?  # whole grid
-          x ||= ['-']                         # whole row
-          y ||= ['-']                         # whole column
+          x ||= ["-"]                         # whole row
+          y ||= ["-"]                         # whole column
           x.product(y).map { |xx, yy| :"grid#{xx}#{yy}" }
         else
           [type.to_sym]
@@ -75,7 +75,7 @@ module SurfaceMaster
         end
         actions += responses[type][state]
         actions += responses[:all][state]
-        actions.compact.each {|block| block.call(self, action)}
+        actions.compact.each { |block| block.call(self, action) }
         nil
       rescue Exception => e # TODO: StandardException, RuntimeError, or Exception?
         logger.error "Error when responding to action #{action.inspect}: #{e.inspect}"

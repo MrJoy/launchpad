@@ -21,7 +21,7 @@ QUADRANTS = [
   [{ red: 0x00, green: 0x00, blue: 0x2F }, { red: 0x2F, green: 0x2F, blue: 0x00 }],
 ]
 FLIPPED = [[false, false], [false, false]]
-PRESSED = (0..7).map { |x| (0..7).map { |y| false } }
+PRESSED = (0..7).map { |_x| (0..7).map { |_y| false } }
 NOW     = [Time.now.to_f]
 
 # Helpers
@@ -37,18 +37,18 @@ def base_color(x, y)
   quad_y  = 1 - (y / 4)
   quad    = QUADRANTS[quad_y][quad_x]
   s_t     = (Math.sin(NOW[0] * TIME_SCALE) * 0.5) + 0.5
-  tmp     = { red:    0x00        + quad[:red] + (s_t * 0x3F).round,
-              green:  (x * SCALE) + quad[:green],
-              blue:   (y * SCALE) + quad[:blue] }
+  tmp     = { red:   0x00 + quad[:red] + (s_t * 0x3F).round,
+              green: (x * SCALE) + quad[:green],
+              blue:  (y * SCALE) + quad[:blue] }
   if FLIPPED[quad_y][quad_x]
     carry       = tmp[:red]
     tmp[:red]   = tmp[:green]
     tmp[:green] = tmp[:blue]
     tmp[:blue]  = carry
   end
-  { red:    clamp(tmp[:red]),
-    green:  clamp(tmp[:green]),
-    blue:   clamp(tmp[:blue]) }
+  { red:   clamp(tmp[:red]),
+    green: clamp(tmp[:green]),
+    blue:  clamp(tmp[:blue]) }
 end
 
 def init_board(interaction)
@@ -60,7 +60,7 @@ def init_board(interaction)
   interaction.changes(values.compact)
 end
 
-def set_grid_rgb(interaction, red:, green:, blue: )
+def set_grid_rgb(interaction, red:, green:, blue:)
   values = GRID.map { |value| value.merge(red: red, green: green, blue: blue) }
   interaction.changes(values)
 end
@@ -91,7 +91,7 @@ interaction.response_to(:grid) do |inter, action|
 end
 
 def flip_quad!(inter, cc, quad_x, quad_y)
-  FLIPPED[quad_y][quad_x]   = !FLIPPED[quad_y][quad_x]
+  FLIPPED[quad_y][quad_x] = !FLIPPED[quad_y][quad_x]
   if FLIPPED[quad_y][quad_x]
     color = { red: 0x1F, green: 0x1F, blue: 0x1F }
   else
@@ -113,10 +113,10 @@ interaction.response_to(:scene4, :down) do |inter, action|
   flip_quad!(inter, action[:type], 1, 1)
 end
 
-interaction.response_to(:mixer, :down) do |_interaction, action|
+interaction.response_to(:mixer, :down) do |_interaction, _action|
   interaction.stop
 end
-interaction.change({ red: 0x03, green: 0x00, blue: 0x00, cc: :mixer })
+interaction.change(red: 0x03, green: 0x00, blue: 0x00, cc: :mixer)
 interaction.changes(%i(scene1 scene2 scene3 scene4).map { |cc| { red: 0x03, green: 0x03, blue: 0x03, cc: cc } })
 
 init_board(interaction)
