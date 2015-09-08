@@ -53,7 +53,7 @@ module SurfaceMaster
                 respond_to_action(action)
               end
             end
-            sleep @latency# if @latency > 0.0
+            sleep @latency if @latency && @latency > 0.0
           end
         rescue Portmidi::DeviceError => e
           logger.fatal "Could not read from device, stopping reader!"
