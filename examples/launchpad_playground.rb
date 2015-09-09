@@ -35,7 +35,7 @@ Bundler.require(:default, :development)
 require "surface_master"
 
 # Animation Configuration
-SCALE       = 2
+SCALE       = [2, 2]
 TIME_SCALE  = 4.0
 TIME_MASK   = { red: 0x3F, green: 0x00, blue: 0x00 }
 QUADRANTS = [[{ red: 0x2F, green: 0x00, blue: 0x00 }, { red: 0x00, green: 0x2F, blue: 0x00 }],
@@ -61,8 +61,8 @@ end
 
 def positional_color(x, y)
   { red:   0x00,
-    green: (x * SCALE),
-    blue:  (y * SCALE) }
+    green: (x * SCALE[0]),
+    blue:  (y * SCALE[1]) }
 end
 
 def temporal_color(_x, _y)
