@@ -7,6 +7,8 @@
     * Still needs a way to bind more specifically than it currently allows, and also to allow binding to sets/ranges of pads.
     * See `examples/orbit_interaction.rb`.
 * Rename `examples/orbit_testbed.rb` to `examples/orbit_device.rb`.
+* Rename `examples/monitor.rb` to `examples/system_monitor.rb`.
+* Rename `examples/launchpad_testbed.rb` to `examples/launchpad_playground.rb`.
 
 
 ## v0.2.1
