@@ -39,14 +39,14 @@ end
 
 interaction = SurfaceMaster::Launchpad::Interaction.new
 cpu_bar     = Bar.new(interaction, 0, red: 0x3F, green: 0x00, blue: 0x00)
-io_bar      = Bar.new(interaction, 0, red: 0x00, green: 0x3F, blue: 0x00)
+io_bar      = Bar.new(interaction, 1, red: 0x00, green: 0x3F, blue: 0x00)
 monitor     = Thread.new do
   loop do
     fields      = `iostat -c 2 disk0`.split(/\n/).last.strip.split(/\s+/)
     cpu_pct     = 100 - fields[-4].to_i
     cpu_usage   = ((cpu_pct / 100.0) * 8.0).round.to_i
 
-    disk_pct    = (fields[2].to_f / 750.0) * 100.0
+    disk_pct    = ((fields[2].to_f / 750.0) * 100.0).round.to_i
     disk_usage  = ((disk_pct / 100.0) * 8.0).round.to_i
 
     puts "I/O=#{disk_pct}%, CPU=#{cpu_pct}%"
