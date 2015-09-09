@@ -2,6 +2,8 @@
 
 ## v0.3.0
 
+* __BREAKING CHANGE__: Change Orbit interface to more closely follow conventions established with Novation Launchpad driver.
+
 
 ## v0.2.1
 
