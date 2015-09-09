@@ -7,21 +7,10 @@ module SurfaceMaster
     include Logging
 
     def initialize(opts = nil)
-      opts = { input:  true,
-               output: true }
-             .merge(opts || {})
-
+      opts        = { input: true, output: true }.merge(opts || {})
       self.logger = opts[:logger]
-      logger.debug "Initializing #{self.class}##{object_id} with #{opts.inspect}"
-
-      @input    = create_device!(Portmidi.input_devices,
-                                 Portmidi::Input,
-                                 id:   opts[:input_device_id],
-                                 name: opts[:device_name]) if opts[:input]
-      @output   = create_device!(Portmidi.output_devices,
-                                 Portmidi::Output,
-                                 id:   opts[:output_device_id],
-                                 name: opts[:device_name]) if opts[:output]
+      @input      = create_input_device(opts)
+      @output     = create_output_device(opts)
     end
 
     # Closes the device - nothing can be done with the device afterwards.
@@ -40,10 +29,7 @@ module SurfaceMaster
     def reset!; end
 
     def read
-      unless input_enabled?
-        logger.error "Trying to read from device that's not been initialized for input!"
-        fail SurfaceMaster::NoInputAllowedError
-      end
+      fail SurfaceMaster::NoInputAllowedError unless input_enabled?
 
       Array(@input.read(16)).collect do |midi_message|
         (code, note, velocity) = midi_message[:message]
@@ -68,7 +54,24 @@ module SurfaceMaster
       @output.write_sysex(msg)
     end
 
-    def create_device!(devices, device_type, opts)
+
+    def create_input_device(opts)
+      return nil unless opts[:input]
+      create_device(Portmidi.input_devices,
+                    Portmidi::Input,
+                    id:   opts[:input_device_id],
+                    name: opts[:device_name])
+    end
+
+    def create_output_device(opts)
+      return nil unless opts[:output]
+      create_device(Portmidi.output_devices,
+                    Portmidi::Output,
+                    id:   opts[:output_device_id],
+                    name: opts[:device_name])
+    end
+
+    def create_device(devices, device_type, opts)
       id = opts[:id] || find_device_id(devices, opts[:name])
       fail SurfaceMaster::NoSuchDeviceError if id.nil?
       device_type.new(id)
@@ -77,9 +80,9 @@ module SurfaceMaster
     end
 
     def find_device_id(devices, name)
-      name    = name || @name
-      device  = devices.find { |dev| dev.name == name }
-      id      = device.device_id unless device.nil?
+      name    ||= @name
+      device    = devices.find { |dev| dev.name == name }
+      id        = device.device_id unless device.nil?
       id
     end
 

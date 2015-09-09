@@ -13,10 +13,9 @@ module SurfaceMaster
       logger.debug "Initializing #{self.class}##{object_id} with #{opts.inspect}"
 
       @use_threads  = opts[:use_threads] || true
-      @device       = opts[:device]
-      @device     ||= @device_class.new(opts.merge(input: true,
-                                                   output: true,
-                                                   logger: opts[:logger]))
+      @device       = opts[:device] || @device_class.new(opts.merge(input: true,
+                                                                    output: true,
+                                                                    logger: opts[:logger]))
       @latency      = (opts[:latency] || 0.001).to_f.abs
       @active       = false
 
@@ -37,28 +36,10 @@ module SurfaceMaster
     def start(opts = nil)
       logger.debug "Starting #{self.class}##{object_id}"
 
-      opts = { detached: false }.merge(opts || {})
+      opts              = { detached: false }.merge(opts || {})
+      @active           = true
+      @reader_thread  ||= create_reader_thread
 
-      @active = true
-
-      @reader_thread ||= Thread.new do
-        begin
-          while @active
-            @device.read.each do |action|
-              handle_action(action)
-            end
-            sleep @latency if @latency && @latency > 0.0
-          end
-        rescue Portmidi::DeviceError => e
-          logger.fatal "Could not read from device, stopping reader!"
-          raise SurfaceMaster::CommunicationError, e
-        rescue Exception => e
-          logger.fatal "Unkown error, stopping reader: #{e.inspect}"
-          raise e
-        ensure
-          @device.reset!
-        end
-      end
       @reader_thread.join unless opts[:detached]
     end
 
@@ -72,14 +53,7 @@ module SurfaceMaster
         @reader_thread = nil
       end
     ensure
-      @action_threads.list.each do |thread|
-        begin
-          thread.kill
-          thread.join
-        rescue StandardException => e # TODO: RuntimeError, Exception, or this?
-          logger.error "Error when killing action thread: #{e.inspect}"
-        end
-      end
+      kill_action_threads!
       nil
     end
 
@@ -89,12 +63,8 @@ module SurfaceMaster
       types = Array(types)
       opts ||= {}
       no_response_to(types, state) if opts[:exclusive] == true
-      Array(state == :both ? %i(down up) : state).each do |st|
-        types.each do |type|
-          combined_types(type, opts).each do |combined_type|
-            responses[combined_type][st] << block
-          end
-        end
+      expand_states(state).each do |st|
+        add_response_for_state!(types, opts, st, block)
       end
       nil
     end
@@ -102,12 +72,8 @@ module SurfaceMaster
     def no_response_to(types = nil, state = :both, opts = nil)
       logger.debug "Removing response to #{types.inspect} for state #{state.inspect}"
       types = Array(types)
-      Array(state == :both ? %i(down up) : state).each do |st|
-        types.each do |type|
-          combined_types(type, opts).each do |combined_type|
-            responses[combined_type][st].clear
-          end
-        end
+      expand_states(state).each do |st|
+        clear_responses_for_state!(types, opts, st)
       end
       nil
     end
@@ -117,6 +83,60 @@ module SurfaceMaster
     end
 
   protected
+
+    def create_reader_thread
+      Thread.new do
+        guard_input_and_reset_at_end! do
+          while @active
+            @device.read.each { |action| handle_action(action) }
+            sleep @latency if @latency && @latency > 0.0
+          end
+        end
+      end
+    end
+
+    def guard_input_and_reset_at_end!(&block)
+      block.call
+    rescue Portmidi::DeviceError => e
+      logger.fatal "Could not read from device, stopping reader!"
+      raise SurfaceMaster::CommunicationError, e
+    rescue Exception => e
+      logger.fatal "Unkown error, stopping reader: #{e.inspect}"
+      raise e
+    ensure
+      @device.reset!
+    end
+
+    def kill_action_threads!
+      @action_threads.list.each do |thread|
+        begin
+          thread.kill
+          thread.join
+        rescue StandardException => e # TODO: RuntimeError, Exception, or this?
+          logger.error "Error when killing action thread: #{e.inspect}"
+        end
+      end
+    end
+
+    def add_response_for_state!(types, opts, state, block)
+      response_groups_for(types, opts, state) do |responses|
+        responses << block
+      end
+    end
+
+    def clear_responses_for_state!(types, opts, state)
+      response_groups_for(types, opts, state, &:clear)
+    end
+
+    def response_groups_for(types, opts, state, &block)
+      types.each do |type|
+        combined_types(type, opts).each do |combined_type|
+          block.call(responses[combined_type][state])
+        end
+      end
+    end
+
+    def expand_states(state); Array(state == :both ? %i(down up) : state); end
 
     def handle_action(action)
       if @use_threads

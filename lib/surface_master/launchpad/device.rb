@@ -141,21 +141,15 @@ module SurfaceMaster
 
       def coord_in_range?(val); val && val >= 0 && val <= 7; end
 
-      TYPE_TO_COMMAND = { cc:     0x0B,
-                          grid:   0x0B,
-                          column: 0x0C,
-                          row:    0x0D,
-                          all:    0x0E }.freeze
       def color_payload(opts)
-        type, led = decode_led(opts)
-        command   = TYPE_TO_COMMAND[type]
-        case type
-        when :cc, :grid
-          color   = [opts[:red] || 0x00, opts[:green] || 0x00, opts[:blue] || 0x00]
-        when :column, :row, :all
-          color   = opts[:color] || 0x00
-        end
-        [command, { led: led, color: color }]
+        # Hard-coded to single-LED RGB update right now.
+        # For paletted changes, commands available include:
+        # 0x0C -> Column
+        # 0x0D -> Row
+        # 0x0E -> All LEDs
+        [0x0B,
+         { led:   decode_led(opts),
+           color: [opts[:red] || 0x00, opts[:green] || 0x00, opts[:blue] || 0x00] }]
       end
 
       def output!(status, data1, data2)

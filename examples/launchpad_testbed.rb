@@ -29,27 +29,61 @@ CC      = %i(up down left right session user1 user2 scene1 scene2 scene3 scene4 
              scene8)
 GRID    = (0..7).map { |x| (0..7).map { |y| { grid: [x, y] } } }.flatten
 WHITE   = { red: 0x3F, green: 0x3F, blue: 0x3F }
+BLACK   = { red: 0x00, green: 0x00, blue: 0x00 }
 
 def clamp(val); (val > 0x3F) ? 0x3F : val; end
 
-def base_color(x, y)
-  return nil if PRESSED[x][y]
+def quad_for(x, y)
   quad_x  = x / 4
   quad_y  = 1 - (y / 4)
-  quad    = QUADRANTS[quad_y][quad_x]
-  s_t     = (Math.sin(NOW[0] * TIME_SCALE) * 0.5) + 0.5
-  tmp     = { red:   0x00 + quad[:red] + (s_t * 0x3F).round,
-              green: (x * SCALE) + quad[:green],
-              blue:  (y * SCALE) + quad[:blue] }
-  if FLIPPED[quad_y][quad_x]
-    carry       = tmp[:red]
-    tmp[:red]   = tmp[:green]
-    tmp[:green] = tmp[:blue]
-    tmp[:blue]  = carry
+  [QUADRANTS[quad_y][quad_x], FLIPPED[quad_y][quad_x]]
+end
+
+def positional_color(x, y)
+  { red:   0x00,
+    green: (x * SCALE),
+    blue:  (y * SCALE) }
+end
+
+def temporal_color(_x, _y)
+  s_t = (Math.sin(NOW[0] * TIME_SCALE) * 0.5) + 0.5
+  { red:   (s_t * 0x3F).round,
+    green: 0x00,
+    blue:  0x00 }
+end
+
+def clamp_color(color)
+  { red:   clamp(color[:red]),
+    green: clamp(color[:green]),
+    blue:  clamp(color[:blue]) }
+end
+
+def apply_flip!(flipped, color)
+  if flipped
+    carry         = color[:red]
+    color[:red]   = color[:green]
+    color[:green] = color[:blue]
+    color[:blue]  = carry
   end
-  { red:   clamp(tmp[:red]),
-    green: clamp(tmp[:green]),
-    blue:  clamp(tmp[:blue]) }
+end
+
+def add_colors(*colors)
+  result = {}
+  %i(red green blue).each do |component|
+    result[component] = colors.inject(0) { |a, i| a + i[component] }
+  end
+  result
+end
+
+def base_color(x, y)
+  return nil if PRESSED[x][y]
+  quad, flipped = quad_for(x, y)
+  p_color       = positional_color(x, y)
+  t_color       = temporal_color(x, y)
+  tmp           = add_colors(quad, p_color, t_color)
+  apply_flip!(flipped, tmp)
+
+  clamp_color(tmp)
 end
 
 def init_board(interaction)
@@ -77,11 +111,11 @@ def goodbye(interaction)
 end
 
 def buttons_off(interaction)
-  interaction.changes([{ red: 0x00, green: 0x00, blue: 0x00, cc: :mixer },
-                       { red: 0x00, green: 0x00, blue: 0x00, cc: :scene1 },
-                       { red: 0x00, green: 0x00, blue: 0x00, cc: :scene2 },
-                       { red: 0x00, green: 0x00, blue: 0x00, cc: :scene3 },
-                       { red: 0x00, green: 0x00, blue: 0x00, cc: :scene4 }])
+  interaction.changes([BLACK.merge(cc: :mixer),
+                       BLACK.merge(cc: :scene1),
+                       BLACK.merge(cc: :scene2),
+                       BLACK.merge(cc: :scene3),
+                       BLACK.merge(cc: :scene4)])
 end
 
 SurfaceMaster.init!
