@@ -155,7 +155,7 @@ interaction.response_to(:mixer, :down) do |_interaction, _action|
   interaction.stop
 end
 interaction.change(red: 0x03, green: 0x00, blue: 0x00, cc: :mixer)
-BTN_COL = { red: 0x03, green: 0x03, blue: 0x03, cc: cc }
+BTN_COL = { red: 0x03, green: 0x03, blue: 0x03 }
 interaction.changes(%i(scene1 scene2 scene3 scene4).map { |cc| BTN_COL.merge(cc: cc) })
 
 init_board(interaction)

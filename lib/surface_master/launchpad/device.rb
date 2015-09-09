@@ -148,7 +148,7 @@ module SurfaceMaster
         # 0x0D -> Row
         # 0x0E -> All LEDs
         [0x0B,
-         { led:   decode_led(opts),
+         { led:   decode_led(opts)[1],
            color: [opts[:red] || 0x00, opts[:green] || 0x00, opts[:blue] || 0x00] }]
       end
 
