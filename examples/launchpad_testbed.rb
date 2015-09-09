@@ -59,18 +59,17 @@ def clamp_color(color)
 end
 
 def apply_flip!(flipped, color)
-  if flipped
-    carry         = color[:red]
-    color[:red]   = color[:green]
-    color[:green] = color[:blue]
-    color[:blue]  = carry
-  end
+  return unless flipped
+  carry         = color[:red]
+  color[:red]   = color[:green]
+  color[:green] = color[:blue]
+  color[:blue]  = carry
 end
 
 def add_colors(*colors)
   result = {}
   %i(red green blue).each do |component|
-    result[component] = colors.inject(0) { |a, i| a + i[component] }
+    result[component] = colors.inject(0) { |a, e| a + e[component] }
   end
   result
 end
