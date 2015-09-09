@@ -111,48 +111,52 @@ module SurfaceMaster
       def sysex_prefix; @sysex_prefix ||= super + [0x00, 0x01, 0x3F, 0x2B]; end
 
       def decode_shoulder(decoded, note, _velocity)
-        decoded[:control].merge!(SurfaceMaster::Orbit::Device::SHOULDERS[note])
+        decoded[:control] = decoded[:control].merge(SurfaceMaster::Orbit::Device::SHOULDERS[note])
         decoded
       end
 
       def decode_pad(decoded, note, _velocity)
-        decoded[:control][:button] = note
+        decoded[:control] = decoded[:control].merge(button: note)
         decoded
       end
 
       def decode_knob(decoded, note, velocity)
-        decoded[:control][:bank]  = note + 1
-        decoded[:value]           = velocity
+        decoded[:control] = decoded[:control].merge(bank: note + 1)
+        decoded[:value]   = velocity
         decoded
       end
 
       def decode_control(decoded, note, velocity)
-        tmp         = SurfaceMaster::Orbit::Device::SELECTORS[note]
-        tmp[:index] = velocity
-        decoded[:control].merge!(tmp)
+        decoded           = decoded.merge(SurfaceMaster::Orbit::Device::SELECTORS[note])
+        decoded[:control] = { index: velocity }
+        decoded
+      end
+
+      def decode_accelerometer(decoded, _note, velocity)
+        decoded[:value] = velocity
         decoded
       end
 
       def enrich_decoded_message(decoded, note, velocity, timestamp)
         case decoded[:type]
-        when :shoulder  then decoded = decode_shoulder(decoded, note, velocity)
-        when :pad       then decoded = decode_pad(decoded, note, velocity)
-        when :knob      then decoded = decode_knob(decoded, note, velocity)
-        when :control   then decoded = decode_control(decoded, note, velocity)
+        when :shoulder      then decoded = decode_shoulder(decoded, note, velocity)
+        when :pad           then decoded = decode_pad(decoded, note, velocity)
+        when :vknob         then decoded = decode_knob(decoded, note, velocity)
+        when :accelerometer then decoded = decode_accelerometer(decoded, note, velocity)
+        else decoded = decode_control(decoded, note, velocity)
         end
         decoded[:timestamp] = timestamp
         decoded
       end
 
       def decode_input(input)
-# puts [input[:code].to_hex, input[:note].to_hex, input[:velocity].to_hex].join(" ")
         note      = input[:note]
         velocity  = input[:velocity]
         code_high = input[:code] & 0xF0
         code_low  = input[:code] & 0x0F
         raw       = SurfaceMaster::Orbit::Device::CONTROLS[code_high]
         raw       = raw[code_low] if raw
-        raw       = enrich_decoded_message(raw, note, velocity, input[:timestamp]) if raw
+        raw       = enrich_decoded_message(raw.dup, note, velocity, input[:timestamp]) if raw
         raw
       end
     end
