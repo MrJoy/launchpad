@@ -47,8 +47,6 @@ PRESSED = (0..7).map { |_x| (0..7).map { |_y| false } }
 NOW     = [Time.now.to_f]
 
 # Helpers
-CC      = %i(up down left right session user1 user2 scene1 scene2 scene3 scene4 scene5 scene6 scene7
-             scene8)
 GRID    = (0..7).map { |x| (0..7).map { |y| { grid: [x, y] } } }.flatten
 WHITE   = { red: 0x3F, green: 0x3F, blue: 0x3F }
 BLACK   = { red: 0x00, green: 0x00, blue: 0x00 }
