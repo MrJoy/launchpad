@@ -1,25 +1,47 @@
 #!/usr/bin/env ruby
+#
+# This file provides an example of using the Novation Launchpad Mark 2 using
+# event handlers to respond to buttons, and batch LED updates to update every
+# button on the board quite rapidly.
+#
+# Controls:
+#
+# * Press any grid button and observe that the color changes to white while it's held.  Any number
+#   of pads may be pressed simultaneously.
+# * The control buttons on the right will each channel-flip a quadrant of the board.  They act as
+#   toggles, to pressing them again undoes the effect.
+# * The `Mixer` button will terminate the simulation.
+#
+# Effects:
+#
+# * The color of a pad is applied in layers additively, with values clamped to white at the end:
+#     1. The base color for each grid pad is defined by its position with the color getting more
+#        green on the X axis, and more blue along the Y axis.  See `SCALE` for how steep the change
+#        is.
+#     2. Each quadrant adds in a specific color (see `QUADRANTS` below).
+#     3. The red/green/blue channels may be rotated for any given quadrant, if the relevant toggle
+#        is active.
+#     4. A sine-wave is applied to one or more channels (see `TIME_SCALE` for the speed of the sine
+#        wave).
+#     5. If a particular pad is pressed, the color is set to white.
+#
+# TODO: Input handling seems to interfere with frame rendering, as our FPS seems to "jump" to
+# TODO: insane values when a button is pressed.
+#
 require "rubygems"
 require "bundler/setup"
 Bundler.require(:default, :development)
 
 require "surface_master"
 
-# Flash:    F0h 00h 20h 29h 02h 18h 23h <LED> <Colour> F7h
-# Pulse:    F0h 00h 20h 29h 02h 18h 28h <LED> <Colour> F7h
-# Set all:  F0h 00h 20h 29h 02h 18h 0Eh <Colour> F7h
-# Set row:  F0h 00h 20h 29h 02h 18h 0Dh <Row> <Colour> F7h
-# Set col:  F0h 00h 20h 29h 02h 18h 0Ch <Column> <Colour> F7h
-
-# Configuration
+# Animation Configuration
 SCALE       = 2
 TIME_SCALE  = 4.0
+TIME_MASK   = { red: 0x3F, green: 0x00, blue: 0x00 }
+QUADRANTS = [[{ red: 0x2F, green: 0x00, blue: 0x00 }, { red: 0x00, green: 0x2F, blue: 0x00 }],
+             [{ red: 0x00, green: 0x00, blue: 0x2F }, { red: 0x2F, green: 0x2F, blue: 0x00 }]]
 
 # State
-QUADRANTS = [
-  [{ red: 0x2F, green: 0x00, blue: 0x00 }, { red: 0x00, green: 0x2F, blue: 0x00 }],
-  [{ red: 0x00, green: 0x00, blue: 0x2F }, { red: 0x2F, green: 0x2F, blue: 0x00 }],
-]
 FLIPPED = [[false, false], [false, false]]
 PRESSED = (0..7).map { |_x| (0..7).map { |_y| false } }
 NOW     = [Time.now.to_f]
@@ -47,9 +69,9 @@ end
 
 def temporal_color(_x, _y)
   s_t = (Math.sin(NOW[0] * TIME_SCALE) * 0.5) + 0.5
-  { red:   (s_t * 0x3F).round,
-    green: 0x00,
-    blue:  0x00 }
+  { red:   (s_t * TIME_MASK[:red]).round,
+    green: (s_t * TIME_MASK[:green]).round,
+    blue:  (s_t * TIME_MASK[:blue]).round }
 end
 
 def clamp_color(color)
@@ -162,11 +184,31 @@ init_board(interaction)
 input_thread = Thread.new do
   interaction.start
 end
-animation_thread = Thread.new do
+cumulative_time   = 0.0
+frame_times       = []
+min_frame_time    = Float::INFINITY
+max_frame_time    = 0.0
+animation_thread  = Thread.new do
   loop do
     begin
       NOW[0] = Time.now.to_f
       init_board(interaction)
+      elapsed           = Time.now.to_f - NOW[0]
+      cumulative_time  += elapsed
+      min_frame_time    = elapsed if elapsed < min_frame_time
+      max_frame_time    = elapsed if elapsed > max_frame_time
+      frame_times.push(elapsed)
+      frame_times.shift if frame_times.length > 60
+
+      # Show avg FPS once per second.
+      if cumulative_time >= 1.0
+        cumulative_time = 0.0
+        avg_frame_time = frame_times.inject(0.0) { |a, e| a + e } / frame_times.length
+        avg_rate = (1.0 / avg_frame_time)
+        max_rate = (1.0 / min_frame_time)
+        min_rate = (1.0 / max_frame_time)
+        puts "FPS: Average = %0.1f, Min = %0.1f, Max = %0.1f" % [avg_rate, min_rate, max_rate]
+      end
     rescue StandardError => e
       puts e.inspect
       puts e.backtrace.join("\n")
