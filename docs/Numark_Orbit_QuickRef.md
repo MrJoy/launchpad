@@ -1,5 +1,10 @@
 # Numark Orbit Quick Reference
 
+## Mappings
+
+Use the file `mappings/Orbit_Preset.json`, and be sure to hit `Send` several times, as it sometimes does not actually take.
+
+
 ## Low Battery Indicator
 
 Any blinking `Pad Bank Selectors` indicates the battery is low.
