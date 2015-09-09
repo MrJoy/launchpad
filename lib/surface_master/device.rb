@@ -64,28 +64,23 @@ module SurfaceMaster
     def sysex!(*payload)
       fail NoOutputAllowedError unless output_enabled?
       msg = sysex_msg(payload)
-      logger.debug { "#{msg.length}: 0x#{msg.map(&:to_hex).join(', 0x')}" }
+      logger.debug { "#{msg.length}: 0x#{msg.map { |b| '%02X' % b }.join(' ')}" }
       @output.write_sysex(msg)
     end
 
     def create_device!(devices, device_type, opts)
-      logger.debug "Creating #{device_type} with #{opts.inspect}, choosing from portmidi devices:"\
-        " #{devices.inspect}"
-      id = opts[:id]
-      if id.nil?
-        name    = opts[:name] || @name
-        device  = devices.find { |dev| dev.name == name }
-        id      = device.device_id unless device.nil?
-      end
-      if id.nil?
-        message = "MIDI Device `#{opts[:id] || opts[:name]}` doesn't exist!"
-        logger.fatal message
-        fail SurfaceMaster::NoSuchDeviceError, message
-      end
+      id = opts[:id] || find_device_id(devices, opts[:name])
+      fail SurfaceMaster::NoSuchDeviceError if id.nil?
       device_type.new(id)
     rescue RuntimeError => e # TODO: Uh, this should be StandardException, perhaps?
-      logger.fatal "Error creating #{device_type}: #{e.inspect}"
       raise SurfaceMaster::DeviceBusyError, e
+    end
+
+    def find_device_id(devices, name)
+      name    = name || @name
+      device  = devices.find { |dev| dev.name == name }
+      id      = device.device_id unless device.nil?
+      id
     end
 
     def message(status, data1, data2); { message: [status, data1, data2], timestamp: 0 }; end

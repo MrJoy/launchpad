@@ -67,17 +67,21 @@ def set_grid_rgb(interaction, red:, green:, blue:)
 end
 
 def goodbye(interaction)
-  interaction.changes([{ red: 0x00, green: 0x00, blue: 0x00, cc: :mixer },
-                       { red: 0x00, green: 0x00, blue: 0x00, cc: :scene1 },
-                       { red: 0x00, green: 0x00, blue: 0x00, cc: :scene2 },
-                       { red: 0x00, green: 0x00, blue: 0x00, cc: :scene3 },
-                       { red: 0x00, green: 0x00, blue: 0x00, cc: :scene4 }])
+  buttons_off(interaction)
   (0..63).step(2).each do |i|
     ii = (63 - i) - 1
     set_grid_rgb(interaction, red: ii, green: 0x00, blue: ii)
     sleep 0.01
   end
   interaction.close
+end
+
+def buttons_off(interaction)
+  interaction.changes([{ red: 0x00, green: 0x00, blue: 0x00, cc: :mixer },
+                       { red: 0x00, green: 0x00, blue: 0x00, cc: :scene1 },
+                       { red: 0x00, green: 0x00, blue: 0x00, cc: :scene2 },
+                       { red: 0x00, green: 0x00, blue: 0x00, cc: :scene3 },
+                       { red: 0x00, green: 0x00, blue: 0x00, cc: :scene4 }])
 end
 
 SurfaceMaster.init!

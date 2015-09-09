@@ -29,6 +29,7 @@ module Portmidi
     end
 
     def write(*_args); nil; end
+    def write_sysex(*_args); nil; end
     def close; nil; end
   end
 

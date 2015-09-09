@@ -56,31 +56,22 @@ module SurfaceMaster
 
       def change(opts = nil)
         fail NoOutputAllowedError unless output_enabled?
+
         opts ||= {}
         command, payload = color_payload(opts)
-        result = sysex!(command, payload[:led], payload[:color])
-        if result != 0
-          # TODO: Raise an exception.
-        end
+        sysex!(command, payload[:led], payload[:color])
         nil
       end
 
       def changes(values)
         fail NoOutputAllowedError unless output_enabled?
-        msg_by_command = {}
-        values.each do |value|
-          command, payload = color_payload(value)
-          (msg_by_command[command] ||= []) << payload
-        end
-        msg_by_command.each do |command, payloads|
+
+        organize_commands(values).each do |command, payloads|
           # The documented batch size for RGB LED updates is 80.  The docs lie, at least on my
           # current firmware version -- anything above 62 crashes the device hard.
           while (slice = payloads.shift(62)).length > 0
             messages = slice.map { |payload| [payload[:led], payload[:color]] }
-            result = sysex!(command, *messages)
-            if result != 0
-              # TODO: Raise an exception.
-            end
+            sysex!(command, *messages)
           end
         end
         nil
@@ -89,21 +80,31 @@ module SurfaceMaster
       def read
         fail NoInputAllowedError unless input_enabled?
         super.collect do |input|
-          note          = input[:note]
-          input[:type]  = CODE_NOTE_TO_TYPE[[input[:code], note]] || :grid
-          if input[:type] == :grid
-            note      -= 11
-            input[:x] = note % 10
-            input[:y] = note / 10
-          end
-          input.delete(:code)
-          input.delete(:note)
+          note                  = input.delete(:note)
+          input[:type]          = CODE_NOTE_TO_TYPE[[input.delete(:code), note]] || :grid
+          input[:x], input[:y]  = decode_grid_coord(note) if input[:type] == :grid
           input.delete(:velocity)
           input
         end
       end
 
     protected
+
+      def organize_commands(values)
+        msg_by_command = {}
+        values.each do |value|
+          command, payload = color_payload(value)
+          (msg_by_command[command] ||= []) << payload
+        end
+        msg_by_command
+      end
+
+      def decode_grid_coord(note)
+        note -= 11
+        x     = note % 10
+        y     = note / 10
+        [x, y]
+      end
 
       def layout!(mode); sysex!(0x22, mode); end
       def sysex_prefix; @sysex_prefix ||= super + [0x00, 0x20, 0x29, 0x02, 0x18]; end
