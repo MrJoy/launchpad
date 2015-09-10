@@ -54,7 +54,6 @@ module SurfaceMaster
       @output.write_sysex(msg)
     end
 
-
     def create_input_device(opts)
       return nil unless opts[:input]
       create_device(Portmidi.input_devices,
