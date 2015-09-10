@@ -12,14 +12,11 @@ module SurfaceMaster
       self.logger = opts[:logger]
       logger.debug "Initializing #{self.class}##{object_id} with #{opts.inspect}"
 
-      @use_threads  = opts[:use_threads] || true
       @device       = opts[:device] || @device_class.new(opts.merge(input: true,
                                                                     output: true,
                                                                     logger: opts[:logger]))
       @latency      = (opts[:latency] || 0.001).to_f.abs
       @active       = false
-
-      @action_threads = ThreadGroup.new
     end
 
     def change(opts); @device.change(opts); end
@@ -33,28 +30,21 @@ module SurfaceMaster
 
     def closed?; @device.closed?; end
 
-    def start(opts = nil)
+    def start
       logger.debug "Starting #{self.class}##{object_id}"
 
-      opts              = { detached: false }.merge(opts || {})
-      @active           = true
-      @reader_thread  ||= create_reader_thread
-
-      @reader_thread.join unless opts[:detached]
+      @active = true
+      guard_input_and_reset_at_end! do
+        while @active
+          @device.read.each { |action| respond_to_action(action) }
+          sleep @latency if @latency && @latency > 0.0
+        end
+      end
     end
 
     def stop
       logger.debug "Stopping #{self.class}##{object_id}"
       @active = false
-      if @reader_thread
-        # run (resume from sleep) and wait for @reader_thread to end
-        @reader_thread.run if @reader_thread.alive?
-        @reader_thread.join
-        @reader_thread = nil
-      end
-    ensure
-      kill_action_threads!
-      nil
     end
 
     def response_to(types = :all, state = :both, opts = nil, &block)
@@ -89,17 +79,6 @@ module SurfaceMaster
       list.map { |ll| ll.respond_to?(:to_a) ? ll.to_a : ll }.flatten
     end
 
-    def create_reader_thread
-      Thread.new do
-        guard_input_and_reset_at_end! do
-          while @active
-            @device.read.each { |action| handle_action(action) }
-            sleep @latency if @latency && @latency > 0.0
-          end
-        end
-      end
-    end
-
     def guard_input_and_reset_at_end!(&block)
       block.call
     rescue Exception => e
@@ -107,17 +86,6 @@ module SurfaceMaster
       raise e
     ensure
       @device.reset!
-    end
-
-    def kill_action_threads!
-      @action_threads.list.each do |thread|
-        begin
-          thread.kill
-          thread.join
-        rescue StandardException => e # TODO: RuntimeError, Exception, or this?
-          logger.error "Error when killing action thread: #{e.inspect}"
-        end
-      end
     end
 
     def add_response_for_state!(types, opts, state, block)
@@ -139,17 +107,6 @@ module SurfaceMaster
     end
 
     def expand_states(state); Array(state == :both ? %i(down up) : state); end
-
-    def handle_action(action)
-      if @use_threads
-        action_thread = Thread.new(action) do |act|
-          respond_to_action(act)
-        end
-        @action_threads.add(action_thread)
-      else
-        respond_to_action(action)
-      end
-    end
 
     def responses
       # TODO: Generalize for arbitrary actions...

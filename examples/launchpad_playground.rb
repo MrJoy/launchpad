@@ -178,9 +178,6 @@ BTN_COL = { red: 0x03, green: 0x03, blue: 0x03 }
 interaction.changes(%i(scene1 scene2 scene3 scene4).map { |cc| BTN_COL.merge(cc: cc) })
 
 init_board(interaction)
-input_thread = Thread.new do
-  interaction.start
-end
 cumulative_time   = 0.0
 frame_times       = []
 min_frame_time    = Float::INFINITY
@@ -214,6 +211,6 @@ animation_thread  = Thread.new do
   end
 end
 
-input_thread.join
+interaction.start
 animation_thread.terminate
 goodbye(interaction)
