@@ -35,8 +35,6 @@ module SurfaceMaster
       fail SurfaceMaster::NoInputAllowedError unless input_enabled?
       result = nil
       @mutex.synchronize do
-        return [] unless @input.buffer.length > 0
-
         result = @input.gets.collect do |midi_message|
           (code, note, velocity) = midi_message[:data]
           { timestamp: midi_message[:timestamp],
