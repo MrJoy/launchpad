@@ -26,7 +26,7 @@ module SurfaceMaster
                 buttons.map { |b| [:"#{type}-#{b}"] }
               when :pad
                 banks   = opts[:bank].nil? ? (1..4).to_a : [opts[:bank]]
-                buttons = opts[:button].nil? ? (0..15).to_a : [opts[:button]]
+                buttons = opts[:button].nil? ? (1..16).to_a : [opts[:button]]
 
                 buttons.product(banks).map { |p, b| :"#{type}-#{p}-#{b}" }
               else

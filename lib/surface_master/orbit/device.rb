@@ -116,7 +116,7 @@ module SurfaceMaster
       end
 
       def decode_pad(decoded, note, _velocity)
-        decoded[:control] = decoded[:control].merge(button: note)
+        decoded[:control] = decoded[:control].merge(button: note + 1)
         decoded
       end
 
