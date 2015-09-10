@@ -18,10 +18,16 @@ device = SurfaceMaster::Orbit::Device.new
 # perhaps because CoreMIDI has no backpressure, we can easily wind up hosed.
 # Before settling on new values here, run the process for *several full minutes*
 # and make sure the device continues accepting updates at the end!
+#
+# TODO: More thorough stress testing.
+#
+# TODO: Can we determine if the connection is wired/wireless automatically?
+#
+# TODO: Can we safely get input simultaneously?
 MODE      = :wired
 
 CONFIGS   = { wireless: { delay: 0.75, offset: 0x03, use_read: true,   read_delay: 0.1 },
-              wired:    { delay: 0.04, offset: 0x01, use_read: false,  read_delay: 0 } }
+              wired:    { delay: 0.05, offset: 0x01, use_read: false,  read_delay: 0 } }
 MAPPINGS  =  [0x03, 0x01, 0x70,
 
               0x00, 0x00, 0x00,
