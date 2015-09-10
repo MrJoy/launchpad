@@ -1,3 +1,8 @@
+https://github.com/adamjmurray/ruby-rtmidi
+
+
+https://github.com/halfbyte/portmidi <-- report overflow issues on large sysex messages.
+
 https://github.com/arirusso/midi-instrument
 
 http://archive.cnmat.berkeley.edu/OpenSoundControl/
