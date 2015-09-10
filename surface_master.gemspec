@@ -16,8 +16,9 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = ">= 2.2.0"
 
-  s.add_dependency "portmidi", ">= 0.0.6"
-  s.add_dependency "ffi"
+  # s.add_dependency "portmidi", ">= 0.0.6"
+  s.add_dependency "unimidi"
+  # s.add_dependency "ffi"
 
   # s.has_rdoc = true
 

@@ -30,9 +30,10 @@ module SurfaceMaster
 
     def read
       fail SurfaceMaster::NoInputAllowedError unless input_enabled?
+      return [] unless @input.buffer.length > 0
 
-      Array(@input.read(16)).collect do |midi_message|
-        (code, note, velocity) = midi_message[:message]
+      @input.gets.collect do |midi_message|
+        (code, note, velocity) = midi_message[:data]
         { timestamp: midi_message[:timestamp],
           state:     (velocity == 127) ? :down : :up,
           velocity:  velocity,
@@ -51,44 +52,21 @@ module SurfaceMaster
       fail NoOutputAllowedError unless output_enabled?
       msg = sysex_msg(payload)
       logger.debug { "#{msg.length}: 0x#{msg.map { |b| '%02X' % b }.join(' ')}" }
-      result = @output.write_sysex(msg)
-      if result != 0
-        puts "Sysex Error: #{Portmidi::PM_Map.Pm_GetErrorText(result)}"
-      end
-      result
+      @output.puts(msg)
     end
 
-    def create_input_device(opts)
-      return nil unless opts[:input]
-      create_device(Portmidi.input_devices,
-                    Portmidi::Input,
-                    id:   opts[:input_device_id],
-                    name: opts[:device_name])
+    def create_input_device(opts); create_device(opts, :input, UniMIDI::Input); end
+    def create_output_device(opts); create_device(opts, :output, UniMIDI::Output); end
+
+    def create_device(opts, kind, device_class)
+      return nil unless opts[kind]
+      name_pat  = /#{Regexp.escape(opts[:device_name] || @name)}/
+      device    = device_class.find { |dd| dd.name.match(name_pat) }
+      fail SurfaceMaster::NoSuchDeviceError unless device
+      device.open
+      device
     end
 
-    def create_output_device(opts)
-      return nil unless opts[:output]
-      create_device(Portmidi.output_devices,
-                    Portmidi::Output,
-                    id:   opts[:output_device_id],
-                    name: opts[:device_name])
-    end
-
-    def create_device(devices, device_type, opts)
-      id = opts[:id] || find_device_id(devices, opts[:name])
-      fail SurfaceMaster::NoSuchDeviceError if id.nil?
-      device_type.new(id)
-    rescue RuntimeError => e # TODO: Uh, this should be StandardException, perhaps?
-      raise SurfaceMaster::DeviceBusyError, e
-    end
-
-    def find_device_id(devices, name)
-      name    ||= @name
-      device    = devices.find { |dev| dev.name == name }
-      id        = device.device_id unless device.nil?
-      id
-    end
-
-    def message(status, data1, data2); { message: [status, data1, data2], timestamp: 0 }; end
+    def message(status, data1, data2); [status, data1, data2]; end
   end
 end

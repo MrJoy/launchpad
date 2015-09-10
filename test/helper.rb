@@ -9,7 +9,7 @@ require "mocha/setup"
 require "surface_master"
 
 # Mock for tests
-module Portmidi
+module UniMIDI
   # Mock for tests
   class Input
     attr_accessor :device_id
@@ -17,7 +17,7 @@ module Portmidi
       self.device_id = device_id
     end
 
-    def read(*_args); nil; end
+    def gets(*_args); nil; end
     def close; nil; end
   end
 
@@ -28,8 +28,7 @@ module Portmidi
       self.device_id = device_id
     end
 
-    def write(*_args); nil; end
-    def write_sysex(*_args); nil; end
+    def puts(*_args); nil; end
     def close; nil; end
   end
 
@@ -39,5 +38,5 @@ module Portmidi
 end
 
 def mock_devices(opts = {})
-  [Portmidi::Device.new(opts[:id] || 1, 0, 0, opts[:name] || "Launchpad MK2")]
+  [UniMIDI::Input.new(opts[:id] || 1, 0, 0, opts[:name] || "Launchpad MK2")]
 end

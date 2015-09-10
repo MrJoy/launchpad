@@ -1,11 +1,11 @@
-require "portmidi"
+require "unimidi"
 require "logger"
 
 # APIs to enable access to various MIDI-based control surfaces.
 module SurfaceMaster
+  # TODO: I'm not needed anymore if we're ditching Portmidi!
   def self.init!
     @initialized ||= begin
-      Portmidi.start
       true
     end
   end
