@@ -1,4 +1,9 @@
 #!/usr/bin/env ruby
+# Cycle Numark Orbit colors through a wheel.
+#
+# NOTE: If the lights do not blank out when this starts, your device is in a
+# NOTE: bad state.  Push a config to it from the Numark Orbit Editor.  If that
+# NOTE: doesn't work, power-cycle it and try again!
 require "rubygems"
 require "bundler/setup"
 Bundler.require(:default, :development)
@@ -6,7 +11,13 @@ Bundler.require(:default, :development)
 require "surface_master"
 
 device = SurfaceMaster::Orbit::Device.new
-DELAY     =  0.03125
+# The device seems to be notably less able to accept updates over wireless, and
+# perhaps because CoreMIDI has no backpressure, we can easily wind up hosed.
+# Before settling on new values here, run the process for *several full minutes*
+# and make sure the device continues accepting updates at the end!
+CONFIGS   = { wireless: { delay: 0.75,    offset: 0x03, use_read: true,   read_delay: 0.1 },
+              wired:    { delay: 0.03125, offset: 0x01, use_read: false,  read_delay: 0 } }
+MODE      = :wireless
 MAPPINGS  =  [0x03, 0x01, 0x70,
 
               0x00, 0x00, 0x00,
@@ -91,16 +102,24 @@ MAPPINGS  =  [0x03, 0x01, 0x70,
               0x0D, 0x00, 0x0C,
               0x00, 0x0D, 0x00]
 READ_STATE = [0x01, 0x00, 0x00]
-sleep DELAY
+
+delay       = CONFIGS[MODE][:delay]
+offset      = CONFIGS[MODE][:offset]
+use_read    = CONFIGS[MODE][:use_read]
+read_delay  = CONFIGS[MODE][:read_delay]
+
+sleep delay
 puts "Starting..."
 indices = (0..63).map { |n| 5 + (3 * n) }
 loop do
   indices.each do |i|
-    MAPPINGS[i] = (MAPPINGS[i] + 0x01) % 0x3F
+    MAPPINGS[i] = (MAPPINGS[i] + offset) % 0x3F
   end
   device.sysex!(*MAPPINGS)
-  sleep 0.1
-  device.sysex!(*READ_STATE)
+  if use_read
+    sleep read_delay
+    device.sysex!(*READ_STATE)
+  end
   printf "."
-  sleep DELAY
+  sleep delay
 end
