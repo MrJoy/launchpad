@@ -16,19 +16,19 @@ module SurfaceMaster
               when :accelerometer
                 [:"#{type}-#{opts[:axis]}"]
               when :vknob
-                knobs = opts[:vknob].nil? ? (1..4).to_a : [opts[:vknob]]
-                banks = opts[:bank].nil? ? (1..4).to_a : [opts[:bank]]
+                knobs = opts[:vknob].nil? ? [1..4] : [opts[:vknob]]
+                banks = opts[:bank].nil? ? [1..4] : [opts[:bank]]
 
-                knobs.product(banks).map { |k, b| :"#{type}-#{k}-#{b}" }
+                expand(knobs).product(expand(banks)).map { |k, b| :"#{type}-#{k}-#{b}" }
               when :vknobs, :banks
-                buttons = opts[:index].nil? ? (1..4).to_a : [opts[:index]]
+                buttons = opts[:index].nil? ? [1..4] : [opts[:index]]
 
-                buttons.map { |b| [:"#{type}-#{b}"] }
+                expand(buttons).map { |b| [:"#{type}-#{b}"] }
               when :pad
-                banks   = opts[:bank].nil? ? (1..4).to_a : [opts[:bank]]
-                buttons = opts[:button].nil? ? (1..16).to_a : [opts[:button]]
+                banks   = opts[:bank].nil? ? [1..4] : [opts[:bank]]
+                buttons = opts[:button].nil? ? [1..16] : [opts[:button]]
 
-                buttons.product(banks).map { |p, b| :"#{type}-#{p}-#{b}" }
+                expand(buttons).product(expand(banks)).map { |p, b| :"#{type}-#{p}-#{b}" }
               else
                 [type]
               end

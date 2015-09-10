@@ -13,6 +13,12 @@ end
 interaction.response_to(:pad, :up) do |_inter, action|
   puts "PAD UP: #{action.inspect}"
 end
+interaction.response_to(:pad, :up, button: 1..4) do |_inter, action|
+  puts "LEFT COLUMN PAD UP: #{action.inspect}"
+end
+interaction.response_to(:pad, :up, button: 8..12) do |_inter, action|
+  puts "SECOND-FROM-LEFT COLUMN PAD UP: #{action.inspect}"
+end
 
 interaction.response_to(:vknob, :update) do |_inter, action|
   puts "KNOB TURNED: #{action.inspect}"
