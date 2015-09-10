@@ -62,7 +62,7 @@ module SurfaceMaster
         " #{opts.inspect}"
       types = Array(types)
       opts ||= {}
-      no_response_to(types, state) if opts[:exclusive] == true
+      no_response_to(types, state, opts) if opts[:exclusive] == true
       expand_states(state).each do |st|
         add_response_for_state!(types, opts, st, block)
       end
