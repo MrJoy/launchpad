@@ -20,8 +20,8 @@ device = SurfaceMaster::Orbit::Device.new
 # and make sure the device continues accepting updates at the end!
 MODE      = :wired
 
-CONFIGS   = { wireless: { delay: 0.75,    offset: 0x03, use_read: true,   read_delay: 0.1 },
-              wired:    { delay: 0.03125, offset: 0x01, use_read: false,  read_delay: 0 } }
+CONFIGS   = { wireless: { delay: 0.75, offset: 0x03, use_read: true,   read_delay: 0.1 },
+              wired:    { delay: 0.04, offset: 0x01, use_read: false,  read_delay: 0 } }
 MAPPINGS  =  [0x03, 0x01, 0x70,
 
               0x00, 0x00, 0x00,
