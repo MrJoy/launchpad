@@ -31,5 +31,11 @@ end
 interaction.response_to(:shoulder, :up) do |_inter, action|
   puts "SHOULDER UP: #{action.inspect}"
 end
+interaction.response_to(:shoulder, :down, button: :left) do |_inter, action|
+  puts "LEFT SHOULDER DOWN: #{action.inspect}"
+end
+interaction.response_to(:shoulder, :up, button: :left) do |_inter, action|
+  puts "LEFT SHOULDER UP: #{action.inspect}"
+end
 
 interaction.start

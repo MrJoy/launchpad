@@ -9,8 +9,14 @@ module SurfaceMaster
 
     protected
 
-      def combined_types(type, _opts = nil)
-        [type.to_sym]
+      def combined_types(type, opts = nil)
+        puts opts.inspect
+        case type
+        when :shoulder
+          secondary_filter = opts[:button]
+        end
+        return [type.to_sym] unless secondary_filter
+        [:"#{type}-#{secondary_filter}"]
       end
 
       def responses_hash
@@ -38,11 +44,13 @@ module SurfaceMaster
       end
 
       def mappings_for_action(action)
-        type    = action[:type].to_sym
-        state   = action[:state].to_sym
-        actions = []
-        actions += responses[type][state]
-        actions += responses[:all][state]
+        type            = action[:type].to_sym
+        state           = action[:state].to_sym
+        combined_type   = :"#{type}-#{action[:control][:button]}" if action[:control][:button]
+        actions         = []
+        actions        += responses[type][state]
+        actions        += responses[combined_type][state] if combined_type
+        actions        += responses[:all][state]
         actions.compact
       end
 
