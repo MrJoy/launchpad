@@ -43,14 +43,14 @@ end
 interaction.response_to(:vknobs, :down) do |_inter, action|
   puts "ANY VKNOB SELECTOR DOWN: #{action.inspect}"
 end
-interaction.response_to(:vknobs, :down, index: 2) do |_inter, action|
+interaction.response_to(:vknobs, :down, button: 2) do |_inter, action|
   puts "VKNOB 2 SELECTOR DOWN: #{action.inspect}"
 end
 
 interaction.response_to(:banks, :down) do |_inter, action|
   puts "ANY BANK SELECTOR DOWN: #{action.inspect}"
 end
-interaction.response_to(:banks, :down, index: 3) do |_inter, action|
+interaction.response_to(:banks, :down, button: 3) do |_inter, action|
   puts "BANK 3 SELECTOR DOWN: #{action.inspect}"
 end
 

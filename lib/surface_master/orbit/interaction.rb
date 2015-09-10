@@ -21,7 +21,7 @@ module SurfaceMaster
 
                 expand(knobs).product(expand(banks)).map { |k, b| :"#{type}-#{k}-#{b}" }
               when :vknobs, :banks
-                buttons = opts[:index].nil? ? [1..4] : [opts[:index]]
+                buttons = opts[:button].nil? ? [1..4] : [opts[:button]]
 
                 expand(buttons).map { |b| [:"#{type}-#{b}"] }
               when :pad

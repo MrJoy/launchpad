@@ -128,7 +128,7 @@ module SurfaceMaster
 
       def decode_control(decoded, note, velocity)
         decoded           = decoded.merge(SurfaceMaster::Orbit::Device::SELECTORS[note])
-        decoded[:control] = { index: velocity }
+        decoded[:control] = { button: velocity }
         decoded
       end
 
