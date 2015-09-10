@@ -15,19 +15,30 @@
 
 ## Resources
 
+### For Remote Control
+
+* http://en.audiofanzine.com/osc-midi-controller-iphone-ipod-touch-ipad/editorial/articles/the-best-control-surfaces-for-iPad.html
+* http://www.humatic.de/htools/touchdaw/
+* http://hexler.net/software/touchosc-android
+* http://hexler.net/software/qcosc
+
+
 ### For Audio Input
 
 * https://github.com/nagachika/ruby-coreaudio
 * https://github.com/bfoz/audio-ruby
 * https://github.com/PRX/audio_monster
 * https://github.com/arirusso/diamond
+* http://www.vidvox.net
 
 ### For Simulation
 
-https://github.com/jwhayman/rSynthesize
-https://github.com/evant/oscillo
+* http://puredata.info
+* https://github.com/jwhayman/rSynthesize
+* https://github.com/evant/oscillo
+* Luminair 3
 
 ### For Overall Code Structure
 
-https://github.com/ruby-concurrency/concurrent-ruby
-https://github.com/hamstergem/hamster
+* https://github.com/ruby-concurrency/concurrent-ruby
+* https://github.com/hamstergem/hamster
