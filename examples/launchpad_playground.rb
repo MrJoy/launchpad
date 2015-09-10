@@ -112,6 +112,7 @@ def init_board(interaction)
     value.merge(tmp)
   end
   interaction.changes(values.compact)
+  sleep 0.1
 end
 
 def set_grid_rgb(interaction, red:, green:, blue:)
