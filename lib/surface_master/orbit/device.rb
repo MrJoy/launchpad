@@ -23,6 +23,10 @@ module SurfaceMaster
         started_at    = Time.now.to_f
         attempts      = 1
         loop do
+          # TODO: It appears that accessing `buffer` is HIGHLY unsafe!  We may
+          # TODO: be OK if everyone's waiting on us to come back from this
+          # TODO: method before they begin clamoring for input, but that's just
+          # TODO: a guess right now.
           if @input.buffer.length == 0
             elapsed = Time.now.to_f - started_at
             if elapsed > 4.0

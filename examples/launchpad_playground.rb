@@ -137,7 +137,6 @@ def buttons_off(interaction)
                        BLACK.merge(cc: :scene4)])
 end
 
-SurfaceMaster.init!
 interaction = SurfaceMaster::Launchpad::Interaction.new
 interaction.response_to(:grid) do |inter, action|
   x = action[:x]

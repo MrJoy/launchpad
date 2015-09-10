@@ -5,7 +5,6 @@ Bundler.require(:default, :development)
 
 require "surface_master"
 
-SurfaceMaster.init!
 interaction = SurfaceMaster::Orbit::Interaction.new
 interaction.response_to(:pad, :down) do |_inter, action|
   puts "PAD DOWN: #{action.inspect}"

@@ -5,7 +5,6 @@ Bundler.require(:default, :development)
 
 require "surface_master"
 
-SurfaceMaster.init!
 device = SurfaceMaster::Orbit::Device.new
 loop do
   device.read.each do |input|

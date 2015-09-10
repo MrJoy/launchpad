@@ -3,12 +3,6 @@ require "logger"
 
 # APIs to enable access to various MIDI-based control surfaces.
 module SurfaceMaster
-  # TODO: I'm not needed anymore if we're ditching Portmidi!
-  def self.init!
-    @initialized ||= begin
-      true
-    end
-  end
 end
 
 require "surface_master/version"
