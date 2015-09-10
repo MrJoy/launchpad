@@ -95,7 +95,7 @@ puts "Starting..."
 indices = (0..63).map { |n| 5 + (3 * n) }
 loop do
   indices.each do |i|
-    MAPPINGS[i] = (MAPPINGS[i] + 0x03D) % 0x3F
+    MAPPINGS[i] = (MAPPINGS[i] + 0x01) % 0x3F
   end
   device.sysex!(*MAPPINGS)
   printf "."
