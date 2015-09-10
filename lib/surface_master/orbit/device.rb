@@ -12,10 +12,10 @@ module SurfaceMaster
 
       def reset!
         # TODO: This... doesn't appear to work.  At all.
-        if (result = sysex!(*MAPPINGS)) != 0
-          fail "Expected success (0) setting mappings, got: #{result}"
-        end
-        sysex!(0x01, 0x00, 0x00)
+        # if (result = sysex!(*MAPPINGS)) != 0
+        #   fail "Expected success (0) setting mappings, got: #{result}"
+        # end
+        # sysex!(0x01, 0x00, 0x00)
       end
 
       def read
