@@ -50,12 +50,6 @@ module SurfaceMaster
       result
     end
 
-  protected
-
-    def sysex_prefix; [0xF0]; end
-    def sysex_suffix; 0xF7; end
-    def sysex_msg(*payload); (sysex_prefix + [payload, sysex_suffix]).flatten.compact; end
-
     def sysex!(*payload)
       fail NoOutputAllowedError unless output_enabled?
       msg = sysex_msg(payload)
@@ -65,6 +59,12 @@ module SurfaceMaster
       # end
       nil
     end
+
+  protected
+
+    def sysex_prefix; [0xF0]; end
+    def sysex_suffix; 0xF7; end
+    def sysex_msg(*payload); (sysex_prefix + [payload, sysex_suffix]).flatten.compact; end
 
     def create_input_device(opts); create_device(opts, :input, UniMIDI::Input); end
     def create_output_device(opts); create_device(opts, :output, UniMIDI::Output); end
