@@ -17,7 +17,7 @@ module SurfaceMaster
         # lies, but we can't do much about that.
         expected_state = MAPPINGS[6..-2]
         sysex!(MAPPINGS)
-        sleep 0.05
+        sleep 0.1
         sysex!(READ_STATE)
         current_state = nil
         started_at    = Time.now.to_f
