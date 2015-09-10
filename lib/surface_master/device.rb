@@ -9,6 +9,7 @@ module SurfaceMaster
     def initialize(opts = nil)
       opts        = { input: true, output: true }.merge(opts || {})
       self.logger = opts[:logger]
+      @mutex      = Mutex.new
       @input      = create_input_device(opts)
       @output     = create_output_device(opts)
     end
@@ -16,10 +17,12 @@ module SurfaceMaster
     # Closes the device - nothing can be done with the device afterwards.
     def close
       logger.debug "Closing #{self.class}##{object_id}"
-      @input.close unless @input.nil?
-      @input = nil
-      @output.close unless @output.nil?
-      @output = nil
+      @mutex.synchronize do
+        @input.close unless @input.nil?
+        @input = nil
+        @output.close unless @output.nil?
+        @output = nil
+      end
     end
 
     def closed?; !(input_enabled? || output_enabled?); end
@@ -30,16 +33,20 @@ module SurfaceMaster
 
     def read
       fail SurfaceMaster::NoInputAllowedError unless input_enabled?
-      return [] unless @input.buffer.length > 0
+      result = nil
+      @mutex.synchronize do
+        return [] unless @input.buffer.length > 0
 
-      @input.gets.collect do |midi_message|
-        (code, note, velocity) = midi_message[:data]
-        { timestamp: midi_message[:timestamp],
-          state:     (velocity == 127) ? :down : :up,
-          velocity:  velocity,
-          code:      code,
-          note:      note }
+        result = @input.gets.collect do |midi_message|
+          (code, note, velocity) = midi_message[:data]
+          { timestamp: midi_message[:timestamp],
+            state:     (velocity == 127) ? :down : :up,
+            velocity:  velocity,
+            code:      code,
+            note:      note }
+        end
       end
+      result
     end
 
   protected
@@ -52,7 +59,10 @@ module SurfaceMaster
       fail NoOutputAllowedError unless output_enabled?
       msg = sysex_msg(payload)
       logger.debug { "#{msg.length}: 0x#{msg.map { |b| '%02X' % b }.join(' ')}" }
-      @output.puts(msg)
+      @mutex.synchronize do
+        @output.puts(msg)
+      end
+      nil
     end
 
     def create_input_device(opts); create_device(opts, :input, UniMIDI::Input); end
