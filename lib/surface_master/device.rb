@@ -9,7 +9,8 @@ module SurfaceMaster
     def initialize(opts = nil)
       opts        = { input: true, output: true }.merge(opts || {})
       self.logger = opts[:logger]
-      @mutex      = Mutex.new
+      @mutex_i    = Mutex.new
+      @mutex_o    = Mutex.new
       @input      = create_input_device(opts)
       @output     = create_output_device(opts)
     end
@@ -17,9 +18,11 @@ module SurfaceMaster
     # Closes the device - nothing can be done with the device afterwards.
     def close
       logger.debug "Closing #{self.class}##{object_id}"
-      @mutex.synchronize do
+      @mutex_i.synchronize do
         @input.close unless @input.nil?
         @input = nil
+      end
+      @mutex_o.synchronize do
         @output.close unless @output.nil?
         @output = nil
       end
@@ -34,7 +37,7 @@ module SurfaceMaster
     def read
       fail SurfaceMaster::NoInputAllowedError unless input_enabled?
       result = nil
-      @mutex.synchronize do
+      @mutex_i.synchronize do
         result = @input.gets.collect do |midi_message|
           (code, note, velocity) = midi_message[:data]
           { timestamp: midi_message[:timestamp],
@@ -57,7 +60,7 @@ module SurfaceMaster
       fail NoOutputAllowedError unless output_enabled?
       msg = sysex_msg(payload)
       logger.debug { "#{msg.length}: 0x#{msg.map { |b| '%02X' % b }.join(' ')}" }
-      @mutex.synchronize do
+      @mutex_o.synchronize do
         @output.puts(msg)
       end
       nil

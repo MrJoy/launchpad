@@ -163,7 +163,7 @@ module SurfaceMaster
           fail SurfaceMaster::NoOutputAllowedError
         end
         logger.debug "writing messages to launchpad:\n  #{messages.join("\n  ")}" if logger.debug?
-        @mutex.synchronize do
+        @mutex_o.synchronize do
           @output.puts(*messages)
         end
         nil
