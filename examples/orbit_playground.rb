@@ -90,6 +90,7 @@ MAPPINGS  =  [0x03, 0x01, 0x70,
               0x00, 0x0C, 0x00,
               0x0D, 0x00, 0x0C,
               0x00, 0x0D, 0x00]
+READ_STATE = [0x01, 0x00, 0x00]
 sleep DELAY
 puts "Starting..."
 indices = (0..63).map { |n| 5 + (3 * n) }
@@ -98,6 +99,8 @@ loop do
     MAPPINGS[i] = (MAPPINGS[i] + 0x01) % 0x3F
   end
   device.sysex!(*MAPPINGS)
+  sleep 0.1
+  device.sysex!(*READ_STATE)
   printf "."
   sleep DELAY
 end
