@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
 # Cycle Numark Orbit colors through a wheel.
 #
+# IMPORTANT: Set `MODE` below to `:wired`, or `:wireless`, as appropriate to
+# IMPORTANT: how your Numark Orbit is connected!
+#
 # NOTE: If the lights do not blank out when this starts, your device is in a
 # NOTE: bad state.  Push a config to it from the Numark Orbit Editor.  If that
 # NOTE: doesn't work, power-cycle it and try again!
@@ -15,9 +18,10 @@ device = SurfaceMaster::Orbit::Device.new
 # perhaps because CoreMIDI has no backpressure, we can easily wind up hosed.
 # Before settling on new values here, run the process for *several full minutes*
 # and make sure the device continues accepting updates at the end!
+MODE      = :wired
+
 CONFIGS   = { wireless: { delay: 0.75,    offset: 0x03, use_read: true,   read_delay: 0.1 },
               wired:    { delay: 0.03125, offset: 0x01, use_read: false,  read_delay: 0 } }
-MODE      = :wireless
 MAPPINGS  =  [0x03, 0x01, 0x70,
 
               0x00, 0x00, 0x00,
