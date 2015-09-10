@@ -60,8 +60,8 @@ module SurfaceMaster
     def response_to(types = :all, state = :both, opts = nil, &block)
       logger.debug "Setting response to #{types.inspect} for state #{state.inspect} with"\
         " #{opts.inspect}"
-      types = Array(types)
-      opts ||= {}
+      types   = Array(types)
+      opts  ||= {}
       no_response_to(types, state, opts) if opts[:exclusive] == true
       expand_states(state).each do |st|
         add_response_for_state!(types, opts, st, block)
