@@ -51,7 +51,11 @@ module SurfaceMaster
       fail NoOutputAllowedError unless output_enabled?
       msg = sysex_msg(payload)
       logger.debug { "#{msg.length}: 0x#{msg.map { |b| '%02X' % b }.join(' ')}" }
-      @output.write_sysex(msg)
+      result = @output.write_sysex(msg)
+      if result != 0
+        puts "Sysex Error: #{Portmidi::PM_Map.Pm_GetErrorText(result)}"
+      end
+      result
     end
 
     def create_input_device(opts)
