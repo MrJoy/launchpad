@@ -10,13 +10,29 @@ module SurfaceMaster
     protected
 
       def combined_types(type, opts = nil)
-        puts opts.inspect
-        case type
-        when :shoulder
-          secondary_filter = opts[:button]
-        end
-        return [type.to_sym] unless secondary_filter
-        [:"#{type}-#{secondary_filter}"]
+        tmp = case type
+              when :shoulder
+                [:"#{type}-#{opts[:button]}"]
+              when :accelerometer
+                [:"#{type}-#{opts[:axis]}"]
+              when :vknob
+                knobs = opts[:vknob].nil? ? (1..4).to_a : [opts[:vknob]]
+                banks = opts[:bank].nil? ? (1..4).to_a : [opts[:bank]]
+
+                knobs.product(banks).map { |k, b| :"#{type}-#{k}-#{b}" }
+              when :vknobs, :banks
+                buttons = opts[:index].nil? ? (1..4).to_a : [opts[:index]]
+
+                buttons.map { |b| [:"#{type}-#{b}"] }
+              when :pad
+                banks   = opts[:bank].nil? ? (1..4).to_a : [opts[:bank]]
+                buttons = opts[:button].nil? ? (0..15).to_a : [opts[:button]]
+
+                buttons.product(banks).map { |p, b| :"#{type}-#{p}-#{b}" }
+              else
+                [type]
+              end
+        tmp.flatten.compact
       end
 
       def responses_hash
@@ -44,14 +60,12 @@ module SurfaceMaster
       end
 
       def mappings_for_action(action)
-        type            = action[:type].to_sym
+        combined_types  = combined_types(action[:type].to_sym, action[:control])
         state           = action[:state].to_sym
-        combined_type   = :"#{type}-#{action[:control][:button]}" if action[:control][:button]
         actions         = []
-        actions        += responses[type][state]
-        actions        += responses[combined_type][state] if combined_type
+        actions        += combined_types.map { |ct| responses[ct][state] }
         actions        += responses[:all][state]
-        actions.compact
+        actions.flatten.compact
       end
 
       def expand_states(state)

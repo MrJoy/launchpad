@@ -71,7 +71,8 @@ module SurfaceMaster
 
     def no_response_to(types = nil, state = :both, opts = nil)
       logger.debug "Removing response to #{types.inspect} for state #{state.inspect}"
-      types = Array(types)
+      types   = Array(types)
+      opts  ||= {}
       expand_states(state).each do |st|
         clear_responses_for_state!(types, opts, st)
       end

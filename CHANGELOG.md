@@ -4,8 +4,8 @@
 
 * __BREAKING CHANGE__: Change Orbit interface to more closely follow conventions established with Novation Launchpad driver.
 * Add preliminary `Interaction` class for Numark Orbit.
-    * Still needs a way to bind more specifically than it currently allows, and also to allow binding to sets/ranges of pads.
     * See `examples/orbit_interaction.rb`.
+* Fix exclusive binding in `Interaction` to not nuke coarser bindings entirely.
 * Rename `examples/orbit_testbed.rb` to `examples/orbit_device.rb`.
 * Rename `examples/monitor.rb` to `examples/system_monitor.rb`.
 * Rename `examples/launchpad_testbed.rb` to `examples/launchpad_playground.rb`.

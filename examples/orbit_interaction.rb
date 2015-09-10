@@ -13,18 +13,41 @@ end
 interaction.response_to(:pad, :up) do |_inter, action|
   puts "PAD UP: #{action.inspect}"
 end
+
 interaction.response_to(:vknob, :update) do |_inter, action|
   puts "KNOB TURNED: #{action.inspect}"
 end
+interaction.response_to(:vknob, :update, vknob: 3) do |_inter, action|
+  puts "KNOB 3, ANY BANK (EXCEPT 2) TURNED: #{action.inspect}"
+end
+interaction.response_to(:vknob, :update, bank: 2, exclusive: true) do |_inter, action|
+  puts "ANY KNOB, BANK 2 TURNED: #{action.inspect}"
+end
+interaction.response_to(:vknob, :update, bank: 4, vknob: 1) do |_inter, action|
+  puts "KNOB 1, BANK 4 TURNED: #{action.inspect}"
+end
+
 interaction.response_to(:accelerometer, :tilt) do |_inter, action|
   puts "TILT: #{action.inspect}"
 end
+interaction.response_to(:accelerometer, :tilt, axis: :x) do |_inter, action|
+  puts "ACCELEROMETER X AXIS: #{action.inspect}"
+end
+
 interaction.response_to(:vknobs, :down) do |_inter, action|
   puts "VKNOB SWITCH: #{action.inspect}"
 end
+interaction.response_to(:vknobs, :down, index: 2) do |_inter, action|
+  puts "VKNOB 2 SELECTOR DOWN: #{action.inspect}"
+end
+
 interaction.response_to(:banks, :down) do |_inter, action|
   puts "BANK SWITCH: #{action.inspect}"
 end
+interaction.response_to(:banks, :down, index: 3) do |_inter, action|
+  puts "BANK 3 SELECTOR DOWN: #{action.inspect}"
+end
+
 interaction.response_to(:shoulder, :down) do |_inter, action|
   puts "SHOULDER DOWN: #{action.inspect}"
 end
