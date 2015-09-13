@@ -1,5 +1,11 @@
 # Changes
 
+## v0.4.0
+
+* Jettison threaded input handling.
+* More Numark Orbit handling (output is still a problem).
+
+
 ## v0.3.0
 
 * __BREAKING CHANGE__: Change Orbit interface to more closely follow conventions established with Novation Launchpad driver.
