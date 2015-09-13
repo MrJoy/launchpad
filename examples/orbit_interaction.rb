@@ -67,4 +67,5 @@ interaction.response_to(:shoulder, :up, button: :left) do |_inter, action|
   puts "LEFT SHOULDER UP: #{action.inspect}"
 end
 
+puts "Starting input loop..."
 interaction.start
