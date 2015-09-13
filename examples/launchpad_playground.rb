@@ -112,7 +112,7 @@ def init_board(interaction)
     value.merge(tmp)
   end
   interaction.changes(values.compact)
-  sleep 0.1
+  # sleep 0.1
 end
 
 def set_grid_rgb(interaction, red:, green:, blue:)
@@ -125,7 +125,7 @@ def goodbye(interaction)
   (0..63).step(2).each do |i|
     ii = (63 - i) - 1
     set_grid_rgb(interaction, red: ii, green: 0x00, blue: ii)
-    sleep 0.01
+    # sleep 0.01
   end
   interaction.close
 end

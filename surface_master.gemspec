@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
 
   # s.add_dependency "portmidi", ">= 0.0.6"
   s.add_dependency "unimidi"
+  s.add_dependency "rtmidi"
   # s.add_dependency "ffi"
 
   # s.has_rdoc = true

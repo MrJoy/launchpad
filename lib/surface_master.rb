@@ -1,4 +1,5 @@
-require "unimidi"
+# require "unimidi"
+require "rtmidi"
 require "logger"
 
 # APIs to enable access to various MIDI-based control surfaces.
