@@ -25,3 +25,5 @@ require "surface_master/launchpad/interaction"
 require "surface_master/orbit/midi_codes"
 require "surface_master/orbit/device"
 require "surface_master/orbit/interaction"
+
+require "surface_master/touch_osc/device"

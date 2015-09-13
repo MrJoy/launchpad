@@ -1,5 +1,10 @@
 # Changes
 
+## v0.4.1
+
+* Add a simple driver for the TouchOSC Bridge.
+
+
 ## v0.4.0
 
 * Jettison threaded input handling.
