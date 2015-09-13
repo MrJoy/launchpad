@@ -12,7 +12,7 @@ Where appropriate this includes setting LEDs and responding to input events.
     * At present you need to use the `Numark Orbit Editor` to send a specific mapping to the device, and setting of LEDs doesn't work.
     * See `mappings/Orbit_Preset.json` for the preset to use with `Numark Orbit Editor`.
 * TouchOSC Bridge
-    * At the moment only the `Device` interface is implemented, and no mappings are performed for you.
+    * At the moment only the `Device` interface is implemented, and you can either consume the input raw, or apply a mapping function of your own.
 
 
 ## Requirements

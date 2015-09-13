@@ -2,10 +2,10 @@ module SurfaceMaster
   module TouchOSC
     # Low-level interface to TouchOSC Bridge
     class Device < SurfaceMaster::Device
-      def initialize(opts = nil)
+      def initialize(opts = nil, &mapper)
         @name = "TouchOSC Bridge"
         super(opts)
-        reset!
+        @mapper = mapper || proc { |input| input }
       end
 
       def reset!
@@ -13,7 +13,7 @@ module SurfaceMaster
 
       def read
         super
-          .map { |input| decode_input(input) }
+          .map { |input| @mapper.call(input) }
           .compact
       end
 
@@ -24,11 +24,6 @@ module SurfaceMaster
     protected
 
       # def sysex_prefix; @sysex_prefix ||= super + []; end
-
-      def decode_input(input)
-        puts input.inspect
-        nil
-      end
     end
   end
 end
