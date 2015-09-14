@@ -8,8 +8,7 @@ module SurfaceMaster
         @mapper = mapper || proc { |input| input }
       end
 
-      def reset!
-      end
+      def reset!; end
 
       def read
         super
@@ -20,10 +19,6 @@ module SurfaceMaster
       def write(messages)
         @output.write(Array(messages))
       end
-
-    protected
-
-      # def sysex_prefix; @sysex_prefix ||= super + []; end
     end
   end
 end
