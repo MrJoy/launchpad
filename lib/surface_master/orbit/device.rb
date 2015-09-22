@@ -35,11 +35,11 @@ module SurfaceMaster
         #   if @input.buffer.length == 0
         #     elapsed = Time.now.to_f - started_at
         #     if elapsed > 4.0
-        #       logger.warn { "Timeout fetching state of Numark Orbit!" }
+        #       logger.error { "Timeout fetching state of Numark Orbit!" }
         #       break
         #     elsif elapsed > (1.0 * attempts)
-        #       logger.warn { "Asking for current state of Numark Orbit again!" }
-        #       attempts += 1
+        #       logger.error { "Asking for current state of Numark Orbit again!" }
+        #       attempts     += 1
         #       @output.puts(READ_STATE)
         #       next
         #     end
