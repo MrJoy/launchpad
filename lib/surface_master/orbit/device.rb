@@ -7,10 +7,12 @@ module SurfaceMaster
       def initialize(opts = nil)
         @name = "Numark ORBIT"
         super(opts)
-        reset!
+        init!
       end
 
-      def reset!
+      def reset!; end
+
+      def init!
         # Hack to get around apparent portmidi message truncation.
         return
 
