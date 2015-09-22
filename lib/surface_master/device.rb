@@ -62,6 +62,10 @@ module SurfaceMaster
 
   protected
 
+    def format_msg(msg)
+      "0x#{msg.map { |b| '%02X' % b }.join(' ')} (len = #{msg.length})"
+    end
+
     def sysex_prefix; [0xF0]; end
     def sysex_suffix; 0xF7; end
     def sysex_msg(*payload); (sysex_prefix + [payload, sysex_suffix]).flatten.compact; end

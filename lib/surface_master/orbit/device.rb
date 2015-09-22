@@ -7,10 +7,12 @@ module SurfaceMaster
       def initialize(opts = nil)
         @name = "Numark ORBIT"
         super(opts)
-        reset!
+        init!
       end
 
-      def reset!
+      def reset!; end
+
+      def init!
         # Skip Sysex begin, vendor header, command code, aaaaand sysex end --
         # this will let us compare command vs. response payloads to determine
         # if the state of the device is what we want.  Of course, sometimes it
@@ -67,8 +69,13 @@ module SurfaceMaster
 
     protected
 
-      MAPPINGS =   [0x03, 0x01, 0x70,
+      MAPPINGS =   [0x03, # Command byte.
 
+                    # Some aspect of internal state I don't understand...
+                    0x01, 0x70,
+
+                    # Pad mappings.  (Channel, Note, Color) for banks 1-4.
+                    # These are addressed left-to-right, top-to-bottom.
                     0x00, 0x00, 0x00,
                     0x00, 0x04, 0x00,
                     0x00, 0x08, 0x00,
@@ -85,6 +92,7 @@ module SurfaceMaster
                     0x00, 0x07, 0x00,
                     0x00, 0x0B, 0x00,
                     0x00, 0x0F, 0x00,
+
                     0x01, 0x00, 0x00,
                     0x01, 0x04, 0x00,
                     0x01, 0x08, 0x00,
@@ -101,6 +109,7 @@ module SurfaceMaster
                     0x01, 0x07, 0x00,
                     0x01, 0x0B, 0x00,
                     0x01, 0x0F, 0x00,
+
                     0x02, 0x00, 0x00,
                     0x02, 0x04, 0x00,
                     0x02, 0x08, 0x00,
@@ -108,7 +117,7 @@ module SurfaceMaster
                     0x02, 0x01, 0x00,
                     0x02, 0x05, 0x00,
                     0x02, 0x09, 0x00,
-                    0x02, 0x0D, 0x00,
+                    0x02, 0x0D, 0x00, # After here is where shit goes sideways...
                     0x02, 0x02, 0x00,
                     0x02, 0x06, 0x00,
                     0x02, 0x0A, 0x00,
@@ -117,6 +126,7 @@ module SurfaceMaster
                     0x02, 0x07, 0x00,
                     0x02, 0x0B, 0x00,
                     0x02, 0x0F, 0x00,
+
                     0x03, 0x00, 0x00,
                     0x03, 0x04, 0x00,
                     0x03, 0x08, 0x00,
@@ -134,22 +144,42 @@ module SurfaceMaster
                     0x03, 0x0B, 0x00,
                     0x03, 0x0F, 0x00,
 
-                    0x00, 0x00, 0x01,
-                    0x00, 0x02, 0x00,
-                    0x03, 0x00, 0x00,
-                    0x01, 0x01, 0x01,
-                    0x02, 0x01, 0x03,
-                    0x01, 0x00, 0x02,
-                    0x01, 0x02, 0x02,
-                    0x02, 0x03, 0x02,
-                    0x00, 0x03, 0x01,
-                    0x03, 0x02, 0x03,
-                    0x03, 0x03, 0x0C,
-                    0x00, 0x0D, 0x00,
-                    0x0C, 0x00, 0x0D,
-                    0x00, 0x0C, 0x00,
-                    0x0D, 0x00, 0x0C,
-                    0x00, 0x0D, 0x00]
+                    # VKnob buttons, I think.  Ordered by bank, then vknob.
+                    # High nybble of first byte is 0x0 for abslute, 0x1 for
+                    # relative.  Low nybble is channel.  Second byte is CC.
+                    0x00, 0x00,
+                    0x01, 0x00,
+                    0x02, 0x00,
+                    0x03, 0x00,
+
+                    0x00, 0x01,
+                    0x01, 0x01,
+                    0x02, 0x01,
+                    0x03, 0x01,
+
+                    0x00, 0x02,
+                    0x01, 0x02,
+                    0x02, 0x02,
+                    0x03, 0x02,
+
+                    0x00, 0x03,
+                    0x01, 0x03,
+                    0x02, 0x03,
+                    0x03, 0x03,
+
+                    # Shoulder buttons.  Channel/CC pairs for left, then right
+                    # through each of the four banks.
+                    0x0C, 0x00,
+                    0x0D, 0x00,
+
+                    0x0C, 0x00,
+                    0x0D, 0x00,
+
+                    0x0C, 0x00,
+                    0x0D, 0x00,
+
+                    0x0C, 0x00,
+                    0x0D, 0x00]
       READ_STATE = [0x01, 0x00, 0x00]
 
       def sysex_prefix; @sysex_prefix ||= super + [0x00, 0x01, 0x3F, 0x2B]; end
@@ -159,13 +189,13 @@ module SurfaceMaster
         decoded
       end
 
-      def decode_pad(decoded, note, _velocity)
-        decoded[:control] = decoded[:control].merge(button: note + 1)
+      def decode_grid(decoded, note, _velocity)
+        decoded[:control] = decoded[:control].merge(x: note / 4, y: note % 4)
         decoded
       end
 
       def decode_knob(decoded, note, velocity)
-        decoded[:control] = decoded[:control].merge(bank: note + 1)
+        decoded[:control] = decoded[:control].merge(bank: note)
         decoded[:value]   = velocity
         decoded
       end
@@ -184,7 +214,7 @@ module SurfaceMaster
       def enrich_decoded_message(decoded, note, velocity, timestamp)
         case decoded[:type]
         when :shoulder      then decoded = decode_shoulder(decoded, note, velocity)
-        when :pad           then decoded = decode_pad(decoded, note, velocity)
+        when :grid          then decoded = decode_grid(decoded, note, velocity)
         when :vknob         then decoded = decode_knob(decoded, note, velocity)
         when :accelerometer then decoded = decode_accelerometer(decoded, note, velocity)
         else decoded = decode_control(decoded, note, velocity)

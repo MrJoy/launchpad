@@ -6,7 +6,7 @@ module SurfaceMaster
     #
     # Creates one if none was set.
     def logger
-      @logger ||= Logger.new(nil)
+      @logger ||= Logger.new(STDERR)
     end
 
     # Sets the logger to be used by the current instance.

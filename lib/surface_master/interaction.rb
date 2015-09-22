@@ -76,7 +76,7 @@ module SurfaceMaster
   protected
 
     def expand(list)
-      list.map { |ll| ll.respond_to?(:to_a) ? ll.to_a : ll }.flatten
+      Array(list).map { |ll| ll.respond_to?(:to_a) ? ll.to_a : ll }.flatten
     end
 
     def guard_input_and_reset_at_end!(&block)

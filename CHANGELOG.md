@@ -1,5 +1,22 @@
 # Changes
 
+## v0.5.0
+
+* Make all addressing for Numark Orbit be zero-based.
+* Switch to grid addressing for Numark Orbit (backwards incompatible change!).
+
+
+## v0.4.1
+
+* Add a simple driver for the TouchOSC Bridge.
+
+
+## v0.4.0
+
+* Jettison threaded input handling.
+* More Numark Orbit handling (output is still a problem).
+
+
 ## v0.3.0
 
 * __BREAKING CHANGE__: Change Orbit interface to more closely follow conventions established with Novation Launchpad driver.

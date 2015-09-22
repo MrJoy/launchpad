@@ -6,17 +6,17 @@ Bundler.require(:default, :development)
 require "surface_master"
 
 interaction = SurfaceMaster::Orbit::Interaction.new
-interaction.response_to(:pad, :down) do |_inter, action|
+interaction.response_to(:grid, :down) do |_inter, action|
   puts "PAD DOWN: #{action.inspect}"
 end
-interaction.response_to(:pad, :up) do |_inter, action|
+interaction.response_to(:grid, :up) do |_inter, action|
   puts "PAD UP: #{action.inspect}"
 end
-interaction.response_to(:pad, :up, button: 1..4) do |_inter, action|
+interaction.response_to(:grid, :up, x: 0) do |_inter, action|
   puts "LEFT COLUMN PAD UP: #{action.inspect}"
 end
-interaction.response_to(:pad, :up, button: 5..8, bank: 4, exclusive: true) do |_inter, action|
-  puts "SECOND-FROM-LEFT COLUMN PAD UP: #{action.inspect}"
+interaction.response_to(:grid, :up, x: 1, y: 0..3, bank: 3, exclusive: true) do |_inter, action|
+  puts "SECOND-FROM-LEFT COLUMN, LAST BANK, PAD UP: #{action.inspect}"
 end
 
 interaction.response_to(:vknob, :update) do |_inter, action|
@@ -28,8 +28,8 @@ end
 interaction.response_to(:vknob, :update, bank: 2, exclusive: true) do |_inter, action|
   puts "ANY KNOB, BANK 2 TURNED: #{action.inspect}"
 end
-interaction.response_to(:vknob, :update, bank: 4, vknob: 1) do |_inter, action|
-  puts "KNOB 1, BANK 4 TURNED: #{action.inspect}"
+interaction.response_to(:vknob, :update, bank: 1, vknob: 1) do |_inter, action|
+  puts "KNOB 1, BANK 1 TURNED: #{action.inspect}"
 end
 
 interaction.response_to(:accelerometer, :tilt) do |_inter, action|
