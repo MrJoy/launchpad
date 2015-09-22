@@ -163,7 +163,7 @@ module SurfaceMaster
                     0x03, 0x0F, 0x00,
 
                     # VKnob buttons, I think.  Not sure of mapping, or how abs
-                    #vs. relative fits in.
+                    # vs. relative fits in.
                     0x00, 0x00,
                     0x01, 0x00,
                     0x02, 0x00,
