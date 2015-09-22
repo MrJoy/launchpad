@@ -162,8 +162,9 @@ module SurfaceMaster
                     0x03, 0x0B, 0x00,
                     0x03, 0x0F, 0x00,
 
-                    # VKnob buttons, I think.  Not sure of mapping, or how abs
-                    # vs. relative fits in.
+                    # VKnob buttons, I think.  Ordered by bank, then vknob.
+                    # High nybble of first byte is 0x0 for abslute, 0x1 for
+                    # relative.  Low nybble is channel.  Second byte is CC.
                     0x00, 0x00,
                     0x01, 0x00,
                     0x02, 0x00,
