@@ -11,52 +11,55 @@ module SurfaceMaster
       end
 
       def reset!
+        # Hack to get around apparent portmidi message truncation.
+        return
+
         # Skip Sysex begin, vendor header, command code, aaaaand sysex end --
         # this will let us compare command vs. response payloads to determine
         # if the state of the device is what we want.  Of course, sometimes it
         # lies, but we can't do much about that.
-        expected_state = MAPPINGS[6..-2]
-        sysex!(MAPPINGS)
-        sleep 0.1
-        sysex!(READ_STATE)
-        current_state = nil
-        started_at    = Time.now.to_f
-        attempts      = 1
-        loop do
-          # TODO: It appears that accessing `buffer` is HIGHLY unsafe!  We may
-          # TODO: be OK if everyone's waiting on us to come back from this
-          # TODO: method before they begin clamoring for input, but that's just
-          # TODO: a guess right now.
-          if @input.buffer.length == 0
-            elapsed = Time.now.to_f - started_at
-            if elapsed > 4.0
-              logger.warn { "Timeout fetching state of Numark Orbit!" }
-              break
-            elsif elapsed > (1.0 * attempts)
-              logger.warn { "Asking for current state of Numark Orbit again!" }
-              attempts += 1
-              @output.puts(READ_STATE)
-              next
-            end
-            sleep 0.01
-            next
-          end
-          raw             = @input.gets
-          current_state   = raw.find { |ii| ii[:data][0] == 0xF0 }
-          break unless current_state.nil?
-        end
+        # expected_state = MAPPINGS[6..-2]
+        # sysex!(MAPPINGS)
+        # sleep 0.1
+        # sysex!(READ_STATE)
+        # current_state = nil
+        # started_at    = Time.now.to_f
+        # attempts      = 1
+        # loop do
+        #   # TODO: It appears that accessing `buffer` is HIGHLY unsafe!  We may
+        #   # TODO: be OK if everyone's waiting on us to come back from this
+        #   # TODO: method before they begin clamoring for input, but that's just
+        #   # TODO: a guess right now.
+        #   if @input.buffer.length == 0
+        #     elapsed = Time.now.to_f - started_at
+        #     if elapsed > 4.0
+        #       logger.warn { "Timeout fetching state of Numark Orbit!" }
+        #       break
+        #     elsif elapsed > (1.0 * attempts)
+        #       logger.warn { "Asking for current state of Numark Orbit again!" }
+        #       attempts += 1
+        #       @output.puts(READ_STATE)
+        #       next
+        #     end
+        #     sleep 0.01
+        #     next
+        #   end
+        #   raw             = @input.gets
+        #   current_state   = raw.find { |ii| ii[:data][0] == 0xF0 }
+        #   break unless current_state.nil?
+        # end
 
-        return unless current_state
+        # return unless current_state
 
-        current_state = current_state[:data][6..-2].dup
-        logger.debug { "Got state info from Numark Orbit!" }
-        if expected_state != current_state
-          logger.error { "UH OH!  Numark Orbit state didn't match what we sent!" }
-          logger.error { "Expected: #{expected_state.inspect}" }
-          logger.error { "Got:      #{current_state.inspect}" }
-        else
-          logger.debug { "Your Numark Orbit should be in the right state now." }
-        end
+        # current_state = current_state[:data][6..-2].dup
+        # logger.debug { "Got state info from Numark Orbit!" }
+        # if expected_state != current_state
+        #   logger.error { "UH OH!  Numark Orbit state didn't match what we sent!" }
+        #   logger.error { "Expected: #{expected_state.inspect}" }
+        #   logger.error { "Got:      #{current_state.inspect}" }
+        # else
+        #   logger.debug { "Your Numark Orbit should be in the right state now." }
+        # end
       end
 
       def read
