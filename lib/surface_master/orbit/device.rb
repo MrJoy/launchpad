@@ -20,19 +20,17 @@ module SurfaceMaster
         # this will let us compare command vs. response payloads to determine
         # if the state of the device is what we want.  Of course, sometimes it
         # lies, but we can't do much about that.
-        # expected_state = MAPPINGS[6..-2]
+        # expected_state = MAPPINGS[1..-1]
         # sysex!(MAPPINGS)
         # sleep 0.1
         # sysex!(READ_STATE)
-        # current_state = nil
-        # started_at    = Time.now.to_f
-        # attempts      = 1
+        # current_state       = []
+        # started_at          = Time.now.to_f
+        # attempts            = 1
+        # state               = :looking_for_start
         # loop do
-        #   # TODO: It appears that accessing `buffer` is HIGHLY unsafe!  We may
-        #   # TODO: be OK if everyone's waiting on us to come back from this
-        #   # TODO: method before they begin clamoring for input, but that's just
-        #   # TODO: a guess right now.
-        #   if @input.buffer.length == 0
+        #   raw = @input.read
+        #   unless raw
         #     elapsed = Time.now.to_f - started_at
         #     if elapsed > 4.0
         #       logger.error { "Timeout fetching state of Numark Orbit!" }
@@ -40,28 +38,45 @@ module SurfaceMaster
         #     elsif elapsed > (1.0 * attempts)
         #       logger.error { "Asking for current state of Numark Orbit again!" }
         #       attempts     += 1
-        #       @output.puts(READ_STATE)
+        #       current_state = []
+        #       state         = :looking_for_start
+        #       sysex!(READ_STATE)
         #       next
         #     end
         #     sleep 0.01
         #     next
         #   end
-        #   raw             = @input.gets
-        #   current_state   = raw.find { |ii| ii[:data][0] == 0xF0 }
-        #   break unless current_state.nil?
+
+        #   case state
+        #   when :looking_for_start
+        #     idx = raw.find_index { |ii| ii[:message][0] == 0xF0 }
+        #     if idx
+        #       state           = :looking_for_end
+        #       raw             = raw[idx..-1]
+        #       current_state  += raw.map { |ii| ii[:message] }.flatten
+        #     end
+        #   when :looking_for_end
+        #     idx = raw.find_index { |ii| ii[:message][0] == 0xF7 }
+        #     if idx
+        #       # TODO: Now what?
+        #       current_state = current_state[6..-1]
+        #       if expected_state != current_state
+        #         logger.error { "UH OH!  Numark Orbit state didn't match what we sent!" }
+        #         logger.error { "Expected: #{format_msg(expected_state)}" }
+        #         logger.error { "Got:      #{format_msg(current_state)}" }
+        #       else
+        #         logger.debug { "Your Numark Orbit should be in the right state now." }
+        #         return
+        #       end
+        #     else
+        #       idx = -1
+        #     end
+        #     raw             = raw[0..idx]
+        #     current_state  += raw.map { |ii| ii[:message] }.flatten
+        #   end
         # end
 
-        # return unless current_state
-
-        # current_state = current_state[:data][6..-2].dup
-        # logger.debug { "Got state info from Numark Orbit!" }
-        # if expected_state != current_state
-        #   logger.error { "UH OH!  Numark Orbit state didn't match what we sent!" }
-        #   logger.error { "Expected: #{expected_state.inspect}" }
-        #   logger.error { "Got:      #{current_state.inspect}" }
-        # else
-        #   logger.debug { "Your Numark Orbit should be in the right state now." }
-        # end
+        # logger.error { "Didn't get state from Numark Orbit!" }
       end
 
       def read
