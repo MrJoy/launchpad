@@ -159,13 +159,13 @@ module SurfaceMaster
         decoded
       end
 
-      def decode_pad(decoded, note, _velocity)
-        decoded[:control] = decoded[:control].merge(button: note + 1)
+      def decode_grid(decoded, note, _velocity)
+        decoded[:control] = decoded[:control].merge(x: note / 4, y: note % 4)
         decoded
       end
 
       def decode_knob(decoded, note, velocity)
-        decoded[:control] = decoded[:control].merge(bank: note + 1)
+        decoded[:control] = decoded[:control].merge(bank: note)
         decoded[:value]   = velocity
         decoded
       end
@@ -184,7 +184,7 @@ module SurfaceMaster
       def enrich_decoded_message(decoded, note, velocity, timestamp)
         case decoded[:type]
         when :shoulder      then decoded = decode_shoulder(decoded, note, velocity)
-        when :pad           then decoded = decode_pad(decoded, note, velocity)
+        when :grid          then decoded = decode_grid(decoded, note, velocity)
         when :vknob         then decoded = decode_knob(decoded, note, velocity)
         when :accelerometer then decoded = decode_accelerometer(decoded, note, velocity)
         else decoded = decode_control(decoded, note, velocity)

@@ -1,5 +1,11 @@
 # Changes
 
+## v0.5.0
+
+* Make all addressing for Numark Orbit be zero-based.
+* Switch to grid addressing for Numark Orbit (backwards incompatible change!).
+
+
 ## v0.4.1
 
 * Add a simple driver for the TouchOSC Bridge.
