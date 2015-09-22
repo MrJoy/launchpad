@@ -87,7 +87,10 @@ module SurfaceMaster
 
     protected
 
-      MAPPINGS =   [0x03, 0x01, 0x70,
+      MAPPINGS =   [# Command byte.
+                    0x03,
+                    # Some aspect of internal state I don't understand...
+                    0x01, 0x70,
 
                     # Pad mappings.  (Channel, Note, Color) for banks 1-4.
                     # These are addressed left-to-right, top-to-bottom.
