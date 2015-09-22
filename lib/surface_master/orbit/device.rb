@@ -87,8 +87,8 @@ module SurfaceMaster
 
     protected
 
-      MAPPINGS =   [# Command byte.
-                    0x03,
+      MAPPINGS =   [0x03, # Command byte.
+
                     # Some aspect of internal state I don't understand...
                     0x01, 0x70,
 
