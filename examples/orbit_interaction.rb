@@ -13,7 +13,7 @@ end
 interaction.response_to(:grid, :up) do |_inter, action|
   puts "PAD UP: #{action.inspect}"
 end
-interaction.response_to(:grid, :up, x: 0, y: 0..3) do |_inter, action|
+interaction.response_to(:grid, :up, x: 0) do |_inter, action|
   puts "LEFT COLUMN PAD UP: #{action.inspect}"
 end
 interaction.response_to(:grid, :up, x: 1, y: 0..3, bank: 3, exclusive: true) do |_inter, action|
