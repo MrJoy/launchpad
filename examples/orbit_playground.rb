@@ -125,10 +125,10 @@ loop do
   indices.each do |i|
     MAPPINGS[i] = (MAPPINGS[i] + offset) % 0x3F
   end
-  device.sysex!(*MAPPINGS)
+  device.send(:sysex!, *MAPPINGS)
   if use_read
     sleep read_delay
-    device.sysex!(*READ_STATE)
+    device.send(:sysex!, *READ_STATE)
   end
   printf "."
   sleep delay
