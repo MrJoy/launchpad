@@ -47,7 +47,7 @@ module SurfaceMaster
     def sysex_suffix; 0xF7; end
     def sysex_msg(*payload); (sysex_prefix + [payload, sysex_suffix]).flatten.compact; end
 
-    def sysex!(*payload)
+    def sysex_old!(*payload)
       fail NoOutputAllowedError unless output_enabled?
       msg = sysex_msg(payload)
       result = @output.write_sysex(msg)
@@ -55,6 +55,43 @@ module SurfaceMaster
         logger.error { "Sysex Error: #{Portmidi::PM_Map.Pm_GetErrorText(result)}" }
       end
       result
+    end
+
+    def sysex!(*payload)
+      sysex_new!(payload)
+    end
+
+    LEN = 4
+    def sysex_new!(*payload)
+      fail NoOutputAllowedError unless output_enabled?
+      msg = sysex_msg(payload)
+      messages = []
+      loop do
+        messages = []
+        chunk = msg.slice!(0..125)
+        break if chunk.length == 0
+        chunk = chunk + [0x00]
+        loop do
+          piece = chunk.slice!(0..(LEN - 1))
+          break if piece.length == 0
+          # padded = piece + ([0x00] * (LEN - piece.length))
+          messages << { message: piece, timestamp: 0 }
+        end
+        loop do
+          batch = messages.slice!(0..15)
+          break if batch.length == 0
+          # puts "#{batch.length} / #{messages.length}"
+          result = @output.write(batch)
+          sleep 0.1 # if messages.length > 0
+          # read
+          if result != 0
+            logger.error { "Sysex Error: #{Portmidi::PM_Map.Pm_GetErrorText(result)}" }
+            return result
+          end
+        end
+        sleep 0.1
+      end
+      0
     end
 
     def format_msg(msg)

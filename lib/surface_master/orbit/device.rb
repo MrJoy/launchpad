@@ -14,69 +14,69 @@ module SurfaceMaster
 
       def init!
         # Hack to get around apparent portmidi message truncation.
-        return
+        # return
 
         # Skip Sysex begin, vendor header, command code, aaaaand sysex end --
         # this will let us compare command vs. response payloads to determine
         # if the state of the device is what we want.  Of course, sometimes it
         # lies, but we can't do much about that.
-        # expected_state = MAPPINGS[1..-1]
-        # sysex!(MAPPINGS)
-        # sleep 0.1
-        # sysex!(READ_STATE)
-        # current_state       = []
-        # started_at          = Time.now.to_f
-        # attempts            = 1
-        # state               = :looking_for_start
-        # loop do
-        #   raw = @input.read
-        #   unless raw
-        #     elapsed = Time.now.to_f - started_at
-        #     if elapsed > 4.0
-        #       logger.error { "Timeout fetching state of Numark Orbit!" }
-        #       break
-        #     elsif elapsed > (1.0 * attempts)
-        #       logger.error { "Asking for current state of Numark Orbit again!" }
-        #       attempts     += 1
-        #       current_state = []
-        #       state         = :looking_for_start
-        #       sysex!(READ_STATE)
-        #       next
-        #     end
-        #     sleep 0.01
-        #     next
-        #   end
+        expected_state = MAPPINGS[1..-1]
+        sysex!(MAPPINGS)
+        sleep 0.25
+        sysex!(READ_STATE)
+        current_state       = []
+        started_at          = Time.now.to_f
+        attempts            = 1
+        state               = :looking_for_start
+        loop do
+          raw = @input.read
+          unless raw
+            elapsed = Time.now.to_f - started_at
+            if elapsed > 8.0
+              logger.error { "Timeout fetching state of Numark Orbit!" }
+              break
+            elsif elapsed > (4.0 * attempts)
+              logger.error { "Asking for current state of Numark Orbit again!" }
+              attempts     += 1
+              current_state = []
+              state         = :looking_for_start
+              sysex!(READ_STATE)
+              next
+            end
+            sleep 0.01
+            next
+          end
 
-        #   case state
-        #   when :looking_for_start
-        #     idx = raw.find_index { |ii| ii[:message][0] == 0xF0 }
-        #     if idx
-        #       state           = :looking_for_end
-        #       raw             = raw[idx..-1]
-        #       current_state  += raw.map { |ii| ii[:message] }.flatten
-        #     end
-        #   when :looking_for_end
-        #     idx = raw.find_index { |ii| ii[:message][0] == 0xF7 }
-        #     if idx
-        #       # TODO: Now what?
-        #       current_state = current_state[6..-1]
-        #       if expected_state != current_state
-        #         logger.error { "UH OH!  Numark Orbit state didn't match what we sent!" }
-        #         logger.error { "Expected: #{format_msg(expected_state)}" }
-        #         logger.error { "Got:      #{format_msg(current_state)}" }
-        #       else
-        #         logger.debug { "Your Numark Orbit should be in the right state now." }
-        #         return
-        #       end
-        #     else
-        #       idx = -1
-        #     end
-        #     raw             = raw[0..idx]
-        #     current_state  += raw.map { |ii| ii[:message] }.flatten
-        #   end
-        # end
+          case state
+          when :looking_for_start
+            idx = raw.find_index { |ii| ii[:message][0] == 0xF0 }
+            if idx
+              state           = :looking_for_end
+              raw             = raw[idx..-1]
+              current_state  += raw.map { |ii| ii[:message] }.flatten
+            end
+          when :looking_for_end
+            idx = raw.find_index { |ii| ii[:message][0] == 0xF7 }
+            if idx
+              # TODO: Now what?
+              current_state = current_state[6..-1]
+              if expected_state != current_state
+                logger.error { "UH OH!  Numark Orbit state didn't match what we sent!" }
+                logger.error { "Expected: #{format_msg(expected_state)}" }
+                logger.error { "Got:      #{format_msg(current_state)}" }
+              else
+                logger.debug { "Your Numark Orbit should be in the right state now." }
+                return
+              end
+            else
+              idx = -1
+            end
+            raw             = raw[0..idx]
+            current_state  += raw.map { |ii| ii[:message] }.flatten
+          end
+        end
 
-        # logger.error { "Didn't get state from Numark Orbit!" }
+        logger.error { "Didn't get state from Numark Orbit!" }
       end
 
       def read
@@ -219,7 +219,11 @@ module SurfaceMaster
       end
 
       def decode_control(decoded, note, velocity)
-        decoded           = decoded.merge(SurfaceMaster::Orbit::Device::SELECTORS[note])
+        tmp = SurfaceMaster::Orbit::Device::SELECTORS[note]
+        if !tmp
+          puts "WAT: #{decoded.inspect}, #{note.inspect}, #{velocity.inspect}"
+        end
+        decoded           = decoded.merge(tmp)
         decoded[:control] = { button: velocity }
         decoded
       end
