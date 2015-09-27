@@ -1,5 +1,12 @@
 # Changes
 
+## v0.5.1
+
+* Log to stderr.
+* Fix for method privacy issue in `orbit_playground.rb`.
+* Improvements to logging of sysex requests in `Device` base class.
+
+
 ## v0.5.0
 
 * Make all addressing for Numark Orbit be zero-based.
