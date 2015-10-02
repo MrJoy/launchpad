@@ -208,7 +208,7 @@ module SurfaceMaster
       end
 
       def decode_grid(decoded, note, _velocity)
-        decoded[:control] = decoded[:control].merge(x: note / 4, y: note % 4)
+        decoded[:control] = decoded[:control].merge(x: note / 4, y: 3 - (note % 4))
         decoded
       end
 
