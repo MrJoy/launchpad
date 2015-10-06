@@ -1,5 +1,10 @@
 # Changes
 
+## v0.6.0
+
+* Invert Y coordinate for Numark Orbit, to match behavior of Novation Launchpad.
+
+
 ## v0.5.1
 
 * Log to stderr.
