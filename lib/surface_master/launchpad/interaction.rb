@@ -21,10 +21,10 @@ module SurfaceMaster
         end.flatten.uniq
       end
 
-      def combined_types(type, opts = nil)
-        if type.to_sym == :grid && opts
-          x = grid_range(opts[:x])
-          y = grid_range(opts[:y])
+      def combined_types(pos)
+        if pos.is_a?(Array)
+          x = grid_range(pos[0])
+          y = grid_range(pos[1])
           return [:grid] if x.nil? && y.nil?  # whole grid
           x ||= ["-"]                         # whole row
           y ||= ["-"]                         # whole column

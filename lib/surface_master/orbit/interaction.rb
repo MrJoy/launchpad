@@ -16,29 +16,30 @@ module SurfaceMaster
         end.flatten.uniq
       end
 
-      def combined_types(type, opts = nil)
-        tmp = case type
-              when :shoulder
-                [:"#{type}-#{opts[:button]}"]
-              when :accelerometer
-                [:"#{type}-#{opts[:axis]}"]
-              when :vknob
-                knobs = opts[:vknob].nil? ? [0..3] : [opts[:vknob]]
-                banks = opts[:bank].nil? ? [0..3] : [opts[:bank]]
+      def combined_types(pos, opts = nil)
+        tmp = case pos
+              when Array
+                case pos[0]
+                when :vknob
+                  banks = pos[1].nil? ? [0..3] : [pos[1]]
+                  knobs = pos[2].nil? ? [0..3] : [pos[2]]
 
-                expand(knobs).product(expand(banks)).map { |k, b| :"#{type}-#{k}-#{b}" }
-              when :vknobs, :banks
-                buttons = opts[:button].nil? ? [0..3] : [opts[:button]]
+                  expand(knobs).product(expand(banks)).map { |k, b| :"#{type}-#{k}-#{b}" }
+                when :vknobs, :banks
+                  buttons = pos[1].nil? ? [0..3] : [pos[1]]
 
-                expand(buttons).map { |b| [:"#{type}-#{b}"] }
-              when :grid
-                banks = expand(opts[:bank] || [0..3])
-                x     = expand(grid_range(opts[:x]))
-                y     = expand(grid_range(opts[:y]))
-                # return [:grid] if x.nil? && y.nil?  # whole grid
-                x.product(y).product(banks).map { |xx, (yy, b)| :"#{type}-#{xx}-#{yy}-#{b}" }
+                  expand(buttons).map { |b| [:"#{type}-#{b}"] }
+                when :shoulder, :accelerometer
+                  [:"#{pos[0]}-#{pos[1]}"]
+                else
+                  banks = expand(opts[:bank] || [0..3])
+                  x     = expand(grid_range(opts[:x]))
+                  y     = expand(grid_range(opts[:y]))
+                  # return [:grid] if x.nil? && y.nil?  # whole grid
+                  x.product(y).product(banks).map { |xx, (yy, b)| :"#{type}-#{xx}-#{yy}-#{b}" }
+                end
               else
-                [type]
+                [pos.to_sym]
               end
         tmp.flatten.compact
       end

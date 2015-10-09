@@ -47,14 +47,14 @@ module SurfaceMaster
       @active = false
     end
 
-    def response_to(types = :all, state = :both, opts = nil, &block)
+    def response_to(positions, state = :both, opts = nil, &block)
       logger.debug "Setting response to #{types.inspect} for state #{state.inspect} with"\
         " #{opts.inspect}"
-      types   = Array(types)
-      opts  ||= {}
-      no_response_to(types, state, opts) if opts[:exclusive] == true
+      positions = Array(positions)
+      opts    ||= {}
+      no_response_to(positions, state, opts) if opts[:exclusive] == true
       expand_states(state).each do |st|
-        add_response_for_state!(types, opts, st, block)
+        add_response_for_state!(positions, opts, st, block)
       end
       nil
     end
@@ -91,19 +91,19 @@ module SurfaceMaster
       @device.reset!
     end
 
-    def add_response_for_state!(types, opts, state, block)
-      response_groups_for(types, opts, state) do |responses|
+    def add_response_for_state!(positions, opts, state, block)
+      response_groups_for(positions, opts, state) do |responses|
         responses << block
       end
     end
 
-    def clear_responses_for_state!(types, opts, state)
-      response_groups_for(types, opts, state, &:clear)
+    def clear_responses_for_state!(positions, opts, state)
+      response_groups_for(positions, opts, state, &:clear)
     end
 
-    def response_groups_for(types, opts, state, &block)
-      types.each do |type|
-        combined_types(type, opts).each do |combined_type|
+    def response_groups_for(positions, opts, state, &block)
+      positions.each do |position|
+        combined_types(position).each do |combined_type|
           block.call(responses[combined_type][state])
         end
       end

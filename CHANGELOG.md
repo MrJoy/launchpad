@@ -1,5 +1,9 @@
 # Changes
 
+## v0.7.0
+
+* Allow Novation Launchpad grid coordinates to extens in CC area.
+
 ## v0.6.0
 
 * Invert Y coordinate for Numark Orbit, to match behavior of Novation Launchpad.
