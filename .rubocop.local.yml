@@ -1,0 +1,6 @@
+AllCops:
+  Exclude:
+    - doc/**/*
+    - debug_tools/**/*
+    - tmp/**/*
+    - pkg/**/*

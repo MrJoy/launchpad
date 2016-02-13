@@ -1,3 +1,6 @@
+require "orderly_garden"
+OrderlyGarden.init!
+
 require "bundler/gem_tasks"
 
 require "rake/testtask"
