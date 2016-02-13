@@ -23,17 +23,17 @@ module SurfaceMaster
         MIXER         = 0x6F
       end
 
-      # Module defininig MIDI data 1 (note) codes for scene buttons.
-      # TODO: Rename to match Mk2...
+      # Module defininig MIDI data 1 (note) codes for scene buttons.  These are just the last column
+      # in the grid.
       module Scene
-        SCENE1        = 0x59
-        SCENE2        = 0x4f
-        SCENE3        = 0x45
-        SCENE4        = 0x3b
-        SCENE5        = 0x31
-        SCENE6        = 0x27
-        SCENE7        = 0x1d
-        SCENE8        = 0x13
+        VOLUME        = 0x59
+        PAN           = 0x4f
+        SEND_A        = 0x45
+        SEND_B        = 0x3b
+        STOP          = 0x31
+        MUTE          = 0x27
+        SOLO          = 0x1d
+        RECORD_ARM    = 0x13
       end
 
       # Module defining MIDI data 2 (velocity) codes.

@@ -3,6 +3,7 @@
 ## v0.7.0
 
 * Jettison Numark Orbit support, as the firmware is just too broken to be usable.
+* Move towards a plain grid mapping model to make UI-centric development easier.
 
 
 ## v0.6.0

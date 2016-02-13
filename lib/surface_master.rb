@@ -14,6 +14,7 @@ end
 require "surface_master/version"
 require "surface_master/errors"
 require "surface_master/logging"
+require "surface_master/input"
 require "surface_master/device"
 require "surface_master/interaction"
 

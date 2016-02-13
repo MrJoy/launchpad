@@ -4,42 +4,22 @@ module SurfaceMaster
     class Device < SurfaceMaster::Device
       include MIDICodes
 
-      # TODO: Rename scenes to match Mk2
-      CODE_NOTE_TO_TYPE = Hash
-                          .new { |*_| :grid }
-                          .merge([Status::ON, Scene::SCENE1]      => :scene1,
-                                 [Status::ON, Scene::SCENE2]      => :scene2,
-                                 [Status::ON, Scene::SCENE3]      => :scene3,
-                                 [Status::ON, Scene::SCENE4]      => :scene4,
-                                 [Status::ON, Scene::SCENE5]      => :scene5,
-                                 [Status::ON, Scene::SCENE6]      => :scene6,
-                                 [Status::ON, Scene::SCENE7]      => :scene7,
-                                 [Status::ON, Scene::SCENE8]      => :scene8,
-                                 [Status::CC, Control::UP]        => :up,
-                                 [Status::CC, Control::DOWN]      => :down,
-                                 [Status::CC, Control::LEFT]      => :left,
-                                 [Status::CC, Control::RIGHT]     => :right,
-                                 [Status::CC, Control::SESSION]   => :session,
-                                 [Status::CC, Control::USER1]     => :user1,
-                                 [Status::CC, Control::USER2]     => :user2,
-                                 [Status::CC, Control::MIXER]     => :mixer)
-                          .freeze
-      TYPE_TO_NOTE      = { up:      Control::UP,
-                            down:    Control::DOWN,
-                            left:    Control::LEFT,
-                            right:   Control::RIGHT,
-                            session: Control::SESSION,
-                            user1:   Control::USER1,
-                            user2:   Control::USER2,
-                            mixer:   Control::MIXER,
-                            scene1:  Scene::SCENE1, # Volume
-                            scene2:  Scene::SCENE2, # Pan
-                            scene3:  Scene::SCENE3, # Send A
-                            scene4:  Scene::SCENE4, # Send B
-                            scene5:  Scene::SCENE5, # Stop
-                            scene6:  Scene::SCENE6, # Mute
-                            scene7:  Scene::SCENE7, # Solo
-                            scene8:  Scene::SCENE8 }.freeze # Record Arm
+      TYPE_TO_NOTE      = { up:         Control::UP,
+                            down:       Control::DOWN,
+                            left:       Control::LEFT,
+                            right:      Control::RIGHT,
+                            session:    Control::SESSION,
+                            user1:      Control::USER1,
+                            user2:      Control::USER2,
+                            mixer:      Control::MIXER,
+                            volume:     Scene::VOLUME,              # Volume
+                            pan:        Scene::PAN,                 # Pan
+                            send_a:     Scene::SEND_A,              # Send A
+                            send_b:     Scene::SEND_B,              # Send B
+                            stop:       Scene::STOP,                # Stop
+                            mute:       Scene::MUTE,                # Mute
+                            solo:       Scene::SOLO,                # Solo
+                            record_arm: Scene::RECORD_ARM }.freeze  # Record Arm
 
       def initialize(opts = nil)
         @name = "Launchpad MK2"
@@ -54,15 +34,6 @@ module SurfaceMaster
       end
 
       # TODO: Support more of the LaunchPad Mark 2's functionality.
-
-      def change(opts = nil)
-        raise NoOutputAllowedError unless output_enabled?
-
-        opts ||= {}
-        command, payload = color_payload(opts)
-        sysex!(command, payload[:led], payload[:color])
-        nil
-      end
 
       def changes(values)
         raise NoOutputAllowedError unless output_enabled?
@@ -80,12 +51,12 @@ module SurfaceMaster
 
       def read
         raise NoInputAllowedError unless input_enabled?
-        super.collect do |input|
-          note                  = input.delete(:note)
-          input[:type]          = CODE_NOTE_TO_TYPE[[input.delete(:code), note]] || :grid
-          input[:x], input[:y]  = decode_grid_coord(note) if input[:type] == :grid
-          input.delete(:velocity)
-          input
+        super.collect do |raw|
+          coord = decode_grid_coord(raw[:code], raw[:note])
+          Input.new(event:  raw[:state],
+                    x:      coord[0],
+                    y:      coord[1])
+                    # raw:    raw)
         end
       end
 
@@ -100,10 +71,17 @@ module SurfaceMaster
         msg_by_command
       end
 
-      def decode_grid_coord(note)
-        note -= 11
-        x     = note % 10
-        y     = note / 10
+      def decode_grid_coord(code, note)
+        case code
+        when Status::CC
+          x = note - 0x68
+          y = 0
+        else
+          note -= 11
+          x     = note % 10
+          y     = 8 - (note / 10) # We flip this so 0x0 is upper-left, and push it down to make room
+                                  # for the CC buttons to be mapped to the grid.
+        end
         [x, y]
       end
 
