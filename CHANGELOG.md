@@ -1,5 +1,10 @@
 # Changes
 
+## v0.7.0
+
+* Jettison Numark Orbit support, as the firmware is just too broken to be usable.
+
+
 ## v0.6.0
 
 * Invert Y coordinate for Numark Orbit, to match behavior of Novation Launchpad.

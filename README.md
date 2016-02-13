@@ -1,12 +1,11 @@
 # Control Center
 
-A gem for accessing various MIDI controllers, including the Novation Launchpad, and Numark Orbit programmatically and easily.
+A gem for interacting with various MIDI controllers.
 
 This was originally forked from [launchpad](https://github.com/thomasjachmann/launchpad) but has diverged considerably:
 
 * Abandon support for Novation Launchpad Mk 1.
 * Add support for Novation Launchpad Mk 2.
-* Add support for Numark Orbit.
 * Add support for TouchOSB Bridge.
 * Improve allocation efficiency to reduce pressure on garbage collector.
 
@@ -16,9 +15,6 @@ Over time I will be generalizing this to interact with arbitrary control surface
 ## Supported Devices
 
 * Novation Launchpad, Mark 2 (the one with RGB support)
-* Numark Orbit
-    * At present you need to use the `Numark Orbit Editor` to send a specific mapping to the device, and setting of LEDs doesn't work.
-    * See `mappings/Orbit_Preset.json` for the preset to use with `Numark Orbit Editor`.
 * TouchOSC Bridge
     * At the moment only the `Device` interface is implemented, and you can either consume the input raw, or apply a mapping function of your own.
 
@@ -33,7 +29,7 @@ Over time I will be generalizing this to interact with arbitrary control surface
 
 The gem is known to be compatible with the following ruby versions:
 
-* MRI 2.2.3
+* MRI 2.2.4
 
 
 ## Usage
