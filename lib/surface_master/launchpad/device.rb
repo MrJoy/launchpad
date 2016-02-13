@@ -5,24 +5,25 @@ module SurfaceMaster
       include MIDICodes
 
       # TODO: Rename scenes to match Mk2
-      CODE_NOTE_TO_TYPE = Hash.new { |*_| :grid }
-                              .merge([Status::ON, Scene::SCENE1] => :scene1,
-                                 [Status::ON, Scene::SCENE2]     => :scene2,
-                                 [Status::ON, Scene::SCENE3]     => :scene3,
-                                 [Status::ON, Scene::SCENE4]     => :scene4,
-                                 [Status::ON, Scene::SCENE5]     => :scene5,
-                                 [Status::ON, Scene::SCENE6]     => :scene6,
-                                 [Status::ON, Scene::SCENE7]     => :scene7,
-                                 [Status::ON, Scene::SCENE8]     => :scene8,
-                                 [Status::CC, Control::UP]       => :up,
-                                 [Status::CC, Control::DOWN]     => :down,
-                                 [Status::CC, Control::LEFT]     => :left,
-                                 [Status::CC, Control::RIGHT]    => :right,
-                                 [Status::CC, Control::SESSION]  => :session,
-                                 [Status::CC, Control::USER1]    => :user1,
-                                 [Status::CC, Control::USER2]    => :user2,
-                                 [Status::CC, Control::MIXER]    => :mixer)
-                              .freeze
+      CODE_NOTE_TO_TYPE = Hash
+                          .new { |*_| :grid }
+                          .merge([Status::ON, Scene::SCENE1]      => :scene1,
+                                 [Status::ON, Scene::SCENE2]      => :scene2,
+                                 [Status::ON, Scene::SCENE3]      => :scene3,
+                                 [Status::ON, Scene::SCENE4]      => :scene4,
+                                 [Status::ON, Scene::SCENE5]      => :scene5,
+                                 [Status::ON, Scene::SCENE6]      => :scene6,
+                                 [Status::ON, Scene::SCENE7]      => :scene7,
+                                 [Status::ON, Scene::SCENE8]      => :scene8,
+                                 [Status::CC, Control::UP]        => :up,
+                                 [Status::CC, Control::DOWN]      => :down,
+                                 [Status::CC, Control::LEFT]      => :left,
+                                 [Status::CC, Control::RIGHT]     => :right,
+                                 [Status::CC, Control::SESSION]   => :session,
+                                 [Status::CC, Control::USER1]     => :user1,
+                                 [Status::CC, Control::USER2]     => :user2,
+                                 [Status::CC, Control::MIXER]     => :mixer)
+                          .freeze
       TYPE_TO_NOTE      = { up:      Control::UP,
                             down:    Control::DOWN,
                             left:    Control::LEFT,
@@ -69,7 +70,7 @@ module SurfaceMaster
         organize_commands(values).each do |command, payloads|
           # The documented batch size for RGB LED updates is 80.  The docs lie, at least on my
           # current firmware version -- anything above 62 crashes the device hard.
-          while (slice = payloads.shift(62)).length > 0
+          until (slice = payloads.shift(62)).empty?
             messages = slice.map { |payload| [payload[:led], payload[:color]] }
             sysex!(command, *messages)
           end
