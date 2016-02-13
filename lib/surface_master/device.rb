@@ -29,7 +29,7 @@ module SurfaceMaster
     def reset!; end
 
     def read
-      fail SurfaceMaster::NoInputAllowedError unless input_enabled?
+      raise SurfaceMaster::NoInputAllowedError unless input_enabled?
 
       Array(@input.read(16)).collect do |midi_message|
         (code, note, velocity) = midi_message[:message]
@@ -48,7 +48,7 @@ module SurfaceMaster
     def sysex_msg(*payload); (sysex_prefix + [payload, sysex_suffix]).flatten.compact; end
 
     def sysex!(*payload)
-      fail NoOutputAllowedError unless output_enabled?
+      raise NoOutputAllowedError unless output_enabled?
       msg = sysex_msg(payload)
       result = @output.write_sysex(msg)
       if result != 0
@@ -79,7 +79,7 @@ module SurfaceMaster
 
     def create_device(devices, device_type, opts)
       id = opts[:id] || find_device_id(devices, opts[:name])
-      fail SurfaceMaster::NoSuchDeviceError if id.nil?
+      raise SurfaceMaster::NoSuchDeviceError if id.nil?
       device_type.new(id)
     rescue RuntimeError => e # TODO: Uh, this should be StandardException, perhaps?
       raise SurfaceMaster::DeviceBusyError, e

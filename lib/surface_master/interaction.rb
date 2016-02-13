@@ -79,8 +79,8 @@ module SurfaceMaster
       Array(list).map { |ll| ll.respond_to?(:to_a) ? ll.to_a : ll }.flatten
     end
 
-    def guard_input_and_reset_at_end!(&block)
-      block.call
+    def guard_input_and_reset_at_end!(&_block)
+      yield
     rescue Portmidi::DeviceError => e
       logger.fatal "Could not read from device, stopping reader!"
       raise SurfaceMaster::CommunicationError, e
@@ -101,10 +101,10 @@ module SurfaceMaster
       response_groups_for(types, opts, state, &:clear)
     end
 
-    def response_groups_for(types, opts, state, &block)
+    def response_groups_for(types, opts, state, &_block)
       types.each do |type|
         combined_types(type, opts).each do |combined_type|
-          block.call(responses[combined_type][state])
+          yield(responses[combined_type][state])
         end
       end
     end

@@ -18,7 +18,7 @@ end
 
 # Janky bar-graph widget.
 class Bar
-  BLACK = { red: 0x00, green: 0x00, blue: 0x00 }
+  BLACK = { red: 0x00, green: 0x00, blue: 0x00 }.freeze
   def initialize(interaction, x, color)
     @interaction  = interaction
     @x            = x

@@ -6,7 +6,7 @@ module SurfaceMaster
 
       # TODO: Rename scenes to match Mk2
       CODE_NOTE_TO_TYPE = Hash.new { |*_| :grid }
-                          .merge([Status::ON, Scene::SCENE1]     => :scene1,
+                              .merge([Status::ON, Scene::SCENE1] => :scene1,
                                  [Status::ON, Scene::SCENE2]     => :scene2,
                                  [Status::ON, Scene::SCENE3]     => :scene3,
                                  [Status::ON, Scene::SCENE4]     => :scene4,
@@ -22,7 +22,7 @@ module SurfaceMaster
                                  [Status::CC, Control::USER1]    => :user1,
                                  [Status::CC, Control::USER2]    => :user2,
                                  [Status::CC, Control::MIXER]    => :mixer)
-                          .freeze
+                              .freeze
       TYPE_TO_NOTE      = { up:      Control::UP,
                             down:    Control::DOWN,
                             left:    Control::LEFT,
@@ -55,7 +55,7 @@ module SurfaceMaster
       # TODO: Support more of the LaunchPad Mark 2's functionality.
 
       def change(opts = nil)
-        fail NoOutputAllowedError unless output_enabled?
+        raise NoOutputAllowedError unless output_enabled?
 
         opts ||= {}
         command, payload = color_payload(opts)
@@ -64,7 +64,7 @@ module SurfaceMaster
       end
 
       def changes(values)
-        fail NoOutputAllowedError unless output_enabled?
+        raise NoOutputAllowedError unless output_enabled?
 
         organize_commands(values).each do |command, payloads|
           # The documented batch size for RGB LED updates is 80.  The docs lie, at least on my
@@ -78,7 +78,7 @@ module SurfaceMaster
       end
 
       def read
-        fail NoInputAllowedError unless input_enabled?
+        raise NoInputAllowedError unless input_enabled?
         super.collect do |input|
           note                  = input.delete(:note)
           input[:type]          = CODE_NOTE_TO_TYPE[[input.delete(:code), note]] || :grid
@@ -136,7 +136,7 @@ module SurfaceMaster
                       !coord_in_range?(x) ||
                       !coord_in_range?(y)
 
-        fail SurfaceMaster::Launchpad::NoValidGridCoordinatesError
+        raise SurfaceMaster::Launchpad::NoValidGridCoordinatesError
       end
 
       def coord_in_range?(val); val && val >= 0 && val <= 7; end
@@ -160,7 +160,7 @@ module SurfaceMaster
         messages = Array(messages)
         if @output.nil?
           logger.error "trying to write to device not open for output"
-          fail SurfaceMaster::NoOutputAllowedError
+          raise SurfaceMaster::NoOutputAllowedError
         end
         logger.debug "writing messages to launchpad:\n  #{messages.join("\n  ")}" if logger.debug?
         @output.write(messages)

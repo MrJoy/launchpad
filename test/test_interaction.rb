@@ -33,8 +33,8 @@ describe SurfaceMaster::Launchpad::Interaction do
     it "creates device if not given" do
       device = SurfaceMaster::Launchpad::Device.new
       SurfaceMaster::Launchpad::Device.expects(:new)
-        .with(input: true, output: true, logger: nil)
-        .returns(device)
+                                      .with(input: true, output: true, logger: nil)
+                                      .returns(device)
       interaction = SurfaceMaster::Launchpad::Interaction.new
       assert_same device, interaction.device
     end
@@ -42,8 +42,8 @@ describe SurfaceMaster::Launchpad::Interaction do
     it "creates device with given device_name" do
       device = SurfaceMaster::Launchpad::Device.new
       SurfaceMaster::Launchpad::Device.expects(:new)
-        .with(device_name: "device", input: true, output: true, logger: nil)
-        .returns(device)
+                                      .with(device_name: "device", input: true, output: true, logger: nil)
+                                      .returns(device)
       interaction = SurfaceMaster::Launchpad::Interaction.new(device_name: "device")
       assert_same device, interaction.device
     end
@@ -51,8 +51,8 @@ describe SurfaceMaster::Launchpad::Interaction do
     it "creates device with given input_device_id" do
       device = SurfaceMaster::Launchpad::Device.new
       SurfaceMaster::Launchpad::Device.expects(:new)
-        .with(input_device_id: "in", input: true, output: true, logger: nil)
-        .returns(device)
+                                      .with(input_device_id: "in", input: true, output: true, logger: nil)
+                                      .returns(device)
       interaction = SurfaceMaster::Launchpad::Interaction.new(input_device_id: "in")
       assert_same device, interaction.device
     end
@@ -60,8 +60,8 @@ describe SurfaceMaster::Launchpad::Interaction do
     it "creates device with given output_device_id" do
       device = SurfaceMaster::Launchpad::Device.new
       SurfaceMaster::Launchpad::Device.expects(:new)
-        .with(output_device_id: "out", input: true, output: true, logger: nil)
-        .returns(device)
+                                      .with(output_device_id: "out", input: true, output: true, logger: nil)
+                                      .returns(device)
       interaction = SurfaceMaster::Launchpad::Interaction.new(output_device_id: "out")
       assert_same device, interaction.device
     end
@@ -185,15 +185,15 @@ describe SurfaceMaster::Launchpad::Interaction do
           i.stop
         end
         @interaction.device.expects(:read)
-          .at_least_once
-          .returns([
-            { timestamp: 0,
-              state:     :down,
-              type:      :mixer },
-            { timestamp: 0,
-              state:     :up,
-              type:      :mixer },
-          ])
+                    .at_least_once
+                    .returns([
+                               { timestamp: 0,
+                                 state:     :down,
+                                 type:      :mixer },
+                               { timestamp: 0,
+                                 state:     :up,
+                                 type:      :mixer },
+                             ])
       end
 
       it "calls respond_to_action with actions from respond_to_action in blocking mode" do
@@ -312,7 +312,7 @@ describe SurfaceMaster::Launchpad::Interaction do
     # this is kinda greybox tested, since I couldn't come up with another way to test thread
     # handling [thomas, 2010-01-24]
     it "raises pending exceptions in detached mode" do
-      t = Thread.new { fail BreakError }
+      t = Thread.new { raise BreakError }
       Thread.expects(:new).returns(t)
       @interaction.start(detached: true)
       assert_raises BreakError do
@@ -432,10 +432,10 @@ describe SurfaceMaster::Launchpad::Interaction do
       inter = SurfaceMaster::Launchpad::Interaction.new(logger: logger)
       inter.response_to(:mixer, :down) { |i, _a| i.stop }
       inter.device.expects(:read)
-        .at_least_once
-        .returns([{ timestamp: 0,
-                    state:     :down,
-                    type:      :mixer }])
+           .at_least_once
+           .returns([{ timestamp: 0,
+                       state:     :down,
+                       type:      :mixer }])
       # erg =
       timeout { inter.start }
       # assert erg, 'the actions weren\'t called'

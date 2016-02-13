@@ -197,8 +197,8 @@ module SurfaceMaster
                     0x0D, 0x00,
 
                     0x0C, 0x00,
-                    0x0D, 0x00]
-      READ_STATE = [0x01, 0x00, 0x00]
+                    0x0D, 0x00].freeze
+      READ_STATE = [0x01, 0x00, 0x00].freeze
 
       def sysex_prefix; @sysex_prefix ||= super + [0x00, 0x01, 0x3F, 0x2B]; end
 
@@ -230,13 +230,13 @@ module SurfaceMaster
       end
 
       def enrich_decoded_message(decoded, note, velocity, timestamp)
-        case decoded[:type]
-        when :shoulder      then decoded = decode_shoulder(decoded, note, velocity)
-        when :grid          then decoded = decode_grid(decoded, note, velocity)
-        when :vknob         then decoded = decode_knob(decoded, note, velocity)
-        when :accelerometer then decoded = decode_accelerometer(decoded, note, velocity)
-        else decoded = decode_control(decoded, note, velocity)
-        end
+        decoded = case decoded[:type]
+                  when :shoulder      then decode_shoulder(decoded, note, velocity)
+                  when :grid          then decode_grid(decoded, note, velocity)
+                  when :vknob         then decode_knob(decoded, note, velocity)
+                  when :accelerometer then decode_accelerometer(decoded, note, velocity)
+                  else decode_control(decoded, note, velocity)
+                  end
         decoded[:timestamp] = timestamp
         decoded
       end

@@ -27,7 +27,7 @@ device = SurfaceMaster::Orbit::Device.new
 MODE      = :wired
 
 CONFIGS   = { wireless: { delay: 0.75, offset: 0x03, use_read: true,  read_delay: 0.1 },
-              wired:    { delay: 0.1,  offset: 0x01, use_read: false, read_delay: 0 } }
+              wired:    { delay: 0.1,  offset: 0x01, use_read: false, read_delay: 0 } }.freeze
 MAPPINGS  =  [0x03, 0x01, 0x70,
 
               0x00, 0x00, 0x00,
@@ -110,8 +110,8 @@ MAPPINGS  =  [0x03, 0x01, 0x70,
               0x0C, 0x00, 0x0D,
               0x00, 0x0C, 0x00,
               0x0D, 0x00, 0x0C,
-              0x00, 0x0D, 0x00]
-READ_STATE = [0x01, 0x00, 0x00]
+              0x00, 0x0D, 0x00].freeze
+READ_STATE = [0x01, 0x00, 0x00].freeze
 
 delay       = CONFIGS[MODE][:delay]
 offset      = CONFIGS[MODE][:offset]

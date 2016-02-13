@@ -8,7 +8,7 @@ describe SurfaceMaster::Launchpad::Device do
                       session: 0x6C,
                       user1:   0x6D,
                       user2:   0x6E,
-                      mixer:   0x6F }
+                      mixer:   0x6F }.freeze
   SCENE_BUTTONS   = { scene1: 0x59,
                       scene2: 0x4F,
                       scene3: 0x45,
@@ -16,9 +16,9 @@ describe SurfaceMaster::Launchpad::Device do
                       scene5: 0x31,
                       scene6: 0x27,
                       scene7: 0x1D,
-                      scene8: 0x13 }
+                      scene8: 0x13 }.freeze
   STATES          = { down: 127,
-                      up:   0 }
+                      up:   0 }.freeze
 
   def expects_output(device, args)
     messages = args.map { |data| device.send(:sysex_prefix) + data + [device.send(:sysex_suffix)] }
@@ -189,7 +189,7 @@ describe SurfaceMaster::Launchpad::Device do
     it "raises NoOutputAllowedError when not initialized with output" do
       assert_raises SurfaceMaster::NoOutputAllowedError do
         SurfaceMaster::Launchpad::Device.new(output: false)
-          .change(cc: :mixer, red: 0x00, green: 0x00, blue: 0x00)
+                                        .change(cc: :mixer, red: 0x00, green: 0x00, blue: 0x00)
       end
     end
 
@@ -331,9 +331,9 @@ describe SurfaceMaster::Launchpad::Device do
 
       it "builds proper actions for multiple pending actions" do
         TEST_MESSAGES   = [{ timestamp: 1, message: [0x90, 0x0B, 0x7F] },
-                           { timestamp: 2, message: [0xB0, 0x68, 0x00] }]
+                           { timestamp: 2, message: [0xB0, 0x68, 0x00] }].freeze
         TEST_OUTPUTS    = [{ timestamp: 1, state: :down,  type: :grid, x: 0, y: 0 },
-                           { timestamp: 2, state: :up,    type: :up }]
+                           { timestamp: 2, state: :up,    type: :up }].freeze
         stub_input(@device, *TEST_MESSAGES)
         assert_equal TEST_OUTPUTS, @device.read
       end
