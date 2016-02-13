@@ -1,7 +1,7 @@
 # rubocop:disable Style/LeadingCommentSpace
 #ruby-gemset=surface_master
 # rubocop:enable Style/LeadingCommentSpace
-ruby "2.2.3"
+ruby "2.2.4"
 source "https://rubygems.org"
 
 # Specify your gem's dependencies in surface_master.gemspec
