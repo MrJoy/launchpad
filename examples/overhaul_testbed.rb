@@ -40,35 +40,3 @@ while result = device.read
   next if result.empty?
   puts result.map(&:to_s).join(", ")
 end
-
-# UP            = 0x68
-# DOWN          = 0x69
-# LEFT          = 0x6A
-# RIGHT         = 0x6B
-# SESSION       = 0x6C
-# USER1         = 0x6D
-# USER2         = 0x6E
-# MIXER         = 0x6F
-
-# interaction = SurfaceMaster::Launchpad::Interaction.new
-# interaction.response_to(:grid) do |inter, action|
-#   x = action[:x]
-#   y = action[:y]
-#   PRESSED[x][y] = (action[:state] == :down)
-#   value         = base_color(x, y) || WHITE
-#   value[:grid]  = [x, y]
-#   inter.change(value)
-# end
-
-# interaction.response_to(:scene1, :down) do |inter, action|
-# end
-# interaction.response_to(:scene2, :down) do |inter, action|
-# end
-# interaction.response_to(:scene3, :down) do |inter, action|
-# end
-# interaction.response_to(:scene4, :down) do |inter, action|
-# end
-# interaction.response_to(:mixer, :down) do |_interaction, _action|
-# end
-
-# interaction.start
