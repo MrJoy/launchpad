@@ -4,22 +4,22 @@ module SurfaceMaster
     class Device < SurfaceMaster::Device
       include MIDICodes
 
-      TYPE_TO_NOTE      = { up:         Control::UP,
-                            down:       Control::DOWN,
-                            left:       Control::LEFT,
-                            right:      Control::RIGHT,
-                            session:    Control::SESSION,
-                            user1:      Control::USER1,
-                            user2:      Control::USER2,
-                            mixer:      Control::MIXER,
-                            volume:     Scene::VOLUME,              # Volume
-                            pan:        Scene::PAN,                 # Pan
-                            send_a:     Scene::SEND_A,              # Send A
-                            send_b:     Scene::SEND_B,              # Send B
-                            stop:       Scene::STOP,                # Stop
-                            mute:       Scene::MUTE,                # Mute
-                            solo:       Scene::SOLO,                # Solo
-                            record_arm: Scene::RECORD_ARM }.freeze  # Record Arm
+      TYPE_TO_NOTE = { up:         Control::UP,
+                       down:       Control::DOWN,
+                       left:       Control::LEFT,
+                       right:      Control::RIGHT,
+                       session:    Control::SESSION,
+                       user1:      Control::USER1,
+                       user2:      Control::USER2,
+                       mixer:      Control::MIXER,
+                       volume:     Scene::VOLUME,              # Volume
+                       pan:        Scene::PAN,                 # Pan
+                       send_a:     Scene::SEND_A,              # Send A
+                       send_b:     Scene::SEND_B,              # Send B
+                       stop:       Scene::STOP,                # Stop
+                       mute:       Scene::MUTE,                # Mute
+                       solo:       Scene::SOLO,                # Solo
+                       record_arm: Scene::RECORD_ARM }.freeze  # Record Arm
 
       def initialize(opts = nil)
         @name = "Launchpad MK2"
