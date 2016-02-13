@@ -38,15 +38,16 @@ module SurfaceMaster
       def changes(values)
         raise NoOutputAllowedError unless output_enabled?
 
-        organize_commands(values).each do |command, payloads|
-          # The documented batch size for RGB LED updates is 80.  The docs lie, at least on my
-          # current firmware version -- anything above 62 crashes the device hard.
-          until (slice = payloads.shift(62)).empty?
-            messages = slice.map { |payload| [payload[:led], payload[:color]] }
-            sysex!(command, *messages)
-          end
+        # The documented batch size for RGB LED updates is 80.  The docs lie, at least on my
+        # current firmware version -- anything above 62 crashes the device hard.
+        values.shift(62).each do |slice|
+          # 0x0B is the command for setting individual LEDs.
+          # Other interesting commands include:
+          #   0x0C -> Column
+          #   0x0D -> Row
+          #   0x0E -> All LEDs
+          sysex!(0x0B, *(slice.map { |(coord, color)| [encode_grid_coord(coord), color] }))
         end
-        nil
       end
 
       def read
@@ -62,15 +63,6 @@ module SurfaceMaster
 
     protected
 
-      def organize_commands(values)
-        msg_by_command = {}
-        values.each do |value|
-          command, payload = color_payload(value)
-          (msg_by_command[command] ||= []) << payload
-        end
-        msg_by_command
-      end
-
       def decode_grid_coord(code, note)
         case code
         when Status::CC
@@ -85,28 +77,16 @@ module SurfaceMaster
         [x, y]
       end
 
+      def encode_grid_coord(coord)
+        if coord[1] == 0
+          coord[0] + 104
+        else
+          ((8 - coord[1]) * 10) + coord[0] + 11
+        end
+      end
+
       def layout!(mode); sysex!(0x22, mode); end
       def sysex_prefix; @sysex_prefix ||= super + [0x00, 0x20, 0x29, 0x02, 0x18]; end
-
-      def decode_led(opts)
-        case
-        when opts[:cc]      then [:cc, TYPE_TO_NOTE[opts[:cc]]]
-        when opts[:grid]    then decode_grid_led(opts)
-        when opts[:column]  then [:column, opts[:column]]
-        when opts[:row]     then [:row, opts[:row]]
-        end
-      rescue
-        raise SurfaceMaster::Launchpad::NoValidGridCoordinatesError
-      end
-
-      def decode_grid_led(opts)
-        if opts[:grid] == :all
-          [:all, nil]
-        else
-          check_xy_values!(opts[:grid])
-          [:grid, (opts[:grid][1] * 10) + opts[:grid][0] + 11]
-        end
-      end
 
       def check_xy_values!(xy_pair)
         x = xy_pair[0]
@@ -119,17 +99,6 @@ module SurfaceMaster
       end
 
       def coord_in_range?(val); val && val >= 0 && val <= 7; end
-
-      def color_payload(opts)
-        # Hard-coded to single-LED RGB update right now.
-        # For paletted changes, commands available include:
-        # 0x0C -> Column
-        # 0x0D -> Row
-        # 0x0E -> All LEDs
-        [0x0B,
-         { led:   decode_led(opts)[1],
-           color: [opts[:red] || 0x00, opts[:green] || 0x00, opts[:blue] || 0x00] }]
-      end
 
       def output!(status, data1, data2)
         outputs!(message(status, data1, data2))

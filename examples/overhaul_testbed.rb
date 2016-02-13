@@ -36,6 +36,22 @@ require "surface_master"
 
 SurfaceMaster.init!
 device = SurfaceMaster::Launchpad::Device.new
+
+# Light up the corners of the "real" grid, the first four buttons of the CC row, and the corners of
+# the virtual grid:
+device.changes([[[0, 0], [0x01, 0x02, 0x03]],
+                [[1, 0], [0x01, 0x02, 0x03]],
+                [[2, 0], [0x01, 0x02, 0x03]],
+                [[3, 0], [0x01, 0x02, 0x03]],
+
+                [[0, 1], [0x01, 0x02, 0x03]],
+                [[7, 1], [0x01, 0x02, 0x03]],
+                [[8, 1], [0x01, 0x02, 0x03]],
+
+                [[0, 8], [0x01, 0x02, 0x03]],
+                [[7, 8], [0x01, 0x02, 0x03]],
+                [[8, 8], [0x01, 0x02, 0x03]]])
+
 while result = device.read
   next if result.empty?
   puts result.map(&:to_s).join(", ")
