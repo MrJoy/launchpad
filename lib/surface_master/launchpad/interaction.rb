@@ -39,20 +39,17 @@ module SurfaceMaster
           block.call(self, action)
         end
         nil
-      rescue Exception => e # TODO: StandardException, RuntimeError, or Exception?
+      rescue StandardError => e # TODO: StandardException, RuntimeError, or Exception?
         logger.error "Error when responding to action #{action.inspect}: #{e.inspect}"
         raise e
       end
 
       def mappings_for_action(action)
-        type    = action[:type].to_sym
-        state   = action[:state].to_sym
-        actions = []
-        if type == :grid
-          actions += mappings_for_grid_action(state, action[:x], action[:y])
-        end
-        actions += responses[type][state]
-        actions += responses[:all][state]
+        type, state     = action.slice(:type, :state).map(&:to_sym)
+        actions         = []
+        actions        += mappings_for_grid_action(state, action[:x], action[:y]) if type == :grid
+        actions        += responses[type][state]
+        actions        += responses[:all][state]
         actions.compact
       end
 
