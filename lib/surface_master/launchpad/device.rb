@@ -37,14 +37,13 @@ module SurfaceMaster
 
       def commit!
         raise NoOutputAllowedError unless output_enabled?
-        dirty_keys  = @next_grid
-                      .keys
-                      .select { |k| @next_grid[k] != @old_grid[k] }
-        changes     = dirty_keys.map { |k| [k, @next_grid[k]] }
-        changes.each do |(k, v)|
+        cc = changes
+        return false if cc.empty?
+        cc.each do |(k, v)|
           @old_grid[k] = v
         end
-        apply(changes)
+        apply(cc)
+        true
       end
 
       def read
@@ -59,6 +58,13 @@ module SurfaceMaster
       end
 
     protected
+
+      def changes
+        @next_grid
+          .keys
+          .select { |k| @next_grid[k] != @old_grid[k] }
+          .map { |k| [k, @next_grid[k]] }
+      end
 
       def apply(values)
         # The documented batch size for RGB LED updates is 80.  The docs lie, at least on my
