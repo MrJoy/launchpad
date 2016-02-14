@@ -44,8 +44,8 @@ module SurfaceMaster
           coord = decode_grid_coord(raw[:code], raw[:note])
           Input.new(event:  raw[:state],
                     x:      coord[0],
-                    y:      coord[1])
-                    # raw:    raw)
+                    y:      coord[1],
+                    raw:    logger.debug? ? raw : nil)
         end
       end
 
