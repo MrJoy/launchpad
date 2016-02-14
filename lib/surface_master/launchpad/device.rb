@@ -11,6 +11,7 @@ module SurfaceMaster
         raw         = (0..8)
                       .map { |x| (0..8).map { |y| encode_grid_coord([x, y]) } }
                       .map { |coord| [coord, [0x00, 0x00, 0x00]] }
+                      .flatten
         @next_grid  = Hash[raw.map { |coord| [coord, [0x00, 0x00, 0x00]] }]
         @old_grid   = Hash[raw.map { |coord| [coord, [0x00, 0x00, 0x00]] }]
       end
@@ -23,9 +24,15 @@ module SurfaceMaster
 
       # TODO: Support more of the LaunchPad Mark 2's functionality.
 
-      def color(coord, color)
+      def []=(coord, color)
         raise NoOutputAllowedError unless output_enabled?
+        mapped_coord = encode_grid_coord(coord)
+        return unless mapped_coord
         @next_grid[encode_grid_coord(coord)] = color
+      end
+
+      def [](coord)
+        @next_grid[encode_grid_coord(coord)].dup
       end
 
       def commit!
@@ -34,7 +41,9 @@ module SurfaceMaster
                       .keys
                       .select { |k| @next_grid[k] != @old_grid[k] }
         changes     = dirty_keys.map { |k| [k, @next_grid[k]] }
-        @next_grid  = @old_grid
+        changes.each do |(k, v)|
+          @old_grid[k] = v
+        end
         apply(changes)
       end
 
@@ -79,11 +88,18 @@ module SurfaceMaster
       end
 
       def encode_grid_coord(coord)
+        return nil unless valid_coord?(coord)
         if coord[1] == 0
           coord[0] + 104
         else
           ((8 - coord[1]) * 10) + coord[0] + 11
         end
+      end
+
+      def valid_coord?(coord)
+        !(coord[0] < 0 || coord[0] > 8 ||
+          coord[1] < 0 || coord[1] > 8 ||
+          (coord[1] == 0 && coord[0] > 7))
       end
 
       def layout!(mode); sysex!(0x22, mode); end

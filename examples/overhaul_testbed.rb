@@ -39,22 +39,52 @@ device = SurfaceMaster::Launchpad::Device.new
 
 # Light up the corners of the "real" grid, the first four buttons of the CC row, and the corners of
 # the virtual grid:
-device.color([0, 0], [0x01, 0x02, 0x03])
-device.color([1, 0], [0x01, 0x02, 0x03])
-device.color([2, 0], [0x01, 0x02, 0x03])
-device.color([3, 0], [0x01, 0x02, 0x03])
+# device[[0, 0]] = [0x01, 0x02, 0x03]
+# device[[1, 0]] = [0x01, 0x02, 0x03]
+# device[[2, 0]] = [0x01, 0x02, 0x03]
+# device[[3, 0]] = [0x01, 0x02, 0x03]
 
-device.color([0, 1], [0x01, 0x02, 0x03])
-device.color([7, 1], [0x01, 0x02, 0x03])
-device.color([8, 1], [0x01, 0x02, 0x03])
+# device[[0, 1]] = [0x01, 0x02, 0x03]
+# device[[7, 1]] = [0x01, 0x02, 0x03]
+# device[[8, 1]] = [0x01, 0x02, 0x03]
 
-device.color([0, 8], [0x01, 0x02, 0x03])
-device.color([7, 8], [0x01, 0x02, 0x03])
-device.color([8, 8], [0x01, 0x02, 0x03])
+# device[[0, 8]] = [0x01, 0x02, 0x03]
+# device[[7, 8]] = [0x01, 0x02, 0x03]
+# device[[8, 8]] = [0x01, 0x02, 0x03]
 
-device.commit!
+# device.commit!
 
-while result = device.read
-  next if result.empty?
-  puts result.map(&:to_s).join(", ")
+at_exit do
+  (0..8).each do |x|
+    (0..8).each do |y|
+      device[[x, y]] = [0x00, 0x00, 0x00]
+    end
+  end
+  device.commit!
+end
+
+INCR = 17
+
+while results = (device.read rescue nil)
+  next if results.empty?
+  results.each do |result|
+    next unless result.event == :down
+    coord = [result.x, result.y]
+    cur_color = device[coord]
+    cur_color[2] += INCR
+    if cur_color[2] >= 0x3F
+      cur_color[1] += INCR
+      cur_color[2] -= 0x3F
+    end
+    if cur_color[1] >= 0x3F
+      cur_color[0] += INCR
+      cur_color[1] -= 0x3F
+    end
+    cur_color[0] -= 0x3F if cur_color[0] >= 0x3F
+    puts results.map(&:to_s).join(", ")
+    puts cur_color.inspect
+
+    device[coord] = cur_color
+  end
+  device.commit!
 end
