@@ -8,29 +8,34 @@ module SurfaceMaster
         @name = "Launchpad MK2"
         super(opts)
         reset! if output_enabled?
+        raw         = (0..8)
+                      .map { |x| (0..8).map { |y| encode_grid_coord([x, y]) } }
+                      .map { |coord| [coord, [0x00, 0x00, 0x00]] }
+        @next_grid  = Hash[raw.map { |coord| [coord, [0x00, 0x00, 0x00]] }]
+        @old_grid   = Hash[raw.map { |coord| [coord, [0x00, 0x00, 0x00]] }]
       end
 
-      def reset
+      def reset!
         # TODO: Suss out what this should be for the Mark 2.
         layout!(0x00)
-        output!(Status::CC, Status::NIL, Status::NIL)
+        send!([message(Status::CC, Status::NIL, Status::NIL)])
       end
 
       # TODO: Support more of the LaunchPad Mark 2's functionality.
 
-      def changes(values)
+      def color(coord, color)
         raise NoOutputAllowedError unless output_enabled?
+        @next_grid[encode_grid_coord(coord)] = color
+      end
 
-        # The documented batch size for RGB LED updates is 80.  The docs lie, at least on my
-        # current firmware version -- anything above 62 crashes the device hard.
-        values.shift(62).each do |slice|
-          # 0x0B is the command for setting individual LEDs.
-          # Other interesting commands include:
-          #   0x0C -> Column
-          #   0x0D -> Row
-          #   0x0E -> All LEDs
-          sysex!(0x0B, *(slice.map { |(coord, color)| [encode_grid_coord(coord), color] }))
-        end
+      def commit!
+        raise NoOutputAllowedError unless output_enabled?
+        dirty_keys  = @next_grid
+                      .keys
+                      .select { |k| @next_grid[k] != @old_grid[k] }
+        changes     = dirty_keys.map { |k| [k, @next_grid[k]] }
+        @next_grid  = @old_grid
+        apply(changes)
       end
 
       def read
@@ -45,6 +50,19 @@ module SurfaceMaster
       end
 
     protected
+
+      def apply(values)
+        # The documented batch size for RGB LED updates is 80.  The docs lie, at least on my
+        # current firmware version -- anything above 62 crashes the device hard.
+        values.shift(62).each do |slice|
+          # 0x0B is the command for setting individual LEDs.
+          # Other interesting commands include:
+          #   0x0C -> Column
+          #   0x0D -> Row
+          #   0x0E -> All LEDs
+          sysex!(0x0B, *slice)
+        end
+      end
 
       def decode_grid_coord(code, note)
         case code
@@ -71,23 +89,19 @@ module SurfaceMaster
       def layout!(mode); sysex!(0x22, mode); end
       def sysex_prefix; @sysex_prefix ||= super + [0x00, 0x20, 0x29, 0x02, 0x18]; end
 
-      def check_xy_values!(xy_pair)
-        x = xy_pair[0]
-        y = xy_pair[1]
-        return unless xy_pair.length != 2 ||
-                      !coord_in_range?(x) ||
-                      !coord_in_range?(y)
+      # def check_xy_values!(xy_pair)
+      #   x = xy_pair[0]
+      #   y = xy_pair[1]
+      #   return unless xy_pair.length != 2 ||
+      #                 !coord_in_range?(x) ||
+      #                 !coord_in_range?(y)
 
-        raise SurfaceMaster::Launchpad::NoValidGridCoordinatesError
-      end
+      #   raise SurfaceMaster::Launchpad::NoValidGridCoordinatesError
+      # end
 
-      def coord_in_range?(val); val && val >= 0 && val <= 7; end
+      # def coord_in_range?(val); val && val >= 0 && val <= 7; end
 
-      def output!(status, data1, data2)
-        outputs!(message(status, data1, data2))
-      end
-
-      def outputs!(*messages)
+      def send!(messages)
         messages = Array(messages)
         if @output.nil?
           logger.error "trying to write to device not open for output"
